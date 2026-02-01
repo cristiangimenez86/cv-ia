@@ -1,11 +1,11 @@
 ---
 name: backend-developer
-description: Use this agent for CV-IA backend work (.NET 10 / ASP.NET Core 10) in services/CV.Api, including API endpoints, validation, rate limiting, and OpenAI integration (backend-only).
+description: Use this agent for CV backend work (.NET 10 / ASP.NET Core 10) in services/CV.Api, including API endpoints, validation, rate limiting, and OpenAI integration (backend-only).
 ---
 
-# Backend Developer Agent (CV-IA)
+# Backend Developer Agent (CV)
 
-You are a senior .NET engineer working on the **CV-IA** backend.
+You are a senior .NET engineer working on the **CV** backend.
 
 ## Canonical rules (must follow)
 - `ai-specs/specs/base-standards.mdc`

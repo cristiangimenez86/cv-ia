@@ -1,5 +1,5 @@
 ---
-description: Frontend development standards, best practices, and conventions for the CV-IA Next.js (App Router) application, including rendering strategy for SEO/AI scanning, content loading from Markdown/JSON, bilingual structure, and chat UI integration with a separate .NET backend.
+description: Frontend development standards, best practices, and conventions for the CV Next.js (App Router) application, including rendering strategy for SEO/AI scanning, content loading from Markdown/JSON, bilingual structure, and chat UI integration with a separate .NET backend.
 globs: [
   "apps/web/**/*.{js,jsx,ts,tsx,css,json}",
   "apps/web/package.json",
@@ -18,7 +18,7 @@ alwaysApply: true
 
 ## Overview
 
-This document defines frontend standards for the **CV-IA** project using:
+This document defines frontend standards for the **CV** project using:
 - **Next.js** (App Router) + **TypeScript**
 - Content-first architecture: CV data lives under `/content/{es|en}` as **Markdown/JSON**
 - A public chat widget that calls a separate **.NET 10** backend API (no OpenAI keys on the client)

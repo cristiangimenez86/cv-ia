@@ -1,0 +1,1 @@
+Senior Full Stack .NET Developer with 10+ years of experience designing and implementing scalable, high-performance applications. Delivered projects that improved system efficiency (+25%), reduced maintenance costs (-30%), and enhanced user satisfaction (+20%). Strong in .NET, Azure, React, and cloud-native architectures, solving complex product and integration challenges.

@@ -1,4 +1,4 @@
-# Codex Instructions (CV-IA)
+# Codex Instructions (CV)
 
 Use `AGENTS.md` as the single source of truth for project instructions.
 

@@ -1,6 +1,6 @@
-# CV-IA — Development Guide
+# CV — Development Guide
 
-This guide explains how to run **CV-IA** locally for development and how to verify changes.
+This guide explains how to run **CV** locally for development and how to verify changes.
 The project follows **Spec-Driven Development (SDD)** and keeps AI/SDD artifacts in `ai-specs/`.
 
 ---
@@ -34,7 +34,7 @@ The project follows **Spec-Driven Development (SDD)** and keeps AI/SDD artifacts
 
 ```bash
 git clone <YOUR_GITHUB_REPO_URL>
-cd CV-IA
+cd CV
 ```
 
 ---
@@ -74,7 +74,7 @@ RATELIMIT__REQUESTSPERMINUTE=60
 ### 4.2 Frontend environment (local)
 
 Create:
-- `apps/cv-web/.env.local`
+- `apps/web/.env.local`
 
 Example:
 
@@ -123,7 +123,7 @@ dotnet run
 ```
 
 #### Frontend
-From `apps/cv-web/`:
+From `apps/web/`:
 
 ```bash
 corepack enable
@@ -150,7 +150,7 @@ curl "http://localhost:5080/api/v1/cv?lang=es"
 ```
 
 ### Frontend
-From `apps/cv-web/`:
+From `apps/web/`:
 
 ```bash
 yarn lint

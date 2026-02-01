@@ -1,5 +1,5 @@
 ---
-description: Backend development standards, best practices, and conventions for the CV-IA .NET 10 (ASP.NET Core 10) API, including API design, security, testing, and operational guidelines for a public CV chat experience.
+description: Backend development standards, best practices, and conventions for the CV .NET 10 (ASP.NET Core 10) API, including API design, security, testing, and operational guidelines for a public CV chat experience.
 globs: [
   "services/CV.Api/**/*.cs",
   "services/CV.Api/**/*.csproj",
@@ -19,7 +19,7 @@ alwaysApply: true
 
 ## Overview
 
-This document defines the backend standards for the CV-IA project API built with **.NET 10** and **ASP.NET Core 10**.
+This document defines the backend standards for the CV project API built with **.NET 10** and **ASP.NET Core 10**.
 
 Core goals:
 - **Security**: OpenAI keys and secrets must never leave the backend.

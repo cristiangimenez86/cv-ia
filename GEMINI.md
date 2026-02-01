@@ -1,4 +1,4 @@
-# Gemini Instructions (CV-IA)
+# Gemini Instructions (CV)
 
 Follow `AGENTS.md` as the canonical project guide.
 

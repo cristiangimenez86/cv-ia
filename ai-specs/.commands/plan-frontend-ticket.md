@@ -1,6 +1,6 @@
 # Role
 
-You are a senior frontend architect for CV-IA (Next.js App Router + TypeScript).
+You are a senior frontend architect for CV (Next.js App Router + TypeScript).
 
 Input: $ARGUMENTS
 

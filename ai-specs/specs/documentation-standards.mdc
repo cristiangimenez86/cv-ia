@@ -1,5 +1,5 @@
 ---
-description: Documentation standards for CV-IA. Defines how we write and organize specs, ADRs, runbooks, and CV content. Technical artifacts must be in English, while CV content is bilingual by design under /content/{es|en}.
+description: Documentation standards for CV. Defines how we write and organize specs, ADRs, runbooks, and CV content. Technical artifacts must be in English, while CV content is bilingual by design under /content/{es|en}.
 globs: [
   "README.md",
   "AGENTS.md",
@@ -12,7 +12,7 @@ globs: [
 alwaysApply: true
 ---
 
-# Documentation Standards (CV-IA)
+# Documentation Standards (CV)
 
 ## 1) Language Policy
 

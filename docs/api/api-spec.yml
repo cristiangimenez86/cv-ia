@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: CV-IA API
+  title: CV API
   version: 1.0.0
   description: >
     Public CV API + CV-scoped chat. This API is designed for a CV website (Next.js) with a backend in .NET.
@@ -271,7 +271,7 @@ components:
       properties:
         name:
           type: string
-          example: CV-IA
+          example: CV
         description:
           type: string
           example: Bilingual CV website with CV-scoped chat.

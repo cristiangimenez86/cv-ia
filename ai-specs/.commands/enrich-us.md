@@ -1,6 +1,6 @@
 Input: $ARGUMENTS
 
-Your job: turn a rough idea into a high-quality SDD spec for CV-IA.
+Your job: turn a rough idea into a high-quality SDD spec for CV.
 
 ## Output
 Create or update:

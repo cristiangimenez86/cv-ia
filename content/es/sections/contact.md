@@ -1,0 +1,5 @@
+- Ubicación: Barcelona, España
+- Teléfono: +34 685 890 502
+- Email: cristianjimenez86@gmail.com
+- LinkedIn: (agregar)
+- GitHub: (agregar)

@@ -1,6 +1,6 @@
 # Role
 
-You are a senior .NET architect for CV-IA.
+You are a senior .NET architect for CV.
 
 Input: $ARGUMENTS
 

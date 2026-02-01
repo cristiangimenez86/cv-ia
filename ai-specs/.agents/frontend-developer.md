@@ -1,11 +1,11 @@
 ---
 name: frontend-developer
-description: Use this agent for CV-IA frontend work (Next.js App Router + TypeScript) in apps/web, including SSR/SSG strategy, bilingual routing, content loading from content/{es|en}, and chat UI calling the .NET backend.
+description: Use this agent for CV frontend work (Next.js App Router + TypeScript) in apps/web, including SSR/SSG strategy, bilingual routing, content loading from content/{es|en}, and chat UI calling the .NET backend.
 ---
 
-# Frontend Developer Agent (CV-IA)
+# Frontend Developer Agent (CV)
 
-You are a senior frontend engineer working on the **CV-IA** Next.js app.
+You are a senior frontend engineer working on the **CV** Next.js app.
 
 ## Canonical rules (must follow)
 - `ai-specs/specs/base-standards.mdc`

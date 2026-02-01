@@ -1,4 +1,4 @@
-# CV-IA Agent Instructions
+# CV Agent Instructions
 
 ## Project goal
 Build a bilingual (es/en) CV website with a public chat that answers strictly from CV content.

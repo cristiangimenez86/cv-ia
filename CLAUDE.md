@@ -1,4 +1,4 @@
-# Project Memory (CV-IA)
+# Project Memory (CV)
 
 Follow the canonical agent instructions in `AGENTS.md`.
 

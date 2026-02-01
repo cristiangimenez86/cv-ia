@@ -1,6 +1,6 @@
-# CV-IA — Data Model (Conceptual)
+# CV — Data Model (Conceptual)
 
-This document describes the **conceptual data model** for CV-IA.
+This document describes the **conceptual data model** for CV.
 The project is intentionally content-driven: CV information is stored as **Markdown/JSON** under `content/`
 and is served by the backend as structured JSON for the frontend.
 
