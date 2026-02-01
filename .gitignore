@@ -54,6 +54,8 @@ Desktop.ini
 **/.cache/
 **/.parcel-cache/
 **/coverage/
+**/.swc/
+**/.vercel/
 
 # Logs
 npm-debug.log*

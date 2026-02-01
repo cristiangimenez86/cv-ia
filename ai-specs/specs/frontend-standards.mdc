@@ -56,6 +56,11 @@ Primary goals:
 The CV content must be delivered as **HTML** at request/build time.
 - Prefer **Static Site Generation (SSG)** for CV pages when possible
 - Avoid client-side-only rendering for core CV content (no “empty HTML + hydrate to show text”)
+- ATS-first content strategy (Recruiters → Tech reviewers):
+  - Prioritize recruiter/HR readability first, then technical reviewers.
+  - Ensure critical content is present in the initial HTML response (SSR/SSG), not only after hydration.
+  - Do not hide critical information behind interactions.
+  - Use semantic headings and predictable section structure.
 
 ### Next.js App Router guidance
 - Server Components by default
