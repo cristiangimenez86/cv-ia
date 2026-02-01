@@ -1,10 +1,10 @@
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { redirect } from "next/navigation";
+import { loadSiteConfig } from "@/lib/content/loader";
 
-export default function Page() {
-  return (
-    <main>
-      <ThemeToggle />
-      <h1>Hola</h1>
-    </main>
-  );
+/**
+ * Root page redirects to the default locale so the CV is always under /es or /en.
+ */
+export default function RootPage() {
+  const config = loadSiteConfig();
+  redirect(`/${config.defaultLocale}`);
 }

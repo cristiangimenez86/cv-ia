@@ -1,8 +1,16 @@
 {
   "projectName": "CV",
-  "languages": [
-    "es",
-    "en"
+  "defaultLocale": "en",
+  "languages": ["es", "en"],
+  "sectionsOrder": [
+    "about",
+    "core-skills",
+    "key-achievements",
+    "experience",
+    "education",
+    "certifications",
+    "languages",
+    "contact"
   ],
   "requiredSections": [
     {
@@ -69,8 +77,8 @@
     "contact"
   ],
   "profile": {
-    "name": "Cristian Gimenez",
-    "title": {
+    "fullName": "Cristian Gimenez",
+    "headline": {
       "en": "Senior Software Engineer",
       "es": "Senior Software Engineer"
     },
@@ -78,11 +86,12 @@
       "en": "Barcelona, Spain",
       "es": "Barcelona, España"
     },
-    "phone": "+34 685 890 502",
     "email": "cristianjimenez86@gmail.com",
-    "links": {
-      "linkedin": "https://www.linkedin.com/in/cristian-gimenez-dev/",
-      "github": "https://github.com/cristiangimenez86"
-    }
+    "phone": "+34 685 890 502",
+    "links": [
+      { "label": "LinkedIn", "href": "https://www.linkedin.com/in/cristian-gimenez-dev/" },
+      { "label": "GitHub", "href": "https://github.com/cristiangimenez86" }
+    ],
+    "photoSrc": "/assets/profile.jpg"
   }
 }
