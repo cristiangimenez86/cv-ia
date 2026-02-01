@@ -1,0 +1,24 @@
+---
+description: Directs all AI agents to follow the canonical project rules in ai-specs/specs/base-standards.mdc
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Use Base Development Rules (Canonical)
+
+All AI agents working on this project must follow the consolidated rules defined in:
+
+- `ai-specs/specs/base-standards.mdc`
+
+## Key directives
+
+- Single source of truth: `base-standards.mdc` defines the global rules (language policy, architecture, workflow).
+- Area-specific details live in:
+  - `ai-specs/specs/frontend-standards.mdc`
+  - `ai-specs/specs/backend-standards.mdc`
+  - `ai-specs/specs/documentation-standards.mdc`
+
+## Do not
+
+- Do not use absolute local filesystem paths.
+- Do not introduce conflicting rules outside the canonical standards.

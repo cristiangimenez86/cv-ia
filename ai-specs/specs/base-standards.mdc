@@ -1,0 +1,60 @@
+---
+description: This document contains all development rules and guidelines for this project, applicable to all AI agents (Claude, Cursor, Codex, Gemini, etc.).
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Base Standards (CV-IA)
+
+## 1) Core Principles
+
+- **Small tasks, one at a time**: Work in baby steps. Never move forward more than one step at a time.
+- **Incremental changes**: Prefer small, focused diffs over large refactors.
+- **Question assumptions**: If anything is unclear or missing, **ask before assuming**.
+- **Verifiable progress**: Every change must include a clear way to verify (build/test/lint or a minimal manual check).
+- **Type safety**: All code must be fully typed (TypeScript strict, C# nullable enabled).
+- **Clear naming**: Use descriptive names for variables, functions, types, and files.
+- **Pattern detection**: Detect repeated patterns and propose refactors only when justified by the current spec.
+
+## 2) Language Policy
+
+### 2.1 Technical artifacts: English only
+All technical artifacts must always use **English**, including:
+- Code (variables, functions, classes, comments, error messages, log messages)
+- Documentation (README, guides, API docs, specs, ADRs)
+- Data schemas and database names
+- Configuration files and scripts
+- Git commit messages
+- Test names and descriptions
+
+### 2.2 CV content: bilingual exception
+The only official exception is **CV content**, which is bilingual by design:
+- Spanish CV content lives under `/content/es/**`
+- English CV content lives under `/content/en/**`
+
+Rules:
+- Do not mix languages within the same locale folder.
+- Keep section order aligned across ES/EN where applicable.
+
+## 3) Project Constraints (Non-negotiables)
+
+- Architecture: **Next.js** frontend in `/apps/web` + **.NET 10** API backend in `/services/CV.Api` (separate services).
+- Both services must be dockerized. Local dev uses docker-compose.
+- CV content is data-first: Markdown/JSON under `/content/{es|en}`. Do NOT hardcode CV content in React components.
+- Public chat is allowed, but answers must be restricted strictly to CV context.
+- OpenAI API keys and secrets must live ONLY in the .NET backend. Never place secrets in frontend code or client-side env vars.
+
+## 4) Working Style for Agents
+
+- Keep scope limited to the current spec/slice.
+- If a new dependency is needed, ask first and justify briefly.
+- Prefer changes that improve clarity and maintainability without over-engineering.
+- After implementing, provide the exact commands to verify the change.
+
+## 5) Specific Standards
+
+For detailed standards and guidelines specific to different areas of the project, refer to:
+
+- [Backend Standards](./backend-standards.mdc) — .NET 10 API development, security, testing, rate limiting, OpenAI integration
+- [Frontend Standards](./frontend-standards.mdc) — Next.js App Router, SEO/AI-friendly rendering, bilingual content loading
+- [Documentation Standards](./documentation-standards.mdc) — Docs/specs/ADRs structure and bilingual CV content rules

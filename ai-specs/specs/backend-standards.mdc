@@ -1,0 +1,185 @@
+---
+description: Backend development standards, best practices, and conventions for the CV-IA .NET 10 (ASP.NET Core 10) API, including API design, security, testing, and operational guidelines for a public CV chat experience.
+globs: [
+  "services/CV.Api/**/*.cs",
+  "services/CV.Api/**/*.csproj",
+  "services/CV.Api/**/appsettings*.json",
+  "services/CV.Api/**/Properties/launchSettings.json",
+  "services/CV.Api/**/Dockerfile",
+  "services/**/*.sln",
+  "services/**/*.slnx",
+  "services/**/Directory.Build.props",
+  "services/**/Directory.Build.targets",
+  "services/**/global.json"
+]
+alwaysApply: true
+---
+
+# Backend Standards (.NET 10 / ASP.NET Core 10)
+
+## Overview
+
+This document defines the backend standards for the CV-IA project API built with **.NET 10** and **ASP.NET Core 10**.
+
+Core goals:
+- **Security**: OpenAI keys and secrets must never leave the backend.
+- **Reliability**: the API must remain stable even under public traffic (rate limiting).
+- **Traceability**: consistent logs, predictable errors, and health endpoints for operations.
+- **Maintainability**: small, incremental changes aligned with specs.
+
+## Project Structure
+
+Current baseline:
+- API project: `services/CV.Api`
+
+If/when the codebase grows, we may split into:
+- `CV.Api` (presentation / endpoints)
+- `CV.Application` (use-cases, orchestration)
+- `CV.Domain` (domain model, pure logic)
+- `CV.Infrastructure` (OpenAI client, persistence, external integrations)
+- `CV.Tests` (unit tests)
+- `CV.IntegrationTests` (API-level tests)
+
+> Rule: Keep it simple until the first feature forces separation.
+
+## API Design Standards
+
+### REST and HTTP conventions
+- Use **nouns** for resources and **verbs** only when necessary.
+- Prefer standard HTTP verbs:
+  - `GET` for reads
+  - `POST` for commands / chat messages
+- Use proper status codes:
+  - `200 OK`, `201 Created`
+  - `400 Bad Request` for validation errors
+  - `401/403` for auth/permission (if introduced later)
+  - `404 Not Found`
+  - `429 Too Many Requests` for rate limiting
+  - `500` for unexpected errors
+
+### Error responses (Problem Details)
+Use RFC 7807 `ProblemDetails` for error payloads.
+
+Minimum fields (RFC 7807):
+- `type`
+- `title`
+- `status`
+- `detail`
+
+Required extension:
+- `traceId` (when available, as an extension field)
+
+### Health endpoint (required)
+Always provide:
+- `GET /health` → returns `{ "status": "ok" }`
+
+This is used by Docker/Compose and monitoring.
+
+## Input Validation
+
+- Validate all request DTOs.
+- Prefer explicit validation rules (not ad-hoc `if` checks everywhere).
+- Do not rely on frontend validation.
+
+If using FluentValidation:
+- One validator per request model
+- Keep rules deterministic and testable
+
+## Logging Standards
+
+- Log in **English only**.
+- Use structured logs (key-value) where possible.
+- Do **not** log:
+  - secrets
+  - OpenAI API keys
+  - full user prompts if it might contain personal data (log redacted summaries if needed)
+
+Recommended minimum fields:
+- `traceId`
+- `requestId`
+- `route`
+- `statusCode`
+- `latencyMs`
+
+## Security Best Practices
+
+### Secrets management
+- OpenAI API keys must be read from:
+  - environment variables in production
+  - `user-secrets` in local dev (optional)
+- Never commit secrets to Git.
+- Never expose secrets to the frontend.
+
+### Public chat constraints
+- The chat is public: treat all inbound requests as untrusted.
+- Implement:
+  - request size limits
+  - rate limiting
+  - input validation
+  - safe error messages (no stack traces to the client in production)
+
+### Rate limiting (required)
+Use ASP.NET Core rate limiting middleware for public endpoints.
+
+Minimum policy for chat endpoints:
+- Fixed window or sliding window
+- Per-IP (or per-client identifier)
+- Return 429 with a clear message
+
+> Rule: Rate limiting is mandatory before enabling public chat in production.
+
+### CORS
+- In development: allow only `http://localhost:3000`
+- In production: allow only the CV domain(s)
+
+Never use `AllowAnyOrigin()` in production.
+
+## Outbound HTTP Calls (OpenAI)
+
+- Use `HttpClientFactory` (typed client or named client).
+- Set timeouts explicitly.
+- Add cancellation token support end-to-end.
+- Consider retry policies for transient failures (ask before adding Polly).
+
+## Testing Standards
+
+### Unit Tests
+- Use xUnit.
+- Test business logic in isolation (no HTTP calls).
+- Avoid brittle tests.
+
+### Integration Tests
+- Use `WebApplicationFactory<TEntryPoint>` to spin up the API in-memory.
+- Test:
+  - `/health`
+  - chat endpoint contract (when implemented)
+  - rate limiting behavior (at least one test)
+
+### Test naming
+English only.
+Format:
+- `MethodName_State_ExpectedOutcome`
+- or `Feature_Scenario_ExpectedResult`
+
+## Development Workflow
+
+### Local dev
+From `services/CV.Api`:
+- `dotnet run`
+
+### Verification (always include after changes)
+From `services` (preferred when the solution exists):
+- `dotnet build Services.slnx`
+- `dotnet test Services.slnx` (when tests exist)
+
+Or from `services/CV.Api` (project-only):
+- `dotnet build`
+- `dotnet test` (when tests exist)
+
+## Docker & Deployability
+
+- The API must be runnable as a container.
+- Use multi-stage Docker builds.
+- Environment variables drive configuration (no hardcoded endpoints/keys).
+- Expose a single port and rely on reverse proxy for TLS termination in production.
+- Ensure `/health` works without auth.

@@ -1,0 +1,176 @@
+---
+description: Frontend development standards, best practices, and conventions for the CV-IA Next.js (App Router) application, including rendering strategy for SEO/AI scanning, content loading from Markdown/JSON, bilingual structure, and chat UI integration with a separate .NET backend.
+globs: [
+  "apps/web/**/*.{js,jsx,ts,tsx,css,json}",
+  "apps/web/package.json",
+  "apps/web/next.config.*",
+  "apps/web/tailwind.config.*",
+  "apps/web/postcss.config.*",
+  "apps/web/eslint.config.*",
+  "apps/web/.eslintrc.*",
+  "apps/web/tsconfig.json",
+  "content/**/*.{md,json}"
+]
+alwaysApply: true
+---
+
+# Frontend Standards (Next.js App Router + TypeScript)
+
+## Overview
+
+This document defines frontend standards for the **CV-IA** project using:
+- **Next.js** (App Router) + **TypeScript**
+- Content-first architecture: CV data lives under `/content/{es|en}` as **Markdown/JSON**
+- A public chat widget that calls a separate **.NET 10** backend API (no OpenAI keys on the client)
+
+Primary goals:
+- **SEO/AI-scan friendly**: CV content must be available as HTML (no JS-only rendering for core content)
+- **Bilingual (es/en)**: content must exist in both locales
+- **Security**: never expose secrets to the browser
+- **Maintainability**: small, verifiable changes aligned with specs
+
+## Technology Stack & Tooling
+
+- Package manager: **Yarn**
+- TypeScript: required, strict typing
+- Linting: ESLint (Next.js default)
+- Styling: Tailwind is allowed (already scaffolded), but keep the CSS minimal and consistent
+
+> Rule: Do not add dependencies without asking first and providing a short justification.
+
+## Repository & Folder Conventions
+
+- Next.js app location: `/apps/web`
+- Next.js App Router location: `/apps/web/src/app`
+- Shared UI/components: `/apps/web/src/components`
+- Utilities: `/apps/web/src/lib`
+- Content source of truth:
+  - `/content/es/**` (Spanish CV)
+  - `/content/en/**` (English CV)
+
+> Rule: Do NOT hardcode CV content in React components. Components render data loaded from `/content`.
+
+## Rendering Strategy (SEO / AI Scanning)
+
+### Core rule
+The CV content must be delivered as **HTML** at request/build time.
+- Prefer **Static Site Generation (SSG)** for CV pages when possible
+- Avoid client-side-only rendering for core CV content (no “empty HTML + hydrate to show text”)
+
+### Next.js App Router guidance
+- Server Components by default
+- Use `"use client"` only for interactive UI (e.g., chat widget)
+- Use:
+  - `generateStaticParams()` for locale routes
+  - `generateMetadata()` / `metadata` for SEO tags
+
+## Internationalization (Bilingual)
+
+### Route convention (no extra deps by default)
+Use locale segments:
+- `/es/...`
+- `/en/...`
+
+Locale switching must:
+- Preserve the current section/page when possible
+- Never mix languages within a single locale page
+
+### Allowed language exceptions
+- Technical artifacts (code, logs, configs, docs) are in **English**
+- CV content files under `/content/{es|en}` are **bilingual by design** (Spanish content in `/es`, English content in `/en`)
+
+## Content Loading (Markdown/JSON)
+
+### Principles
+- Content must be read from the filesystem in server-side code (build time or request time)
+- Content schemas must be explicit and typed
+
+### Suggested structure (example)
+- `/content/es/profile.json`
+- `/content/es/experience.md`
+- `/content/es/projects.md`
+- `/content/en/profile.json`
+- `/content/en/experience.md`
+- `/content/en/projects.md`
+
+### Implementation rules
+- Implement a content loader under `/apps/web/src/lib/content/*`
+- Loader must:
+  - Accept `locale` (`"es" | "en"`)
+  - Validate required files exist
+  - Fail fast with clear errors in development (English messages)
+
+> Rule: If a content file is missing, the app must not silently render empty sections.
+
+## UI Component Standards
+
+### Component design
+- Keep components small and reusable
+- Prefer “presentational components” that receive typed props
+- Avoid global mutable state for simple content rendering
+
+### Client components
+Use `"use client"` only when needed:
+- Chat widget UI
+- Small interactive controls (e.g., language toggle)
+
+### Accessibility
+- Semantic HTML (headings in correct order, lists for lists)
+- Keyboard navigability for interactive elements
+- Proper labels for inputs/buttons
+
+## Chat Widget Standards (Public Chat)
+
+### Security constraints
+- The frontend must never call OpenAI directly.
+- The frontend must never contain OpenAI keys or any secrets.
+
+### Communication contract
+- Frontend calls the backend API (separate service) to send user messages.
+- Use an environment variable for the backend base URL:
+  - `NEXT_PUBLIC_API_BASE_URL` (public, safe)
+- In production, prefer routing through reverse-proxy so the frontend calls a same-site endpoint (optional),
+  but the contract remains: **frontend → .NET API**.
+
+### UX rules
+- Show loading states and error states
+- Avoid leaking technical details in error UI (keep user-facing errors simple)
+
+### Prompt injection posture (frontend responsibility)
+- The frontend must not present itself as a general assistant
+- The UI copy should indicate the chat answers only based on the CV content
+
+## Error Handling & Observability
+
+- Client-visible errors: user-friendly, no stack traces
+- Developer logs: English only
+- Avoid logging full chat messages in the browser console
+
+## Testing (minimal baseline)
+
+For now:
+- Keep TypeScript strict
+- Keep ESLint passing
+
+When tests are introduced:
+- Unit test pure functions (content parsing, mappers)
+- Consider e2e (Playwright) only if needed (ask first)
+
+## Development Workflow
+
+### Local dev
+From `/apps/web`:
+- `yarn dev`
+
+### Verification
+From `/apps/web`:
+- `yarn lint`
+- `yarn build`
+
+> Rule: Every change must include the exact verification commands that should pass.
+
+## Docker & Build Notes (frontend)
+
+Because content lives outside `/apps/web`:
+- Docker builds should use the repository root as build context, so `/content` is available at build time.
+- The container must include the built output and required runtime files without embedding secrets.

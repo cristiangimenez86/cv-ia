@@ -1,0 +1,118 @@
+---
+description: Documentation standards for CV-IA. Defines how we write and organize specs, ADRs, runbooks, and CV content. Technical artifacts must be in English, while CV content is bilingual by design under /content/{es|en}.
+globs: [
+  "README.md",
+  "AGENTS.md",
+  "CLAUDE.md",
+  "codex.md",
+  "GEMINI.md",
+  "docs/**/*.md",
+  "ai-specs/specs/**/*.md"
+]
+alwaysApply: true
+---
+
+# Documentation Standards (CV-IA)
+
+## 1) Language Policy
+
+### 1.1 Technical artifacts (English only)
+All technical artifacts must be written in **English**, including:
+- Documentation in `/docs/**`
+- Specs in `/ai-specs/specs/**`
+- README files
+- Architecture decisions (ADRs)
+- API docs, design notes
+- Logs, error messages, test names (also enforced by other standards)
+
+### 1.2 CV content (bilingual exception)
+CV content is **bilingual by design** and is the only official exception to the “English only” rule:
+- Spanish CV content lives under `/content/es/**`
+- English CV content lives under `/content/en/**`
+
+Rules:
+- Do not mix languages within the same locale folder.
+- Content must exist for both locales for all core sections.
+
+## 2) Documentation Structure
+
+### 2.1 `/docs` (engineering documentation)
+Use `/docs` for stable, long-lived documentation:
+- `docs/ARCHITECTURE.md` — High-level architecture (Next.js + .NET API)
+- `docs/RUNBOOK.md` — How to run locally, how to deploy
+- `docs/SECURITY.md` — Secrets, rate limiting, public chat constraints
+- `docs/DECISIONS/` — ADRs (Architecture Decision Records)
+
+### 2.2 `ai-specs/specs` (Spec Driven Development)
+Each slice/feature has its own folder:
+- `ai-specs/specs/<NNNN>-<slug>/spec.md` — Requirements + acceptance criteria
+- `ai-specs/specs/<NNNN>-<slug>/tasks.md` — Small, sequential tasks (one at a time)
+
+Rules:
+- Specs must be clear, testable, and scoped.
+- Tasks must be “baby steps”: one change at a time, verifiable after each step.
+
+### 2.3 `/content` (CV content only)
+Only CV content lives under `/content`.
+No engineering docs should be placed there.
+
+## 3) Spec Writing Guidelines (spec.md)
+
+A `spec.md` must include:
+- **Goal**: what we are building and why
+- **Scope**: what is included and explicitly excluded
+- **Acceptance Criteria**: measurable outcomes (pass/fail)
+- **Constraints**: non-negotiables (e.g., bilingual, no secrets on frontend)
+- **Verification**: commands to run (build/test/lint)
+
+Avoid:
+- Vague phrasing (“should be nice”)
+- Big-bang requirements
+- Hidden assumptions (ask before assuming)
+
+## 4) Task Writing Guidelines (tasks.md)
+
+A `tasks.md` must:
+- Break work into **small sequential steps**.
+- Each task must end with a **verification command**.
+- Only one task should be “active” at a time.
+
+Task format suggestion:
+- Task title
+- What to change
+- File(s) affected
+- Verification command(s)
+
+## 5) ADR Guidelines (`/docs/DECISIONS`)
+
+Use ADRs for decisions that change structure or long-term direction:
+- Why we chose Next.js for frontend
+- Why backend is .NET 10
+- Why content is Markdown/JSON
+- Why chat is public but restricted to CV context
+
+ADR must include:
+- Context
+- Decision
+- Consequences (pros/cons)
+- Status (accepted/superseded)
+
+## 6) Content Documentation Guidelines (CV)
+
+When editing CV content files:
+- Keep formatting consistent across ES/EN versions.
+- Keep headings and section order aligned between languages.
+- Prefer structured JSON for stable metadata (profile, skills) and Markdown for narrative sections (experience, projects).
+
+## 7) Operational Notes (Public Chat)
+
+Docs that mention the public chat must include:
+- Rate limiting requirement
+- No secrets in frontend
+- “CV-context-only” behavior (if not in CV, say so)
+
+## 8) Consistency Rules
+
+- Do not duplicate the same rule across many files unless needed for clarity.
+- If a rule is global, keep it in base standards; if it is domain-specific, keep it here or in backend/frontend standards.
+- Prefer short, readable docs over long walls of text.
