@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { loadSiteConfig, loadSectionsForLocale } from "@/lib/content/loader";
 import type { Locale } from "@/lib/content/types";
+import { getLocalized } from "@/lib/content/types";
 import { Header, SIDEBAR_STICKY_TOP } from "@/components/Header";
 import { Section } from "@/components/Section";
 import { ProfileCard } from "@/components/ProfileCard";
@@ -14,6 +16,28 @@ function isValidLocale(value: string): value is Locale {
 type PageProps = {
   params: Promise<{ locale: string }>;
 };
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  if (!isValidLocale(locale)) {
+    return { title: "CV" };
+  }
+  const config = loadSiteConfig();
+  const headline = config.profile
+    ? getLocalized(config.profile.headline, locale)
+    : null;
+  const title = config.profile?.fullName ?? config.projectName;
+  const description = headline
+    ? `${title} — ${headline}`
+    : `${title} | CV`;
+
+  return {
+    title,
+    description,
+  };
+}
 
 /**
  * CV page for a given locale. Renders all sections from content following sectionsOrder.
@@ -34,22 +58,17 @@ export default async function LocalePage({ params }: PageProps) {
     <>
       <Header config={config} locale={localeParam} />
       <main className="w-full pt-6 pb-8">
-        <div className="max-w-[1440px] mx-auto px-4 md:px-6 w-full">
+        <div className="max-w-[var(--max-content-width)] mx-auto px-4 md:px-6 w-full">
           <div className="w-full grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] gap-6 lg:gap-8">
-            {/* Mobile/tablet: ProfileCard above sections, no sticky */}
             {config.profile && (
-              <div className="lg:hidden">
-                <ProfileCard profile={config.profile} locale={localeParam} />
-              </div>
-            )}
-            {/* Desktop: left column wrapper controls sticky, does not overlap right column */}
-            {config.profile && (
-              <div className={`hidden lg:block sticky self-start ${SIDEBAR_STICKY_TOP}`}>
+              <div
+                className={`lg:sticky lg:self-start ${SIDEBAR_STICKY_TOP}`}
+              >
                 <ProfileCard profile={config.profile} locale={localeParam} />
               </div>
             )}
             <div className="min-w-0 w-full">
-              <div className="w-full rounded-2xl border border-border bg-surface p-6 md:p-8 shadow-sm">
+              <div className="card w-full p-6 md:p-8 shadow-sm">
                 <div className="space-y-6">
                   {sections.map((section) => (
                     <Section key={section.id} section={section} />

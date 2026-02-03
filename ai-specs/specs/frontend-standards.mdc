@@ -52,6 +52,17 @@ Primary goals:
 
 ## Rendering Strategy (SEO / AI Scanning)
 
+### AI/ATS parsing (non-negotiable)
+
+The CV website must be **usable by AI tools and ATS** that HR/recruiters use to extract CV data. Full requirements: `docs/product/ai-ats-parsing.md`.
+
+Summary:
+- Content in initial HTML (SSR/SSG); no JS-only rendering for core content.
+- Semantic HTML (H1, H2, lists, sections with stable IDs).
+- Text in DOM, not images; no critical content hidden behind interactions.
+- `<html lang>` must match page locale (es/en).
+- `generateMetadata()` for title and description per locale.
+
 ### Core rule
 The CV content must be delivered as **HTML** at request/build time.
 - Prefer **Static Site Generation (SSG)** for CV pages when possible
@@ -63,11 +74,11 @@ The CV content must be delivered as **HTML** at request/build time.
   - Use semantic headings and predictable section structure.
 
 ### Next.js App Router guidance
-- Server Components by default
-- Use `"use client"` only for interactive UI (e.g., chat widget)
+- Server Components by default for content (Section, ProfileCard, etc.)
+- Use `"use client"` only for interactive UI (chat widget, theme toggle, locale toggle)
 - Use:
   - `generateStaticParams()` for locale routes
-  - `generateMetadata()` / `metadata` for SEO tags
+  - `generateMetadata()` / `metadata` for SEO tags and per-locale title/description
 
 ## Internationalization (Bilingual)
 

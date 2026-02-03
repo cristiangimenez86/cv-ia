@@ -1,5 +1,3 @@
-"use client";
-
 import ReactMarkdown from "react-markdown";
 import type { SectionContent as SectionContentType } from "@/lib/content/types";
 

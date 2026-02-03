@@ -159,3 +159,23 @@ erDiagram
 - API contract: `docs/api/api-spec.yml`
 - This doc: `docs/architecture/data-model.md`
 - AI/SDD standards + commands: `ai-specs/**`
+
+---
+
+## 7) Content-to-API mapping
+
+The filesystem content under `content/` uses a different structure than the API `CvDocument` output. Mapping:
+
+| Content source | API field / projection |
+|----------------|------------------------|
+| `content/{lang}/site.json` (profile, sectionsOrder, navSections) | `profile`, section ordering |
+| `content/{lang}/sections/about.md` | `profile.summary` or about section |
+| `content/{lang}/sections/core-skills.md` | `skills[]` (parsed by category) |
+| `content/{lang}/sections/key-achievements.md` | Highlights / achievements |
+| `content/{lang}/sections/experience.md` | `experience[]` |
+| `content/{lang}/sections/education.md` | `education[]` |
+| `content/{lang}/sections/certifications.md` | `certifications[]` |
+| `content/{lang}/sections/languages.md` | `languages[]` |
+| `content/{lang}/sections/contact.md` | Contact info in profile or dedicated section |
+
+The backend aggregates Markdown/JSON from `content/` and projects it into the `CvDocument` schema. Section IDs (e.g. `experience`, `core-skills`) are stable and used for citations.

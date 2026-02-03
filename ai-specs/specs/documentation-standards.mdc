@@ -38,8 +38,12 @@ Rules:
 
 ### 2.1 `/docs` (engineering documentation)
 Use `/docs` for stable, long-lived documentation:
-- `docs/ARCHITECTURE.md` — High-level architecture (Next.js + .NET API)
-- `docs/RUNBOOK.md` — How to run locally, how to deploy
+- `docs/development_guide.md` — How to run locally, prerequisites, verification
+- `docs/api/api-spec.yml` — OpenAPI contract (CV, chat endpoints)
+- `docs/architecture/data-model.md` — Conceptual data model
+- `docs/product/` — Target audience, theme tokens, UI design brief, AI/ATS parsing
+
+Planned (create when needed):
 - `docs/SECURITY.md` — Secrets, rate limiting, public chat constraints
 - `docs/DECISIONS/` — ADRs (Architecture Decision Records)
 

@@ -1,23 +1,23 @@
 import Image from "next/image";
-import type { Profile } from "@/lib/content/types";
-import type { Locale } from "@/lib/content/types";
+import type { Profile, Locale } from "@/lib/content/types";
+import { getLocalized } from "@/lib/content/types";
 
-type Props = {
+type ProfileCardProps = {
   profile: Profile;
   locale: Locale;
 };
 
 /**
- * Left sidebar card: photo, name, headline, location, contact, links.
+ * Sidebar card: photo, name, headline, location, contact, links.
  * All data from content/site.json (no hardcoded CV text).
  */
-export function ProfileCard({ profile, locale }: Props) {
-  const headline = profile.headline[locale] ?? profile.headline.en;
-  const location = profile.location[locale] ?? profile.location.en;
+export function ProfileCard({ profile, locale }: ProfileCardProps) {
+  const headline = getLocalized(profile.headline, locale);
+  const location = getLocalized(profile.location, locale);
 
   return (
     <aside className="w-full z-0">
-      <div className="bg-surface border border-border rounded-2xl p-5 space-y-4">
+      <div className="card p-5 space-y-4">
         <div className="relative w-24 h-24 mx-auto rounded-full overflow-hidden bg-surface-2">
           <Image
             src={profile.photoSrc}
@@ -52,7 +52,7 @@ export function ProfileCard({ profile, locale }: Props) {
           )}
         </div>
         {profile.links?.length > 0 && (
-          <div className="flex flex-wrap gap-2 justify-center border-t border-divider pt-3">
+          <div className="flex flex-wrap gap-2 justify-center divider pt-3">
             {profile.links.map((link) => (
               <a
                 key={link.href}

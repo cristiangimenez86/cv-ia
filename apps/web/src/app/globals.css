@@ -7,7 +7,7 @@
   --color-bg: #f5f7fa;
   --surface: 0 0% 100%;
   --surface-2: 220 10% 96%;
-  --border: 220 12% 84%;
+  --border: 214 32% 91%; /* #e2e8f0 */
   --divider: 220 12% 88%;
 
   /* Text */
@@ -68,6 +68,14 @@
   --color-ring: hsl(var(--ring));
 }
 
+/* Layout constants (single source of truth) */
+:root {
+  --max-content-width: 1440px;
+  --header-height-mobile: 64px;
+  --header-height-desktop: 72px;
+  --sidebar-offset: 88px; /* header + spacing */
+}
+
 /* Use min-height so document grows with content; scroll stays on viewport and sticky header works. */
 html,
 body {
@@ -82,4 +90,87 @@ html {
 body {
   background-color: var(--color-bg);
   color: hsl(var(--text));
+}
+
+/* Semantic component classes — avoid repeating "border border-border" in components */
+.card {
+  background-color: hsl(var(--surface));
+  border: 1px solid hsl(var(--border));
+  border-radius: 1rem;
+}
+
+.card-header {
+  border-bottom: 1px solid hsl(var(--border));
+}
+
+/* Header — top border for visual separation */
+.header {
+  border-top: 1px solid hsl(220 18% 16% / 0.15);
+}
+
+.dark .header {
+  border-top: 1px solid hsl(220 14% 22%);
+}
+
+/* Nav link — blue underline expands from center on hover */
+.nav-link {
+  position: relative;
+  cursor: pointer;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: hsl(var(--primary));
+  transform: translateX(-50%) scaleX(0);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+}
+
+.nav-link:hover::after,
+.nav-link-active::after {
+  transform: translateX(-50%) scaleX(1);
+}
+
+/* Secondary buttons (locale, theme) in header — lift + border on hover */
+.header-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  min-width: 2.25rem;
+  padding: 0 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--surface));
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s, background-color 0.15s, box-shadow 0.15s;
+}
+
+.header-btn-secondary:hover {
+  transform: translateY(-2px);
+  border-color: hsl(var(--primary));
+  background-color: hsl(var(--surface-2));
+  box-shadow: 0 2px 4px hsl(var(--shadow) / 0.1);
+}
+
+/* Primary button (Download PDF) — same lift + border effect on hover */
+.header-btn-primary {
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s;
+}
+
+.header-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px hsl(var(--primary) / 0.3);
+}
+
+.divider {
+  border-top: 1px solid hsl(var(--divider));
 }

@@ -20,12 +20,12 @@ The project follows **Spec-Driven Development (SDD)** and keeps AI/SDD artifacts
 
 ### Required
 - **Git**
-- **Docker Desktop** (or Docker Engine + Compose plugin)
 - **Node.js** (LTS recommended)
 - **Yarn** (via Corepack recommended)
+- **.NET SDK** (for backend; use version pinned by the repo, e.g. `global.json` if present)
 
 ### Optional (recommended)
-- **.NET SDK** (use the version pinned by the repo, e.g. `global.json` if present)
+- **Docker Desktop** (or Docker Engine + Compose plugin) — for future Docker Compose flow
 - **mkcert** (local HTTPS certificates)
 
 ---
@@ -56,7 +56,7 @@ OPENAI__APIKEY=replace_me
 OPENAI__MODEL=gpt-4.1-mini
 
 # Content / RAG
-CONTENT__ROOTPATH=../..//content
+CONTENT__ROOTPATH=../../content
 CONTENT__DEFAULTLANG=es
 
 # CORS (frontend dev origin)
@@ -88,33 +88,19 @@ NEXT_PUBLIC_DEFAULT_LANG=es
 
 ## 5) Run locally (recommended paths)
 
-There are 2 valid dev flows. Pick one and stick to it.
+### Flow A — Run backend + frontend on host (current)
 
-### Flow A — Run everything with Docker Compose (recommended)
-
-From repository root:
-
-```bash
-docker compose -f infra/dev/docker-compose.yml up -d --build
-```
-
-Verify containers:
-
-```bash
-docker ps
-```
-
-Expected endpoints (adjust to your compose ports):
-- Frontend: `http://localhost:3000`
-- Backend: `http://localhost:5080`
-- OpenAPI/Swagger (if enabled): `http://localhost:5080/swagger` (or `/openapi` depending on setup)
-
-> If `infra/dev/docker-compose.yml` does not exist yet, create it under `infra/dev/` as part of the next SDD ticket.
-
-### Flow B — Run backend + frontend on host (no containers)
+> **Note:** Docker Compose (`infra/dev/docker-compose.yml`) is planned for a future ticket. Use Flow A until it exists.
 
 #### Backend
-From `services/CV.Api/`:
+From `services/` (when using the solution):
+
+```bash
+dotnet build Services.slnx
+dotnet run --project CV.Api
+```
+
+Or from `services/CV.Api/` directly:
 
 ```bash
 dotnet restore
@@ -136,17 +122,23 @@ yarn dev
 ## 6) Verification checklist (fast)
 
 ### Backend
-From repo root (or `services/CV.Api/`):
+From `services/`:
 
 ```bash
-dotnet test
+dotnet build Services.slnx
+dotnet test Services.slnx
 ```
 
-Smoke test endpoints (PowerShell):
+Or from `services/CV.Api/` (project-only):
+
+```bash
+dotnet build
+```
+
+Smoke test (PowerShell) — `/health` is available; CV endpoints (`/api/v1/cv`, etc.) are implemented per `docs/api/api-spec.yml`:
 
 ```powershell
 curl http://localhost:5080/health
-curl "http://localhost:5080/api/v1/cv?lang=es"
 ```
 
 ### Frontend
@@ -154,7 +146,7 @@ From `apps/web/`:
 
 ```bash
 yarn lint
-yarn test
+yarn build
 ```
 
 ---
@@ -162,8 +154,7 @@ yarn test
 ## 7) Common issues
 
 ### Port conflicts
-If Docker fails due to ports already in use, change ports in `infra/dev/docker-compose.yml`
-or stop the conflicting service.
+If a service fails due to ports already in use, change the port in its config or stop the conflicting process. (Docker Compose is planned for a future ticket.)
 
 ### CORS errors
 Ensure `CORS__ALLOWEDORIGINS` includes the frontend dev URL (usually `http://localhost:3000`).

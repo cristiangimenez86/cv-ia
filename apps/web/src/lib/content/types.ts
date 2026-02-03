@@ -4,6 +4,14 @@
 
 export type Locale = "es" | "en";
 
+/** Picks the value for the given locale, falling back to English. */
+export function getLocalized<T extends Record<Locale, string>>(
+  obj: T,
+  locale: Locale
+): string {
+  return obj[locale] ?? obj.en;
+}
+
 export interface SectionTitle {
   en: string;
   es: string;

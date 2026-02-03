@@ -65,10 +65,12 @@ Required sections (order):
 
 ## Component Inventory
 - Header/NavBar
-  - Section links
-  - Language toggle (ES/EN)
-  - Theme toggle (Light/Dark)
-  - Primary CTA: Download PDF
+  - Section links with active state (scroll-spy)
+  - Language toggle (ES/EN) — bordered button style
+  - Theme toggle (Light/Dark) — moon/sun icon in bordered button
+  - Primary CTA: Download PDF — blue button with shadow
+  - Button styles: primary (blue) vs secondary (bordered)
+  - See `docs/product/header-design.md` for visual specs
 - ProfileCard
   - Photo
   - Name + title
@@ -105,11 +107,16 @@ Required sections (order):
   - Respect `env(safe-area-inset-bottom)` and `env(safe-area-inset-right)` on mobile
 
 ## ATS & Semantics (non-negotiable)
+
+The site must be **usable by AI tools and ATS** that HR/recruiters use to extract CV data. See `docs/product/ai-ats-parsing.md` for full requirements.
+
 - Core content must be present in initial HTML (SSR/SSG), not only after hydration.
 - Use semantic headings (H1 page title, H2 sections, H3 subsections).
 - Use lists for bullet achievements.
 - Do not hide critical content behind accordions/tabs/hover-only UI.
 - Avoid rendering key content as images.
+- `<html lang>` must match the page locale (es/en).
+- Use Server Components for content rendering; avoid `"use client"` for CV sections.
 
 ## Accessibility
 - Keyboard navigation for toggles and nav links

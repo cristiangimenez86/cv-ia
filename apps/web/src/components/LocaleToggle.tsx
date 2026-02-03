@@ -22,7 +22,9 @@ export function LocaleToggle({ currentLocale, className }: Props) {
   return (
     <Link
       href={href}
-      className={className ?? "text-sm text-primary hover:underline"}
+      prefetch={true}
+      scroll={false}
+      className={`header-btn-secondary ${className ?? ""}`}
       aria-label={`Switch to ${otherLocale === "es" ? "Spanish" : "English"}`}
     >
       {otherLocale === "es" ? "ES" : "EN"}
