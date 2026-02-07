@@ -73,7 +73,10 @@
   --max-content-width: 1440px;
   --header-height-mobile: 64px;
   --header-height-desktop: 72px;
-  --sidebar-offset: 88px; /* header + spacing */
+  --sidebar-offset: 96px; /* header (72px) + main pt-6 (24px) — aligns with content card top */
+  --sidebar-width: 320px;
+  /* Fixed sidebar left: align with grid column (centered max-w container + padding) */
+  --sidebar-left: max(1.5rem, calc((100vw - var(--max-content-width)) / 2 + 1.5rem));
 }
 
 /* Use min-height so document grows with content; scroll stays on viewport and sticky header works. */
@@ -136,6 +139,24 @@ body {
   transform: translateX(-50%) scaleX(1);
 }
 
+/* Card buttons (social, download) — same lift animation as header buttons */
+.profile-card-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s;
+}
+
+.profile-card-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px hsl(var(--shadow) / 0.1);
+}
+
+.profile-card-btn-primary:hover {
+  box-shadow: 0 4px 8px hsl(var(--primary) / 0.3);
+}
+
 /* Secondary buttons (locale, theme) in header — lift + border on hover */
 .header-btn-secondary {
   display: inline-flex;
@@ -173,4 +194,10 @@ body {
 
 .divider {
   border-top: 1px solid hsl(var(--divider));
+}
+
+/* Profile photo: center face in circle — shift image up and right slightly */
+.profile-photo-circle img {
+  object-fit: cover !important;
+  object-position: 47% 55% !important;
 }

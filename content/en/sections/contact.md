@@ -1,5 +1,5 @@
 - Location: Barcelona, Spain
 - Phone: +34 685 890 502
-- Email: cristianjimenez86@gmail.com
+- Email: cristiangimenez86@gmail.com
 - LinkedIn: (add)
 - GitHub: (add)

@@ -86,12 +86,12 @@
       "en": "Barcelona, Spain",
       "es": "Barcelona, España"
     },
-    "email": "cristianjimenez86@gmail.com",
+    "email": "cristiangimenez86@gmail.com",
     "phone": "+34 685 890 502",
     "links": [
-      { "label": "LinkedIn", "href": "https://www.linkedin.com/in/cristian-gimenez-dev/" },
+      { "label": "LinkedIn", "href": "https://www.linkedin.com/in/cristiangimenez86/" },
       { "label": "GitHub", "href": "https://github.com/cristiangimenez86" }
     ],
-    "photoSrc": "/assets/profile.jpg"
+    "photoSrc": "/assets/profile.jpeg"
   }
 }

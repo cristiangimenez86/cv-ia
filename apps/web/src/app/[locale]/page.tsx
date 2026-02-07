@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { loadSiteConfig, loadSectionsForLocale } from "@/lib/content/loader";
 import type { Locale } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
-import { Header, SIDEBAR_STICKY_TOP } from "@/components/Header";
+import { Header } from "@/components/Header";
 import { Section } from "@/components/Section";
 import { ProfileCard } from "@/components/ProfileCard";
 
@@ -61,10 +61,18 @@ export default async function LocalePage({ params }: PageProps) {
         <div className="max-w-[var(--max-content-width)] mx-auto px-4 md:px-6 w-full">
           <div className="w-full grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] gap-6 lg:gap-8">
             {config.profile && (
-              <div
-                className={`lg:sticky lg:self-start ${SIDEBAR_STICKY_TOP}`}
-              >
-                <ProfileCard profile={config.profile} locale={localeParam} />
+              <div className="relative">
+                {/* Spacer: keeps grid flow; fixed card overlays on lg */}
+                <div className="hidden lg:block lg:w-[var(--sidebar-width)] lg:shrink-0" aria-hidden />
+                <div
+                  className={`hidden lg:block lg:fixed lg:left-[var(--sidebar-left)] lg:top-[var(--sidebar-offset)] lg:w-[var(--sidebar-width)] lg:z-10`}
+                >
+                  <ProfileCard profile={config.profile} locale={localeParam} />
+                </div>
+                {/* Mobile: inline card */}
+                <div className="lg:hidden">
+                  <ProfileCard profile={config.profile} locale={localeParam} />
+                </div>
               </div>
             )}
             <div className="min-w-0 w-full">
