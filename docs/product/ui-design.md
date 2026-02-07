@@ -85,6 +85,7 @@ Required sections (order):
   - Keyword chips (must be text in DOM)
 - ExperienceTimeline
   - Company block (logo, role, location, dates)
+  - Logo: clickable link to company website, same hover animation as ProfileCard/navbar buttons (see `ai-specs/changes/CV-0004_experience-logos-specs.md`)
   - Project/initiative cards with bullet highlights + tech chips
 - SimpleCardGrid
   - Education / Certifications / Languages / Contact

@@ -100,6 +100,13 @@ body {
   background-color: hsl(var(--surface));
   border: 1px solid hsl(var(--border));
   border-radius: 1rem;
+  box-shadow: 0 1px 3px hsl(var(--shadow) / 0.06);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px hsl(var(--shadow) / 0.12);
 }
 
 .card-header {

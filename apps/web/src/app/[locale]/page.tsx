@@ -5,6 +5,7 @@ import type { Locale } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
 import { Header } from "@/components/Header";
 import { Section } from "@/components/Section";
+import { ExperienceSection } from "@/components/ExperienceSection";
 import { ProfileCard } from "@/components/ProfileCard";
 
 const VALID_LOCALES: Locale[] = ["es", "en"];
@@ -76,11 +77,19 @@ export default async function LocalePage({ params }: PageProps) {
               </div>
             )}
             <div className="min-w-0 w-full">
-              <div className="card w-full p-6 md:p-8 shadow-sm">
+              <div className="card w-full p-6 md:p-8">
                 <div className="space-y-6">
-                  {sections.map((section) => (
-                    <Section key={section.id} section={section} />
-                  ))}
+                  {sections.map((section) =>
+                    section.id === "experience" ? (
+                      <ExperienceSection
+                        key={section.id}
+                        section={section}
+                        companies={config.experienceCompanies}
+                      />
+                    ) : (
+                      <Section key={section.id} section={section} />
+                    )
+                  )}
                 </div>
               </div>
             </div>

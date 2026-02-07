@@ -37,6 +37,12 @@ export interface Profile {
   photoSrc: string;
 }
 
+export interface ExperienceCompany {
+  name: string;
+  logo: string;
+  url: string;
+}
+
 export interface SiteConfig {
   projectName: string;
   defaultLocale: Locale;
@@ -45,6 +51,7 @@ export interface SiteConfig {
   requiredSections: RequiredSection[];
   navSections: string[];
   profile?: Profile;
+  experienceCompanies?: ExperienceCompany[];
 }
 
 export interface SectionContent {

@@ -35,8 +35,8 @@ export function Header({ config, locale }: Props) {
   return (
     <header className="header sticky top-0 z-50 w-full bg-surface card-header">
       <div className="max-w-[var(--max-content-width)] mx-auto h-[var(--header-height-mobile)] md:h-[var(--header-height-desktop)] px-4 md:px-6 flex items-center gap-6">
-        {/* Left */}
-        <div className="min-w-0 flex flex-col justify-center leading-tight">
+        {/* Left — pl-[7px] aligns with profile card content on mobile and desktop */}
+        <div className="min-w-0 flex flex-col justify-center leading-tight pl-[7px]">
           <span className="text-xl font-semibold text-foreground truncate">
             {config.profile?.fullName ?? config.projectName}
           </span>
