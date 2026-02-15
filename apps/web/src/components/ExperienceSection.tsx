@@ -218,7 +218,7 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
 
                   return (
                 <div
-                  className={`flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 ${isSimpleEntry ? "ml-5" : "mb-4"} ${group.logoConfig ? "ml-4" : ""}`}
+                  className={`flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 ${isSimpleEntry ? "ml-5 mb-4" : "mb-4"} ${group.logoConfig ? "ml-4" : ""}`}
                 >
                   <div className="flex items-start gap-3">
                     {group.logoConfig && (

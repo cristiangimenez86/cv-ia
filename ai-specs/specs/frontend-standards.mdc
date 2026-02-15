@@ -137,6 +137,11 @@ Use `"use client"` only when needed:
 
 ## Chat Widget Standards (Public Chat)
 
+### Implementation status
+- **Implemented.** Components under `apps/web/src/components/chat/`: `ChatWidget`, `ChatPanel`, `ChatInput`, `ChatMessageList`, `types.ts`.
+- `ChatWidget` is rendered in root layout and reads locale reactively via `usePathname()` so UI strings (header, placeholder, chips) update when the user switches language.
+- Backend is mocked (`mockChatCompletion` in `ChatPanel.tsx`). See `apps/web/src/components/chat/README.md` for connection instructions.
+
 ### Security constraints
 - The frontend must never call OpenAI directly.
 - The frontend must never contain OpenAI keys or any secrets.

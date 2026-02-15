@@ -40,11 +40,18 @@ const CARD_CLASS =
  * Renders Contact section with card layout.
  * Fields from markdown, buttons use profile links.
  */
+/** WhatsApp URL from phone: +34 685 890 502 -> https://wa.me/34685890502 */
+function getWhatsAppUrl(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
+  return `https://wa.me/${digits}`;
+}
+
 export function ContactSection({ section, profile, locale }: ContactSectionProps) {
   const fields = parseContactFields(section.body ?? "");
   const contactLabel = locale === "es" ? "Contactar" : "Contact me";
   const linkedIn = profile?.links?.find((l) => l.label === "LinkedIn");
   const github = profile?.links?.find((l) => l.label === "GitHub");
+  const whatsappUrl = profile?.phone ? getWhatsAppUrl(profile.phone) : null;
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
@@ -89,6 +96,16 @@ export function ContactSection({ section, profile, locale }: ContactSectionProps
               className="profile-card-btn inline-flex h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border items-center justify-center"
             >
               GitHub
+            </a>
+          )}
+          {whatsappUrl && (
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="profile-card-btn inline-flex h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border items-center justify-center"
+            >
+              WhatsApp
             </a>
           )}
         </div>

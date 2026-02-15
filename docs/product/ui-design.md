@@ -15,7 +15,7 @@
   - The **right content panel** scrolls vertically (internal scroll).
   - The **left profile card** remains sticky/visible relative to the viewport.
 - Download actions (PDF/JSON) are visible without requiring scroll (desktop).
-- Floating chat entry is planned for a future ticket.
+- Floating chat widget is implemented (see Chat Widget section below).
 
 ## Information Architecture (sections)
 Required sections (order):
@@ -114,22 +114,19 @@ Required sections (order):
   - Primary button "Contact me" (mailto) and secondary buttons LinkedIn, GitHub — URLs from `profile.links` / `profile.email`
   - Same card/button styles as other sections (rounded-xl, border, surface; profile-card-btn)
 
-## Chat Entry (Floating Button)
-- The chat entry is a floating action button (FAB) anchored to the bottom-right.
-- Desktop:
-  - A compact pill/button is allowed (e.g., icon + label "Ask the CV").
-- Mobile:
-  - The button remains bottom-right and must not overlap critical content.
-  - Use safe-area padding (iOS) and a minimum margin from edges.
+## Chat Widget (Floating — Implemented)
+- **Status:** Implemented. Components: `ChatWidget`, `ChatPanel`, `ChatInput`, `ChatMessageList` under `apps/web/src/components/chat/`.
+- Integrated in root layout (`layout.tsx`). Reads locale reactively via `usePathname()` so UI strings update on locale toggle.
+- FAB (floating action button) anchored bottom-right (`position: fixed`, `z-index: 50`).
+- Desktop: panel 380×520 px, bottom-right. Mobile: nearly fullscreen (`inset-3`).
+- Panel uses `.card` class, same tokens as CV cards (surface, border, shadow).
+- User bubbles: `bg-primary text-primary-foreground`. Assistant bubbles: `bg-surface-2 text-foreground border-border`.
+- Suggestion chips shown before first message; bilingual (es/en).
+- Backend is mocked; replace `mockChatCompletion` in `ChatPanel.tsx` with real fetch (see `apps/web/src/components/chat/README.md`).
 - Accessibility:
-  - Must be keyboard-focusable and have an accessible label.
-  - Must not block scrolling or interactions with the content.
-- Visual:
-  - Subtle elevation, consistent with the current design language.
-  - Avoid excessive glow in dark mode.
-- Implementation constraints:
-  - `position: fixed`, `z-index` above content
-  - Respect `env(safe-area-inset-bottom)` and `env(safe-area-inset-right)` on mobile
+  - Keyboard-focusable; Escape closes panel; auto-focus on input.
+  - Accessible labels on FAB and close button.
+  - Does not block scrolling or interactions with the content.
 
 ## ATS & Semantics (non-negotiable)
 

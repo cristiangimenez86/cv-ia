@@ -13,7 +13,6 @@ export function Providers({ children }: Props) {
       defaultTheme="system"
       enableSystem
       storageKey="cv.theme"
-      disableTransitionOnChange
     >
       {children}
     </ThemeProvider>

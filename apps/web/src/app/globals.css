@@ -79,6 +79,14 @@
   --sidebar-left: max(1.5rem, calc((100vw - var(--max-content-width)) / 2 + 1.5rem));
 }
 
+/* Smooth theme transition on toggle */
+*,
+*::before,
+*::after {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
 /* Use min-height so document grows with content; scroll stays on viewport and sticky header works. */
 html,
 body {

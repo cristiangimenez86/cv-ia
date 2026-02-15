@@ -48,6 +48,10 @@
   - Secondary uses surface + border
 - Focus states must be visible in both themes (`--ring`).
 
+## Theme Transitions
+- Switching between light and dark themes uses a smooth 300 ms CSS transition on `background-color`, `border-color`, `color`, and `box-shadow` (applied globally via `*` selector in `globals.css`).
+- `ThemeProvider` (next-themes) does **not** set `disableTransitionOnChange`, so the browser applies the CSS transitions when the `.dark` class toggles on `<html>`.
+
 ## Implementation Notes (non-negotiable)
 - No `bg-blue-*` / `text-blue-*` (or any direct palette classes) in UI components.
 - Use only semantic Tailwind classes:

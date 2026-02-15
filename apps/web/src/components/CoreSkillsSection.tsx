@@ -69,7 +69,7 @@ export function CoreSkillsSection({ section }: CoreSkillsSectionProps) {
               {group.skills.map((skill, j) => (
                 <span
                   key={j}
-                  className="inline-block px-2.5 py-1 text-xs font-medium rounded-md bg-primary text-primary-foreground"
+                  className="inline-block px-2.5 py-1 text-xs font-medium rounded-md bg-primary/15 text-primary border border-primary/25 shadow-sm"
                 >
                   {skill}
                 </span>
