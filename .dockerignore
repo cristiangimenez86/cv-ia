@@ -1,0 +1,28 @@
+# Git
+.git
+.gitignore
+
+# Node
+**/node_modules
+**/.next
+
+# IDE / OS
+.vscode
+.cursor
+**/.DS_Store
+*.swp
+
+# AI specs (not needed in image)
+ai-specs/
+.claude/
+
+# Backend (not needed for frontend image)
+services/
+
+# Docs (not needed in image)
+docs/
+
+# Environment files (secrets)
+**/.env
+**/.env.*
+!**/.env.example
