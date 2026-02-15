@@ -1,5 +1,3 @@
-- Location: Barcelona, Spain
-- Phone: +34 685 890 502
-- Email: cristiangimenez86@gmail.com
-- LinkedIn: (add)
-- GitHub: (add)
+- Open to: Full Stack Developer, Senior Software Engineer
+- Location: Barcelona, Spain · Remote · Hybrid
+- Preferences: .NET, React, Cloud-native architectures, Microservices

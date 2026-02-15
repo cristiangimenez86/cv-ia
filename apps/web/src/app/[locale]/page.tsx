@@ -6,6 +6,12 @@ import { getLocalized } from "@/lib/content/types";
 import { Header } from "@/components/Header";
 import { Section } from "@/components/Section";
 import { ExperienceSection } from "@/components/ExperienceSection";
+import { CertificationsSection } from "@/components/CertificationsSection";
+import { CoreSkillsSection } from "@/components/CoreSkillsSection";
+import { EducationSection } from "@/components/EducationSection";
+import { KeyAchievementsSection } from "@/components/KeyAchievementsSection";
+import { LanguagesSection } from "@/components/LanguagesSection";
+import { ContactSection } from "@/components/ContactSection";
 import { ProfileCard } from "@/components/ProfileCard";
 
 const VALID_LOCALES: Locale[] = ["es", "en"];
@@ -60,7 +66,7 @@ export default async function LocalePage({ params }: PageProps) {
       <Header config={config} locale={localeParam} />
       <main className="w-full pt-6 pb-8">
         <div className="max-w-[var(--max-content-width)] mx-auto px-4 md:px-6 w-full">
-          <div className="w-full grid grid-cols-1 lg:grid-cols-[320px_minmax(0,1fr)] gap-6 lg:gap-8">
+          <div className="w-full grid grid-cols-1 lg:grid-cols-[var(--sidebar-width)_minmax(0,1fr)] gap-6 lg:gap-8">
             {config.profile && (
               <div className="relative">
                 {/* Spacer: keeps grid flow; fixed card overlays on lg */}
@@ -85,6 +91,23 @@ export default async function LocalePage({ params }: PageProps) {
                         key={section.id}
                         section={section}
                         companies={config.experienceCompanies}
+                      />
+                    ) : section.id === "core-skills" ? (
+                      <CoreSkillsSection key={section.id} section={section} />
+                    ) : section.id === "key-achievements" ? (
+                      <KeyAchievementsSection key={section.id} section={section} />
+                    ) : section.id === "education" ? (
+                      <EducationSection key={section.id} section={section} />
+                    ) : section.id === "certifications" ? (
+                      <CertificationsSection key={section.id} section={section} />
+                    ) : section.id === "languages" ? (
+                      <LanguagesSection key={section.id} section={section} />
+                    ) : section.id === "contact" ? (
+                      <ContactSection
+                        key={section.id}
+                        section={section}
+                        profile={config.profile}
+                        locale={localeParam}
                       />
                     ) : (
                       <Section key={section.id} section={section} />

@@ -80,6 +80,15 @@ Required sections (order):
 - Section
   - Title (H2)
   - Content blocks
+- CoreSkillsSection
+  - Title (H2) "Core Skills / Keywords"
+  - Grid of categories (2 cols mobile, 4 cols desktop)
+  - Each category: uppercase label + blue pill tags for skills
+  - HR-friendly: scannable, ATS keywords, no repetition across categories
+- KeyAchievementsSection
+  - Title (H2), larger spacing below
+  - Bulleted list with blue checkmark icons (✓) instead of disc bullets
+  - Each item: checkmark + text, consistent vertical spacing
 - SkillGroups
   - Group cards (Backend/Frontend/Data/Cloud/DevOps/etc.)
   - Keyword chips (must be text in DOM)
@@ -87,8 +96,23 @@ Required sections (order):
   - Company block (logo, role, location, dates)
   - Logo: clickable link to company website, same hover animation as ProfileCard/navbar buttons (see `ai-specs/changes/CV-0004_experience-logos-specs.md`)
   - Project/initiative cards with bullet highlights + tech chips
-- SimpleCardGrid
-  - Education / Certifications / Languages / Contact
+- EducationSection
+  - Title (H2), card layout
+  - Each block (degree, additional courses): card with rounded corners, border, bg-surface
+  - Main degree: title + institution; Additional courses: title + bullet list
+- CertificationsSection
+  - Title (H2), 2-column responsive grid
+  - Each certification: card with name, date, ID (if present)
+  - Uses surface/border theme vars (light + dark)
+- LanguagesSection
+  - Title (H2), 2-column responsive grid
+  - Each language: card with name + proficiency level
+  - Uses surface/border theme vars (light + dark)
+- ContactSection
+  - Title (H2), single card layout
+  - Parses markdown: `- Label: value` for Open to, Location, Preferences (EN) / Disponible para, Ubicación, Preferencias (ES)
+  - Primary button "Contact me" (mailto) and secondary buttons LinkedIn, GitHub — URLs from `profile.links` / `profile.email`
+  - Same card/button styles as other sections (rounded-xl, border, surface; profile-card-btn)
 
 ## Chat Entry (Floating Button)
 - The chat entry is a floating action button (FAB) anchored to the bottom-right.

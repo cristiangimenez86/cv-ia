@@ -176,6 +176,6 @@ The filesystem content under `content/` uses a different structure than the API 
 | `content/{lang}/sections/education.md` | `education[]` |
 | `content/{lang}/sections/certifications.md` | `certifications[]` |
 | `content/{lang}/sections/languages.md` | `languages[]` |
-| `content/{lang}/sections/contact.md` | Contact info in profile or dedicated section |
+| `content/{lang}/sections/contact.md` | ContactSection: Open to, Location, Preferences (parsed); buttons use `profile.email` and `profile.links` (LinkedIn, GitHub) |
 
 The backend aggregates Markdown/JSON from `content/` and projects it into the `CvDocument` schema. Section IDs (e.g. `experience`, `core-skills`) are stable and used for citations.

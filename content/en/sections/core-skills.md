@@ -1,23 +1,23 @@
-### Backend
+## Backend
 - .NET Core, .NET Framework, Entity Framework, RESTful APIs, xUnit, Moq
 
-### Frontend
+## Frontend
 - Angular, React, TypeScript, JavaScript
 
-### Data
+## Data
 - SQL Server, Oracle, DynamoDB, Azure Cosmos DB, Azure Table Storage
 
-### Cloud
+## Cloud
 - AWS (EC2, Lambda, API Gateway), Azure (Functions, Key Vault, Service Bus)
 
-### DevOps
+## DevOps
 - Azure DevOps, Docker, Kubernetes, CI/CD pipelines, Terraform
 
-### Methodologies
+## Methodologies
 - Agile (Scrum/Kanban), Hybrid/Waterfall
 
-### Engineering Practices
+## Engineering Practices
 - DDD, TDD, Spec/Contract-Driven Development
 
-### Soft Skills
+## Soft Skills
 - Leadership, problem-solving, teamwork, adaptability, time management, mentoring

@@ -46,14 +46,15 @@ function findCompany(
 
 /**
  * Parses experience markdown into structured blocks.
+ * Supports both English (Project, Achievements, Technologies) and Spanish (Proyecto, Logros, Tecnologías).
  */
 function parseExperienceBlocks(body: string): ParsedBlock[] {
   const blocks: ParsedBlock[] = [];
-  const rawBlocks = body.split(/\n### /).filter((b) => b.trim());
+  const rawBlocks = body.split(/\n## /).filter((b) => b.trim());
 
   for (const block of rawBlocks) {
     const lines = block.split("\n");
-    const firstLine = lines[0] ?? "";
+    const firstLine = (lines[0] ?? "").replace(/^##\s*/, "").trim();
     const rest = lines.slice(1).join("\n");
 
     const match = firstLine.match(DASH_SEPARATOR);
@@ -198,14 +199,26 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
               {/* Timeline dot — blue, prominent, on top of line, aligned with logo */}
               <div className="relative z-10 w-4 -ml-8 shrink-0 flex justify-center">
                 <div
-                  className="w-3 h-3 rounded-full bg-primary shrink-0 mt-[16px] shadow-sm"
+                  className="w-3 h-3 rounded-full bg-primary shrink-0 mt-[22px] shadow-sm"
                   aria-hidden
                 />
               </div>
               <div className="flex-1 min-w-0">
                 {/* Company header — logo aligned with dot center, text to the right */}
+                {(() => {
+                  const isSimpleEntry =
+                    group.projects.length === 1 &&
+                    !group.projects[0].project &&
+                    group.projects[0].achievements.length === 0 &&
+                    group.projects[0].technologies.length === 0 &&
+                    !!group.projects[0].description;
+                  const subtitle = isSimpleEntry
+                    ? `${group.projects[0].description}${group.location ? ` · ${group.location}` : ""}`
+                    : `${group.role}${group.location ? ` · ${group.location}` : ""}`;
+
+                  return (
                 <div
-                  className={`flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-4 ${group.logoConfig ? "ml-4" : ""}`}
+                  className={`flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 ${isSimpleEntry ? "ml-5" : "mb-4"} ${group.logoConfig ? "ml-4" : ""}`}
                 >
                   <div className="flex items-start gap-3">
                     {group.logoConfig && (
@@ -213,15 +226,15 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                         href={group.logoConfig.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="profile-card-btn shrink-0 w-11 h-11 rounded-lg border border-border bg-white flex items-center justify-center overflow-hidden"
+                        className="profile-card-btn shrink-0 w-14 h-14 rounded-lg border border-border bg-white flex items-center justify-center overflow-hidden"
                         aria-label={`${group.company} website`}
                       >
                         <Image
                           src={group.logoConfig.logo}
                           alt=""
-                          width={44}
-                          height={44}
-                          className="object-contain w-9 h-9 p-0.5"
+                          width={56}
+                          height={56}
+                          className="object-contain w-12 h-12 p-0.5"
                         />
                       </a>
                     )}
@@ -230,8 +243,7 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                         {group.company}
                       </h3>
                       <p className="text-sm text-muted">
-                        {group.role}
-                        {group.location ? ` · ${group.location}` : ""}
+                        {subtitle}
                       </p>
                     </div>
                   </div>
@@ -241,15 +253,22 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                     </span>
                   )}
                 </div>
+                  );
+                })()}
 
-                {/* Project cards — left edge aligned with company name/role text */}
+                {/* Project cards — only for entries with projects/achievements/technologies */}
+                {group.projects.some(
+                  (p) => p.project || p.achievements.length > 0 || p.technologies.length > 0
+                ) && (
                 <div
-                  className={`space-y-4 ${group.logoConfig ? "ml-4" : ""}`}
+                  className={`space-y-4 mb-4 ${group.logoConfig ? "ml-4" : ""}`}
                 >
-                {group.projects.map((proj, projIdx) => (
+                {group.projects
+                  .filter((p) => p.project || p.achievements.length > 0 || p.technologies.length > 0)
+                  .map((proj, projIdx) => (
                   <div
                     key={projIdx}
-                    className="rounded-xl border border-border bg-surface-2 p-4 md:p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                    className="experience-card rounded-xl border border-border p-4 md:p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                   >
                     {proj.project && (
                       <p className="text-sm font-medium text-foreground mb-2">
@@ -257,14 +276,9 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                       </p>
                     )}
 
-                    {proj.description && (
-                      <p className="text-sm text-muted mb-3 leading-relaxed">
-                        {proj.description}
-                      </p>
-                    )}
-
-                    {proj.achievements.length > 0 && (
+                    {(proj.description || proj.achievements.length > 0) && (
                       <ul className="list-disc list-inside text-sm text-muted space-y-1 mb-4">
+                        {proj.description && <li className="leading-relaxed">{proj.description}</li>}
                         {proj.achievements.map((a, i) => (
                           <li key={i}>{a}</li>
                         ))}
@@ -276,7 +290,7 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                         {proj.technologies.map((tech) => (
                           <span
                             key={tech}
-                            className="inline-block px-2.5 py-1 text-xs font-medium rounded-md bg-primary text-primary-foreground shadow-sm"
+                            className="inline-block px-2.5 py-1 text-xs font-medium rounded-md bg-primary/15 text-primary border border-primary/25 shadow-sm"
                           >
                             {tech}
                           </span>
@@ -286,6 +300,7 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                   </div>
                 ))}
                 </div>
+                )}
               </div>
             </div>
           ))}

@@ -79,7 +79,7 @@ The following must be present as text in the DOM and easily identifiable:
 ## Implementation checklist
 
 - [x] SSG for `/es` and `/en` pages
-- [x] Server Components for content rendering (Section, ProfileCard)
+- [x] Server Components for content rendering (Section, ProfileCard, and dedicated section components: ExperienceSection, ContactSection, etc.)
 - [x] Semantic headings (H1, H2) and lists
 - [x] Dynamic `html lang` per locale
 - [x] `generateMetadata()` with title and description per locale

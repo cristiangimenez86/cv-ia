@@ -1,4 +1,4 @@
-### Senior Software Engineer — Pay Retailers
+## Senior Software Engineer — Pay Retailers
 **Barcelona, Spain | July 2025 – Present**
 
 **Project:** Payment Processing
@@ -11,7 +11,7 @@ Contributed to the development and maintenance of payment processing integration
 **Technologies:**  .NET 8, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
 
 
-### Full Stack .NET Core Developer — Travelport
+## Full Stack .NET Core Developer — Travelport
 **Barcelona, Spain | January 2024 – July 2025**
 
 **Project:** vPayment
@@ -25,7 +25,13 @@ Led the development of a virtual credit card generation system (AMEX, Mastercard
 **Technologies:** .NET 8, Azure Functions, Entity Framework Core, Cosmos DB, Table Storage, Azure Key Vault, Docker, Azure Pipelines, Auth0
 
 
-### Full Stack .NET Core Developer — UST
+## Career Transition — Career Transition
+**Barcelona, Spain | Jun 2023 – Dec 2023**
+
+Career transition (including vacations).
+
+
+## Full Stack .NET Core Developer — UST
 **Barcelona, Spain | October 2021 – May 2023**
 
 **Project:** RB Iberia (Burger King Portugal & Spain)
@@ -39,7 +45,7 @@ Led the integration of 300 Burger King stores into the existing ecosystem by bui
 **Technologies:** .NET 7, SQL Server, Entity Framework
 
 
-### Full Stack .NET Core Developer — UST
+## Full Stack .NET Core Developer — UST
 **Barcelona, Spain | October 2021 – May 2023**
 
 **Project:** Dell
@@ -53,7 +59,7 @@ Played a key role in refactoring one of Dell's most critical applications to imp
 **Technologies:** .NET Core 3.1, Microservices Architecture, Oracle, xUnit, Moq
 
 
-### Freelance .NET Core Developer — Freelance
+## Freelance .NET Core Developer — Freelance
 **Rosario, Argentina | November 2019 – October 2021**
 
 Delivered end-to-end improvements across multiple .NET applications, focusing on modernization, performance, and production stability.
@@ -64,7 +70,7 @@ Delivered end-to-end improvements across multiple .NET applications, focusing on
 **Technologies:** .NET Framework, .NET Core, SQL Server, Entity Framework, REST APIs
 
 
-### .NET Core Developer — Adrenalin Media
+## .NET Core Developer — Adrenalin Media
 **Sydney, Australia | October 2018 – April 2019**
 
 **Project:** Hungry Jack’s (Burger King)
@@ -78,7 +84,7 @@ Enhanced a high-traffic application with thousands of active users by adding new
 **Technologies:** .NET Core 2, AWS (CloudFront, CloudWatch, API Gateway, EC2, Lambda, DynamoDB, Redis, S3, SQS, SNS, SES), Azure DevOps, Octopus Deploy
 
 
-### Full Stack Developer — Stratos Technology Partners
+## Full Stack Developer — Stratos Technology Partners
 **Christchurch, New Zealand | June 2016 – June 2018**
 
 **Project:** WineWorks
@@ -92,7 +98,7 @@ Rebuilt a legacy application from scratch, migrating 200+ clients to the new pla
 **Technologies:** .NET Web API, AngularJS, SQL Server, Entity Framework
 
 
-### Full Stack Developer — Stratos Technology Partners
+## Full Stack Developer — Stratos Technology Partners
 **Christchurch, New Zealand | June 2016 – June 2018**
 
 **Project:** Metrocard
@@ -105,7 +111,7 @@ Enhanced the payment system for Christchurch's public transport, allowing users 
 **Technologies:** .NET Web API, AngularJS, SQL Server, Entity Framework
 
 
-### .NET Developer — Globant
+## .NET Developer — Globant
 **Rosario, Argentina | July 2013 – November 2015**
 
 **Project:** Tenaris - Dispatch Planning

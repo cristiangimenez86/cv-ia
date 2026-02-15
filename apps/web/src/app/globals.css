@@ -74,7 +74,7 @@
   --header-height-mobile: 64px;
   --header-height-desktop: 72px;
   --sidebar-offset: 96px; /* header (72px) + main pt-6 (24px) — aligns with content card top */
-  --sidebar-width: 320px;
+  --sidebar-width: 280px;
   /* Fixed sidebar left: align with grid column (centered max-w container + padding) */
   --sidebar-left: max(1.5rem, calc((100vw - var(--max-content-width)) / 2 + 1.5rem));
 }
@@ -101,12 +101,6 @@ body {
   border: 1px solid hsl(var(--border));
   border-radius: 1rem;
   box-shadow: 0 1px 3px hsl(var(--shadow) / 0.06);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px hsl(var(--shadow) / 0.12);
 }
 
 .card-header {
@@ -201,6 +195,15 @@ body {
 
 .divider {
   border-top: 1px solid hsl(var(--divider));
+}
+
+/* Experience project cards: white in light mode, surface-2 in dark */
+.experience-card {
+  background-color: hsl(var(--surface));
+}
+
+.dark .experience-card {
+  background-color: hsl(var(--surface-2));
 }
 
 /* Profile photo: center face in circle — shift image up and right slightly */
