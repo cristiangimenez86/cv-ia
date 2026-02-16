@@ -53,7 +53,7 @@ export function CoreSkillsSection({ section }: CoreSkillsSectionProps) {
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-6">
+      <h2 className="text-xl font-semibold text-foreground mb-3">
         {section.title}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

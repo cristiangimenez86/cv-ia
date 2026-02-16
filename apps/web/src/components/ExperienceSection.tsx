@@ -180,7 +180,7 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-6">
+      <h2 className="text-xl font-semibold text-foreground mb-3">
         {section.title}
       </h2>
 
@@ -271,13 +271,13 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                     className="experience-card rounded-xl border border-border p-4 md:p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
                   >
                     {proj.project && (
-                      <p className="text-sm font-medium text-foreground mb-2">
+                      <p className="text-base font-medium text-foreground mb-2">
                         {proj.project}
                       </p>
                     )}
 
                     {(proj.description || proj.achievements.length > 0) && (
-                      <ul className="list-disc list-inside text-sm text-muted space-y-1 mb-4">
+                      <ul className="list-disc list-inside text-base text-foreground space-y-1 mb-4">
                         {proj.description && <li className="leading-relaxed">{proj.description}</li>}
                         {proj.achievements.map((a, i) => (
                           <li key={i}>{a}</li>

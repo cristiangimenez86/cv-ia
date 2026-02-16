@@ -42,17 +42,17 @@ export function LanguagesSection({ section }: LanguagesSectionProps) {
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-6">
+      <h2 className="text-xl font-semibold text-foreground mb-3">
         {section.title}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {languages.map((lang, i) => (
           <div key={i} className={CARD_CLASS}>
-            <p className="text-sm font-semibold text-foreground">
+            <p className="text-base font-semibold text-foreground">
               {lang.name}
             </p>
             {lang.level && (
-              <p className="text-sm text-muted mt-1">{lang.level}</p>
+              <p className="text-base text-muted mt-1">{lang.level}</p>
             )}
           </div>
         ))}

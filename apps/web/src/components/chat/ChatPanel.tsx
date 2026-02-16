@@ -9,6 +9,8 @@ import type { ChatMessage, ChatChip } from "./types";
 type ChatPanelProps = {
   onClose: () => void;
   locale: string;
+  messages: ChatMessage[];
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 };
 
 /* ── Bilingual UI strings ────────────────────────────────────────────── */
@@ -61,8 +63,7 @@ async function mockChatCompletion(_userText: string): Promise<string> {
  * Chat panel: header, scrollable messages, input bar.
  * State is in-memory only (useState). Backend is mocked for now.
  */
-export function ChatPanel({ onClose, locale }: ChatPanelProps) {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelProps) {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -135,8 +136,8 @@ export function ChatPanel({ onClose, locale }: ChatPanelProps) {
     <div
       className="card flex flex-col overflow-hidden
         fixed z-50
-        inset-3
-        sm:inset-auto sm:bottom-20 sm:right-4 sm:w-[380px] sm:h-[520px]"
+        inset-3 max-h-[calc(100dvh-1.5rem)]
+        sm:inset-auto sm:bottom-20 sm:right-4 sm:w-[380px] sm:h-[520px] sm:max-h-none"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">

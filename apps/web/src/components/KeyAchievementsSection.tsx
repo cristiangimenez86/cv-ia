@@ -25,7 +25,7 @@ export function KeyAchievementsSection({ section }: KeyAchievementsSectionProps)
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-6">
+      <h2 className="text-xl font-semibold text-foreground mb-3">
         {section.title}
       </h2>
       <ul className="space-y-3 list-none pl-0">
@@ -37,7 +37,7 @@ export function KeyAchievementsSection({ section }: KeyAchievementsSectionProps)
             >
               <Check size={18} strokeWidth={2.5} />
             </span>
-            <span className="text-sm text-muted leading-relaxed">
+            <span className="text-base text-foreground leading-relaxed">
               {item}
             </span>
           </li>

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { MessageCircle, X } from "lucide-react";
 import { ChatPanel } from "./ChatPanel";
 import { ChatNudge } from "./ChatNudge";
+import type { ChatMessage } from "./types";
 
 const VALID_LOCALES = new Set(["es", "en"]);
 
@@ -16,10 +17,12 @@ const VALID_LOCALES = new Set(["es", "en"]);
  * Features:
  * - "AI" badge on the FAB for discoverability.
  * - One-time nudge bubble after 4 s (session-scoped, desktop only).
+ * - Click outside closes panel; messages persist when reopened.
  */
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [nudgeDismissed, setNudgeDismissed] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const pathname = usePathname();
 
   /* Extract locale from URL path (e.g. /es/... -> "es") */
@@ -40,15 +43,30 @@ export function ChatWidget() {
 
   return (
     <>
-      {isOpen && <ChatPanel onClose={close} locale={locale} />}
+      {isOpen && (
+        <>
+          {/* Backdrop: click outside to close */}
+          <div
+            className="fixed inset-0 z-40"
+            onClick={close}
+            aria-hidden
+          />
+          <ChatPanel
+            onClose={close}
+            locale={locale}
+            messages={messages}
+            setMessages={setMessages}
+          />
+        </>
+      )}
 
       {/* Nudge bubble — once per session, desktop only, hidden when chat open */}
       {!isOpen && !nudgeDismissed && (
         <ChatNudge onOpenChat={openFromNudge} locale={locale} />
       )}
 
-      {/* FAB — fixed bottom-right, above content */}
-      <div className="fixed bottom-4 right-4 z-50">
+      {/* FAB — fixed bottom-right; hidden on mobile when chat open to avoid overlapping send button */}
+      <div className={`fixed bottom-4 right-4 z-50 ${isOpen ? "sm:block hidden" : ""}`}>
         <button
           onClick={toggle}
           aria-label={isOpen ? "Close chat" : "Open chat"}

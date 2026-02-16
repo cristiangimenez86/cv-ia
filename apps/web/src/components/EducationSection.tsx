@@ -60,20 +60,20 @@ export function EducationSection({ section }: EducationSectionProps) {
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-6">
+      <h2 className="text-xl font-semibold text-foreground mb-3">
         {section.title}
       </h2>
       <div className="space-y-4">
         {blocks.map((block, i) => (
           <div key={i} className={CARD_CLASS}>
-            <p className="text-sm font-semibold text-foreground">
+            <p className="text-base font-semibold text-foreground">
               {block.title}
             </p>
             {block.institution && (
-              <p className="text-sm text-muted mt-1">{block.institution}</p>
+              <p className="text-base text-muted mt-1">{block.institution}</p>
             )}
             {block.items && block.items.length > 0 && (
-              <ul className="list-disc list-inside text-sm text-muted mt-3 space-y-1">
+              <ul className="list-disc list-inside text-base text-muted mt-3 space-y-1">
                 {block.items.map((item, j) => (
                   <li key={j}>{item}</li>
                 ))}
