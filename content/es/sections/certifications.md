@@ -1,0 +1,2 @@
+- Google Associate Cloud Engineer — Abril 2023 (ID: aOL1JI)
+- Google Cloud Digital Leader — Diciembre 2022 (ID: QSLPH9)

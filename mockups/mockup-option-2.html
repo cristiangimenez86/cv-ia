@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CV Mockup Option 2 - Document Column</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --surface: #171a21;
+      --surface-2: #1f2430;
+      --border: #2f3747;
+      --text: #e5e9f0;
+      --muted: #a7b0c0;
+      --primary: #4f8cff;
+      --primary-contrast: #ffffff;
+      --ring: #88b2ff;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+    .wrap { max-width: 920px; margin: 0 auto; padding: 24px 18px 60px; }
+    .hero {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    h1 { margin: 0 0 8px; font-size: 38px; letter-spacing: 0.2px; }
+    .headline { margin: 0 0 10px; color: var(--muted); font-size: 18px; }
+    .meta { font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 14px; color: var(--muted); }
+    nav {
+      position: sticky; top: 10px; z-index: 5; margin-bottom: 16px;
+      border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+      padding: 10px 12px; font-family: Inter, Segoe UI, Arial, sans-serif;
+    }
+    nav a { text-decoration: none; color: var(--muted); margin-right: 12px; font-size: 13px; }
+    nav a.active { color: var(--primary); }
+    section {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 2px 18px;
+      margin-bottom: 2px;
+    }
+    h2 { margin: 0 0 10px; font-size: 24px; }
+    h3 { margin: 12px 0 6px; font-size: 18px; }
+    p { line-height: 1.65; margin: 8px 0; }
+    ul { padding-left: 22px; margin: 8px 0; }
+    li { margin: 6px 0; line-height: 1.55; }
+    .tagline { color: var(--muted); font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 13px; }
+    .cta {
+      display: inline-block; text-decoration: none; margin-top: 8px;
+      background: var(--primary); color: var(--primary-contrast);
+      border-radius: 8px; padding: 10px 14px; font-family: Inter, Segoe UI, Arial, sans-serif; font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <h1>Placeholder Candidate Name</h1>
+      <p class="headline">Senior Full Stack Engineer</p>
+      <p class="meta">Barcelona, Spain · email@example.com · +00 000 000</p>
+    </header>
+
+    <nav>
+      <a class="active" href="#">About</a>
+      <a href="#">Skills</a>
+      <a href="#">Experience</a>
+      <a href="#">Education</a>
+      <a href="#">Contact</a>
+    </nav>
+
+    <main>
+      <section id="about">
+        <h2>About</h2>
+        <p>Document-centric summary paragraph with placeholder copy intended to feel like a polished executive CV page.</p>
+      </section>
+
+      <section id="skills">
+        <h2>Core Skills / Keywords</h2>
+        <h3>Backend</h3>
+        <p class="tagline">.NET · APIs · Distributed Systems · Testing</p>
+        <h3>Cloud & DevOps</h3>
+        <p class="tagline">Azure · Docker · Kubernetes · CI/CD</p>
+      </section>
+
+      <section id="experience">
+        <h2>Experience</h2>
+        <h3>Company Placeholder — Senior Engineer</h3>
+        <p class="tagline">2022 - Present · Barcelona</p>
+        <ul>
+          <li>Built scalable services and improved reliability metrics.</li>
+          <li>Led delivery across cross-functional teams with measurable impact.</li>
+        </ul>
+      </section>
+
+      <section id="education">
+        <h2>Education</h2>
+        <p>BSc in Placeholder Engineering — Placeholder University</p>
+      </section>
+
+      <section id="contact">
+        <h2>Contact</h2>
+        <p>Open to: Senior engineering roles (remote/hybrid).</p>
+        <a class="cta" href="#">Contact me</a>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

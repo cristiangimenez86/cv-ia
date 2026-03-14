@@ -1,20 +1,92 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Project: CV-IA — Cristian Gimenez's interactive AI-powered CV website
+  Live site: https://cv.cristiangimenez.com
+  API contract: docs/api/api-spec.yml (OpenAPI 3.0.3)
+  Data model: docs/architecture/data-model.md
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  Goals:
+    - Display an interactive bilingual CV (EN/ES) targeting recruiters, ATS parsers, and Tech Leads
+    - AI chat assistant (RAG) that answers strictly about Cristian's experience
+    - Attract potential employers and clients (Senior Full Stack .NET Developer)
+
+  Target audience:
+    - Primary: Recruiters / HR / ATS parsers — content must be in initial HTML (no JS-only
+      rendering), semantic structure, text in DOM (not images), correct lang attribute per locale
+    - Secondary: Tech Leads / Engineering Managers — needs technical depth, architecture
+      decisions, cloud/DevOps experience, concrete outcomes
+
+  Tech stack:
+    - Frontend: Next.js App Router (TypeScript strict) in /frontend
+    - Backend: .NET 10 Web API in /backend
+    - Content: Bilingual Markdown files per section under /content/{en|es}/sections/
+    - Vector DB: PostgreSQL + pgvector (Docker) for ContentChunk embeddings (RAG)
+    - Infra: Docker + docker-compose in /infra
+
+  Architecture:
+    - /content/ is the source of truth. Never hardcode CV content in components.
+    - Next.js reads /content/ at build time for static CV rendering (SSG/SSR for ATS compliance).
+    - backend aggregates /content/ files and projects them into the CvDocument API schema.
+    - RAG flow: ingestion script chunks /content/ → generates embeddings → stores in pgvector.
+      At runtime, backend does similarity search on pgvector → calls OpenAI with context.
+    - Frontend never talks to OpenAI directly. All AI logic lives in backend.
+    - Chat answers must include citations (sourceId, title, snippet) per API contract.
+
+  API endpoints (target contract — only /health is implemented):
+    - GET  /health
+    - GET  /api/v1/cv?lang={es|en}           → CvDocument
+    - GET  /api/v1/cv/sections?lang={es|en}  → CvSectionsResponse
+    - POST /api/v1/chat/completions          → ChatResponse (with citations, rate limiting)
+
+  Content-to-API mapping:
+    - content/{lang}/site.json                  → profile, section ordering
+    - content/{lang}/sections/about.md          → profile.summary
+    - content/{lang}/sections/core-skills.md    → skills[] (parsed by category)
+    - content/{lang}/sections/experience.md     → experience[]
+    - content/{lang}/sections/education.md      → education[]
+    - content/{lang}/sections/certifications.md → certifications[]
+    - content/{lang}/sections/languages.md      → languages[]
+    - content/{lang}/sections/contact.md        → contact section
+
+  Data model entities (v1):
+    - ContentDocument: source file in /content/ (id, lang, sourcePath, format, updatedAt)
+    - ContentChunk: slice for RAG (id, documentId, lang, chunkIndex, text, embeddingRef)
+    - CvDocument: aggregated API output (projection, not persisted)
+    - ChatSession / ChatMessage: optional persistence (not required for v1)
+    - RetrievalCitation: sourceId, title, snippet (returned in chat response)
+
+  CV sections (bilingual EN/ES):
+    - About / Bio, Core Skills, Key Achievements, Experience, Education,
+      Certifications, Languages, Contact
+
+  Key conventions:
+    - All technical artifacts in English (code, commits, docs, tests)
+    - CV content is bilingual — never mix languages within the same locale
+    - ATS compliance: content must be in initial HTML, semantic tags, correct lang attribute
+    - OpenAI secrets live ONLY in backend, never in frontend or client-side env vars
+    - Chat guardrails: no unrelated knowledge, no secrets, no arbitrary browsing
+    - Both services must be dockerized
+    - Section IDs are stable (experience, core-skills, etc.) — used for citations
+
+  Working style:
+    - Small tasks, one at a time — never move more than one step forward
+    - Ask before assuming anything unclear
+    - Every change must include exact verification commands
+    
+  Design references:
+    - docs/product/ui-design.md — layout, components, ATS requirements
+    - docs/product/theme.md — CSS tokens, light/dark theme strategy
+    - docs/product/header-design.md — header visual specs
+    - docs/product/ai-ats-parsing.md — SSR/SSG and semantic HTML requirements
+    - docs/product/visual-spec.md — exact rebuild contract for /frontend (tokens, classes, layout, components)
+
+rules:
+  proposal:
+    - Always specify which service is affected (frontend, backend, or both)
+    - Include a "Non-goals" section to limit scope
+    - Keep proposals under 400 words
+  tasks:
+    - Each task must be independently completable
+    - Include at least one verification task per feature
+    - Break tasks into max 1-2 hour chunks

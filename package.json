@@ -1,0 +1,29 @@
+{
+  "name": "cv-ia-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Workspace scripts for CV-IA frontend/backend scaffold",
+  "scripts": {
+    "install:all": "npm --prefix frontend install && dotnet restore backend/CvIa.Backend.csproj",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "dotnet run --project backend/CvIa.Backend.csproj",
+    "dev": "node scripts/dev.mjs",
+    "stop": "docker compose -f infra/docker-compose.yml down",
+    "lint:frontend": "npm --prefix frontend run lint",
+    "lint:backend": "dotnet build backend/CvIa.Backend.csproj -warnaserror",
+    "lint": "npm run lint:frontend && npm run lint:backend && npm run verify:boundary && npm run verify:cv:ats && npm run verify:section-ids",
+    "build:frontend": "npm --prefix frontend run build",
+    "build:backend": "dotnet build backend/CvIa.Backend.csproj",
+    "build": "npm run build:frontend && npm run build:backend",
+    "test:frontend": "npm --prefix frontend run test",
+    "test:backend": "dotnet test backend/CvIa.Backend.csproj --no-build",
+    "test": "npm run test:frontend && npm run test:backend",
+    "verify:boundary": "node scripts/check-frontend-boundary.mjs",
+    "verify:health": "node scripts/check-health.mjs",
+    "verify:cv:ats": "node scripts/verify-cv-ats.mjs",
+    "verify:section-ids": "node scripts/verify-section-ids.mjs",
+    "verify:cv-pages": "node scripts/verify-cv-pages.mjs",
+    "verify:bootstrap": "docker compose -f infra/docker-compose.yml up -d && npm run verify:health && docker compose -f infra/docker-compose.yml down",
+    "verify": "npm run lint && npm run build && npm run test && npm run verify:health && npm run verify:cv-pages"
+  }
+}

@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CV Mockup Option 1 - Two Panel</title>
+  <style>
+    :root {
+      --bg: #0f1115;
+      --surface: #171a21;
+      --surface-2: #1f2430;
+      --border: #2f3747;
+      --text: #e5e9f0;
+      --muted: #a7b0c0;
+      --primary: #4f8cff;
+      --primary-contrast: #ffffff;
+      --ring: #88b2ff;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--surface);
+      border-top: 1px solid #3a4355;
+      border-bottom: 1px solid var(--border);
+      padding: 14px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .nav a { color: var(--text); text-decoration: none; margin-left: 14px; font-size: 14px; }
+    .nav a.active { color: var(--primary); border-bottom: 2px solid var(--primary); padding-bottom: 2px; }
+    .layout {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 20px;
+      padding: 20px;
+      height: calc(100vh - 66px);
+    }
+    .sidebar, .content {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+    .sidebar {
+      position: sticky;
+      top: 86px;
+      align-self: start;
+      padding: 18px;
+    }
+    .content {
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .photo {
+      width: 96px; height: 96px; border-radius: 50%;
+      background: linear-gradient(145deg, #5d6b84, #2f3747);
+      margin-bottom: 12px;
+    }
+    h1 { margin: 0 0 6px; font-size: 24px; }
+    .muted { color: var(--muted); margin: 0 0 12px; }
+    .btn {
+      display: inline-block;
+      border-radius: 8px;
+      padding: 9px 12px;
+      font-size: 14px;
+      text-decoration: none;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--surface-2);
+    }
+    .btn.primary {
+      background: var(--primary);
+      color: var(--primary-contrast);
+      border-color: transparent;
+    }
+    section { margin-bottom: 20px; border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--surface-2); }
+    h2 { margin: 0 0 8px; font-size: 18px; }
+    h3 { margin: 12px 0 6px; font-size: 15px; }
+    ul { margin: 0; padding-left: 18px; }
+    li { margin: 5px 0; }
+    .chips span {
+      display: inline-block; padding: 4px 8px; margin: 4px 4px 0 0;
+      border-radius: 999px; border: 1px solid var(--border); background: #263247; font-size: 12px;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; height: auto; }
+      .sidebar { position: static; }
+      .content { overflow: visible; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <strong>Placeholder Name</strong><br />
+      <small class="muted">Senior Software Engineer</small>
+    </div>
+    <nav class="nav">
+      <a class="active" href="#">About</a>
+      <a href="#">Experience</a>
+      <a href="#">Skills</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="photo"></div>
+      <h1>Placeholder Name</h1>
+      <p class="muted">Location · Remote / Hybrid</p>
+      <a class="btn primary" href="#">Download PDF</a>
+      <a class="btn" href="#">EN / ES</a>
+      <a class="btn" href="#">Theme</a>
+      <p class="muted">email@example.com · +00 000 000</p>
+    </aside>
+
+    <main class="content">
+      <section id="about">
+        <h2>About</h2>
+        <p>Placeholder summary text that represents the profile overview in semantic server-rendered HTML.</p>
+      </section>
+      <section id="core-skills">
+        <h2>Core Skills / Keywords</h2>
+        <h3>Backend</h3>
+        <div class="chips"><span>.NET</span><span>APIs</span><span>Cloud</span></div>
+        <h3>Frontend</h3>
+        <div class="chips"><span>React</span><span>TypeScript</span></div>
+      </section>
+      <section id="experience">
+        <h2>Experience</h2>
+        <h3>Company Placeholder</h3>
+        <p class="muted">Role · Date Range</p>
+        <ul>
+          <li>Delivered project outcomes with measurable impact.</li>
+          <li>Improved reliability and performance in production.</li>
+        </ul>
+      </section>
+      <section id="contact">
+        <h2>Contact</h2>
+        <p>Open to: Senior Engineering Roles</p>
+        <p><a class="btn primary" href="#">Contact me</a></p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

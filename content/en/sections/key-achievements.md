@@ -1,0 +1,6 @@
+- Migrated multiple services from Azure Functions to a Service Bus worker architecture, enabling Kubernetes-native deployments.
+- Led an end-to-end virtual credit card system (AMEX/Mastercard) from inception to deployment with high security and scalability.
+- Integrated Azure Key Vault and Auth0 to strengthen authentication and secrets management.
+- Integrated 300 Burger King stores into an existing ecosystem via a .NET hosted service with validations and API calls.
+- Improved a critical enterprise application performance by 30% and brought unit test coverage to ~80%.
+- Reduced connectivity-related issues in a high-traffic app by ~40% and increased app store positive feedback by ~20%.

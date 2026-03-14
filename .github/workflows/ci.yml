@@ -1,0 +1,73 @@
+name: ci
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install frontend dependencies
+        run: npm --prefix frontend install
+
+      - name: Restore backend
+        run: dotnet restore backend/CvIa.Backend.csproj
+
+      - name: Lint frontend
+        run: npm run lint:frontend
+
+      - name: Lint backend
+        run: npm run lint:backend
+
+      - name: Enforce frontend boundary
+        run: npm run verify:boundary
+
+      - name: ATS source compliance checks
+        run: npm run verify:cv:ats
+
+      - name: Section ID contract check
+        run: npm run verify:section-ids
+
+      - name: Build frontend
+        run: npm run build:frontend
+
+      - name: Build backend
+        run: npm run build:backend
+
+      - name: Test frontend
+        run: npm run test:frontend
+
+      - name: Test backend
+        run: npm run test:backend
+
+      - name: Start infrastructure
+        run: docker compose -f infra/docker-compose.yml up -d
+
+      - name: Start backend for readiness check
+        run: dotnet run --project backend/CvIa.Backend.csproj &
+
+      - name: Wait for backend health
+        run: npm run verify:health
+
+      - name: Validate locale CV pages
+        run: npm run verify:cv-pages
+
+      - name: Stop infrastructure
+        if: always()
+        run: docker compose -f infra/docker-compose.yml down
