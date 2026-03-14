@@ -89,3 +89,25 @@ npm run verify:section-ids
 npm run verify:cv:ats
 npm run verify:cv-pages
 ```
+
+## Frontend Deployment Automation
+
+Frontend deploy is automated via `.github/workflows/deploy-frontend.yml`.
+
+Trigger rules:
+
+- Runs only on `push` to `main`
+- Does not run on pull request events
+
+Pipeline steps:
+
+1. Build Docker image with repository-root context and `frontend/Dockerfile`
+2. Push `cristiangimenez86/cv-web:latest` to Docker Hub
+3. Call Portainer API to recreate stack `3`
+
+Required GitHub repository secrets:
+
+- `DOCKERHUB_USERNAME`
+- `DOCKERHUB_TOKEN`
+- `PORTAINER_URL`
+- `PORTAINER_TOKEN`
