@@ -1,3 +1,2 @@
-- Open to: Full Stack Developer, Senior Software Engineer
 - Location: Barcelona, Spain · Remote · Hybrid
 - Preferences: .NET, React, Cloud-native architectures, Microservices

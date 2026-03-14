@@ -8,7 +8,7 @@ Contribuí al desarrollo y mantenimiento of payment processing integrations with
 **Logros:**
 - Migré exitosamente multiple services from Azure Functions to Service Bus–based worker architecture, habilitando Kubernetes-native deployments.
 
-**Tecnologías:**  .NET 8, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
+**Tecnologías:** .NET 8, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
 
 
 ## Desarrollador Full Stack .NET Core — Travelport
@@ -16,7 +16,7 @@ Contribuí al desarrollo y mantenimiento of payment processing integrations with
 
 **Proyecto:** vPayment
 
-Lideré el desarrollo of a virtual credit card generation system (AMEX, Mastercard) desde el inicio hasta el despliegue, asegurando alta seguridad and escalabilidad.
+Lideré el desarrollo de un sistema de generación de tarjetas de crédito virtuales (AMEX, Mastercard) desde el inicio hasta el despliegue, asegurando alta seguridad y escalabilidad.
 
 **Logros:**
 - Entregué el proyecto end-to-end, resulting in high client satisfaction.

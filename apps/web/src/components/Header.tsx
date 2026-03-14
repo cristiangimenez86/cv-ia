@@ -29,7 +29,6 @@ export function Header({ config, locale }: Props) {
   const headline = config.profile
     ? getLocalized(config.profile.headline, locale)
     : null;
-
   const downloadLabel = locale === "es" ? "Descargar PDF" : "Download PDF";
 
   return (

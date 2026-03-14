@@ -8,7 +8,7 @@ Contributed to the development and maintenance of payment processing integration
 **Achievements:**
 - Successfully migrated multiple services from Azure Functions to Service Bus–based worker architecture, enabling Kubernetes-native deployments.
 
-**Technologies:**  .NET 8, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
+**Technologies:** .NET 8, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
 
 
 ## Full Stack .NET Core Developer — Travelport

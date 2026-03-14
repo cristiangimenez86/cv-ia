@@ -30,6 +30,7 @@ export interface ProfileLink {
 export interface Profile {
   fullName: string;
   headline: SectionTitle;
+  openTo?: SectionTitle;
   location: SectionTitle;
   email: string;
   phone?: string;

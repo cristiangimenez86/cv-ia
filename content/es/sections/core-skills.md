@@ -11,7 +11,7 @@
 - AWS Lambda, API Gateway, Azure Functions, Key Vault, Service Bus
 
 ## DevOps
-- Azure DevOps, Docker, Kubernetes, pipelines CI/CD, Terraform
+- Azure DevOps, Docker, Kubernetes, CI/CD pipelines, Terraform
 
 ## Metodologías
 - Agile (Scrum/Kanban), Híbrido/Waterfall

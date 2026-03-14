@@ -17,56 +17,56 @@
       "id": "about",
       "title": {
         "en": "About",
-        "es": "About"
+        "es": "Sobre mí"
       }
     },
     {
       "id": "core-skills",
       "title": {
         "en": "Core Skills / Keywords",
-        "es": "Core Skills / Keywords"
+        "es": "Habilidades"
       }
     },
     {
       "id": "key-achievements",
       "title": {
         "en": "Key Achievements",
-        "es": "Key Achievements"
+        "es": "Logros"
       }
     },
     {
       "id": "experience",
       "title": {
         "en": "Experience",
-        "es": "Experience"
+        "es": "Experiencia"
       }
     },
     {
       "id": "education",
       "title": {
         "en": "Education",
-        "es": "Education"
+        "es": "Educación"
       }
     },
     {
       "id": "certifications",
       "title": {
         "en": "Certifications",
-        "es": "Certifications"
+        "es": "Certificaciones"
       }
     },
     {
       "id": "languages",
       "title": {
         "en": "Languages",
-        "es": "Languages"
+        "es": "Idiomas"
       }
     },
     {
       "id": "contact",
       "title": {
         "en": "Contact",
-        "es": "Contact"
+        "es": "Contacto"
       }
     }
   ],
@@ -79,6 +79,10 @@
   "profile": {
     "fullName": "Cristian Gimenez",
     "headline": {
+      "en": "Senior Software Engineer",
+      "es": "Senior Software Engineer"
+    },
+    "openTo": {
       "en": "Senior Software Engineer",
       "es": "Senior Software Engineer"
     },
