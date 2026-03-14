@@ -1,4 +1,9 @@
-## ADDED Requirements
+# Frontend Container Build Context Specification
+
+## Purpose
+Define the canonical frontend container build and publish contract for CI/CD, including Dockerfile path, build context, and registry target.
+
+## Requirements
 
 ### Requirement: Frontend image MUST build from frontend Dockerfile with repository-root context
 The deployment pipeline MUST build the frontend container using `frontend/Dockerfile` while using repository root as Docker build context so `/content` is available to the build.

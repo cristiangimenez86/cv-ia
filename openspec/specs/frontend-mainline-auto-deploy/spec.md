@@ -1,4 +1,9 @@
-## ADDED Requirements
+# Frontend Mainline Auto Deploy Specification
+
+## Purpose
+Define the frontend deployment automation behavior so deployment runs only from `main` pushes and executes in a fail-fast sequence.
+
+## Requirements
 
 ### Requirement: Frontend deployment MUST run only on pushes to main
 The system MUST run automated frontend deployment only when commits are pushed to `main`, and MUST NOT deploy on pull request events.
