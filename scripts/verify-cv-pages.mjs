@@ -1,9 +1,12 @@
 import {
   killPortListeners,
+  spawnInherited,
   spawnNpmInherited,
   waitForExit,
   waitForHttpOk
 } from "./lib/process-utils.mjs";
+import { access } from "node:fs/promises";
+import path from "node:path";
 
 const baseUrl = process.env.CV_BASE_URL ?? "http://localhost:3000";
 const parsedBaseUrl = new URL(baseUrl);
@@ -21,7 +24,21 @@ const requiredSectionIds = [
   "contact"
 ];
 
-const npmArgs = ["--prefix", "frontend", "run", "start"];
+const frontendDir = path.resolve(process.cwd(), "frontend");
+const standaloneServerCandidates = [
+  path.join(frontendDir, ".next", "standalone", "server.js"),
+  path.join(frontendDir, ".next", "standalone", "frontend", "server.js")
+];
+
+const fileExists = async (targetPath) => {
+  try {
+    await access(targetPath);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
 let server = null;
 let shuttingDown = false;
 
@@ -52,7 +69,25 @@ process.on("SIGTERM", () => {
 
 try {
   await killPortListeners(targetPort, { excludePids: [process.pid] });
-  server = spawnNpmInherited(npmArgs);
+  const standaloneServerPath = (
+    await Promise.all(
+      standaloneServerCandidates.map(async (candidate) =>
+        (await fileExists(candidate)) ? candidate : null
+      )
+    )
+  ).find(Boolean);
+
+  if (standaloneServerPath) {
+    server = spawnInherited("node", [standaloneServerPath], {
+      cwd: frontendDir,
+      env: {
+        ...process.env,
+        PORT: String(targetPort)
+      }
+    });
+  } else {
+    server = spawnNpmInherited(["--prefix", "frontend", "run", "start"]);
+  }
   await waitForHttpOk(`${baseUrl}/en`);
 
   for (const locale of locales) {
