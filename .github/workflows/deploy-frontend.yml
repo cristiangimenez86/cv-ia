@@ -122,11 +122,13 @@ jobs:
             echo "Detected Git-managed stack metadata. Prioritizing git redeploy endpoint."
             CANDIDATES=(
               "POST|${BASE_URL}/api/stacks/${STACK_ID}/git/redeploy?endpointId=${ENDPOINT_ID}|"
+              "POST|${BASE_URL}/api/stacks/${STACK_ID}/pull?endpointId=${ENDPOINT_ID}|"
               "POST|${BASE_URL}/api/stacks/${STACK_ID}/recreate?endpointId=${ENDPOINT_ID}|{\"pullImage\":true}"
             )
           else
-            echo "Detected non Git-managed stack metadata. Prioritizing recreate endpoint."
+            echo "Detected non Git-managed stack metadata. Prioritizing pull endpoint."
             CANDIDATES=(
+              "POST|${BASE_URL}/api/stacks/${STACK_ID}/pull?endpointId=${ENDPOINT_ID}|"
               "POST|${BASE_URL}/api/stacks/${STACK_ID}/recreate?endpointId=${ENDPOINT_ID}|{\"pullImage\":true}"
               "POST|${BASE_URL}/api/stacks/${STACK_ID}/git/redeploy?endpointId=${ENDPOINT_ID}|"
             )
