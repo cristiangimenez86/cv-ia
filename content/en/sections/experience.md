@@ -3,7 +3,9 @@
 
 **Project:** Payment Processing
 
-Contributed to the development and maintenance of payment processing integrations within the platform, focusing on reliability, scalability, and secure transaction flows.
+**Context:** Payment processing platform with business-critical integrations.
+
+**Responsibility:** Contributed to the development and maintenance of payment processing integrations, focusing on reliability, scalability, and secure transaction flows.
 
 **Achievements:**
 - Successfully migrated multiple services from Azure Functions to Service Bus–based worker architecture, enabling Kubernetes-native deployments.
@@ -16,7 +18,9 @@ Contributed to the development and maintenance of payment processing integration
 
 **Project:** vPayment
 
-Led the development of a virtual credit card generation system (AMEX, Mastercard) from inception to deployment, ensuring high security and scalability.
+**Context:** Virtual payment solution for AMEX and Mastercard card generation.
+
+**Responsibility:** Led the development of the virtual credit card generation system from inception to deployment, ensuring high security and scalability.
 
 **Achievements:**
 - Delivered the project end-to-end, resulting in high client satisfaction.
@@ -25,10 +29,10 @@ Led the development of a virtual credit card generation system (AMEX, Mastercard
 **Technologies:** .NET 8, Azure Functions, Entity Framework Core, Cosmos DB, Table Storage, Azure Key Vault, Docker, Azure Pipelines, Auth0
 
 
-## Career Transition — Career Transition
-**Barcelona, Spain | Jun 2023 – Dec 2023**
+## Career Transition — Professional Transition
+**Barcelona, Spain | June 2023 – December 2023**
 
-Career transition (including vacations).
+Professional transition period, including time off, before resuming full-time delivery in Barcelona.
 
 
 ## Full Stack .NET Core Developer — UST
@@ -36,7 +40,9 @@ Career transition (including vacations).
 
 **Project:** RB Iberia (Burger King Portugal & Spain)
 
-Led the integration of 300 Burger King stores into the existing ecosystem by building a .NET 7 hosted service to ingest data, run business validations, and call internal APIs, ensuring reliable data flow and system compatibility.
+**Context:** Integration of 300 Burger King Portugal stores into the existing Spain ecosystem.
+
+**Responsibility:** Led the integration by building a .NET 7 hosted service to ingest data, validate business rules, and call internal APIs with reliable data flow.
 
 **Achievements:**
 - Delivered the project under tight deadlines while maintaining high reliability and production readiness.
@@ -50,7 +56,9 @@ Led the integration of 300 Burger King stores into the existing ecosystem by bui
 
 **Project:** Dell
 
-Played a key role in refactoring one of Dell's most critical applications to improve code quality and overall performance.
+**Context:** Critical enterprise application with clear opportunities for technical improvement.
+
+**Responsibility:** Played a key role in refactoring one of Dell's most critical applications to improve code quality and overall performance.
 
 **Achievements:**
 - Enhanced application performance by 30% through code optimization and refactoring.
@@ -89,7 +97,9 @@ Enhanced a high-traffic application with thousands of active users by adding new
 
 **Project:** WineWorks
 
-Rebuilt a legacy application from scratch, migrating 200+ clients to the new platform.
+**Context:** Legacy application in the wine bottling and warehousing domain that required full modernization.
+
+**Responsibility:** Rebuilt the application from scratch and supported migration of 200+ clients to the new platform.
 
 **Achievements:**
 - Reduced errors in production work orders by 30% through improved validations.
@@ -103,12 +113,30 @@ Rebuilt a legacy application from scratch, migrating 200+ clients to the new pla
 
 **Project:** Metrocard
 
-Enhanced the payment system for Christchurch's public transport, allowing users to check card balances, top-up cards, and update personal information.
+**Context:** Public transport payment portal serving a high-volume active user base.
+
+**Responsibility:** Enhanced the payment system to support balance checks, top-ups, and personal data updates through a more stable user experience.
 
 **Achievements:**
 - Developed a secure and reliable portal for over 200,000 active users, improving system stability and reducing transaction errors by 20%.
 
 **Technologies:** .NET Web API, AngularJS, SQL Server, Entity Framework
+
+
+## Full Stack Developer — Rosario Bus S.A.
+**Rosario, Argentina | November 2015 – April 2016**
+
+**Project:** IntraBus
+
+**Context:** Internal operational solution focused on driver communication and administrative workflow digitization.
+
+**Responsibility:** Worked with business stakeholders to define scope, timelines, and delivery priorities while implementing and deploying the solution.
+
+**Achievements:**
+- Delivered a more reliable communication channel for bus drivers, reducing misunderstandings caused by informal communication.
+- Reduced paper usage by 70% by replacing timetable and leave forms with online workflows.
+
+**Technologies:** AngularJS 1.x, ASP.NET Web API 2, OAuth2, Entity Framework, SQL Server
 
 
 ## .NET Developer — Globant
@@ -123,3 +151,25 @@ Developed a system for managing dispatched baskets, transport types, and notific
 - Streamlined business processes and reduced manual errors.
 
 **Technologies:** ASP.NET MVC 3, WCF Services, Entity Framework, SQL Server
+
+
+## SharePoint 2010 Developer Administrator — Neoris
+**Rosario, Argentina | November 2011 – July 2013**
+
+**Project:** NeoEnergia
+
+Implemented SharePoint 2010 solutions combining out-of-the-box capabilities and custom development for enterprise collaboration needs.
+
+**Achievements:**
+- Created a common layout for 8 companies within the NeoEnergia group.
+- Consolidated shared functionalities so each company could enable or disable them based on availability.
+
+**Technologies:** SharePoint 2010, Visual Studio, SharePoint Designer
+
+
+## Black Box Tester — SIADNet
+**Rosario, Argentina | December 2008 – March 2010**
+
+**Project:** ESET NOD32 Antivirus & ESET Smart Security
+
+Performed black-box testing activities for security software products, focusing on functional quality and issue reporting.

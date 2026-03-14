@@ -6,7 +6,7 @@ const VALID_LOCALES = ["es", "en"] as const;
 /**
  * Extracts locale from pathname and sets x-locale header for root layout (html lang).
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const segment = pathname.split("/")[1];
   const locale = VALID_LOCALES.includes(segment as (typeof VALID_LOCALES)[number])
@@ -19,5 +19,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/", "/es", "/en", "/es/:path*", "/en/:path*"],
+  matcher: ["/", "/es", "/en", "/es/:path*", "/en/:path*"]
 };

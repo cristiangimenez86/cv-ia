@@ -1,125 +1,175 @@
-## Senior Software Engineer — Pay Retailers
-**Barcelona, Spain | July 2025 – Present**
+## Ingeniero de Software Senior — Pay Retailers
+**Barcelona, España | Julio 2025 – Presente**
 
-**Proyecto:** Payment Processing
+**Proyecto:** Procesamiento de pagos (Payment Processing)
 
-Contribuí al desarrollo y mantenimiento of payment processing integrations within the platform, con foco en confiabilidad, escalabilidad, and flujos de transacción seguros.
+**Contexto:** Plataforma de procesamiento de pagos con integraciones críticas para la operación.
+
+**Responsabilidad:** Contribuí al desarrollo y mantenimiento de integraciones de procesamiento de pagos, priorizando confiabilidad, escalabilidad y flujos transaccionales seguros.
 
 **Logros:**
-- Migré exitosamente multiple services from Azure Functions to Service Bus–based worker architecture, habilitando Kubernetes-native deployments.
+- Migré exitosamente múltiples servicios desde Azure Functions a una arquitectura de workers basada en Service Bus, habilitando despliegues nativos en Kubernetes.
 
 **Tecnologías:** .NET 8, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
 
 
 ## Desarrollador Full Stack .NET Core — Travelport
-**Barcelona, Spain | January 2024 – July 2025**
+**Barcelona, España | Enero 2024 – Julio 2025**
 
 **Proyecto:** vPayment
 
-Lideré el desarrollo de un sistema de generación de tarjetas de crédito virtuales (AMEX, Mastercard) desde el inicio hasta el despliegue, asegurando alta seguridad y escalabilidad.
+**Contexto:** Solución de pagos virtuales para emisión de tarjetas AMEX y Mastercard.
+
+**Responsabilidad:** Lideré el desarrollo del sistema de generación de tarjetas de crédito virtuales desde el inicio hasta el despliegue, con foco en seguridad y escalabilidad.
 
 **Logros:**
-- Entregué el proyecto end-to-end, resulting in high client satisfaction.
-- Implemented Azure Key Vault and Auth0, fortaleciendo authentication and secrets management.
+- Entregué el proyecto de punta a punta, logrando alta satisfacción del cliente.
+- Implementé Azure Key Vault y Auth0, fortaleciendo la autenticación y la gestión de secretos.
 
 **Tecnologías:** .NET 8, Azure Functions, Entity Framework Core, Cosmos DB, Table Storage, Azure Key Vault, Docker, Azure Pipelines, Auth0
 
 
-## Career Transition — Career Transition
-**Barcelona, Spain | Jun 2023 – Dec 2023**
+## Transición de carrera — Transición de carrera
+**Barcelona, España | Junio 2023 – Diciembre 2023**
 
-Transición de carrera (incluyendo vacaciones).
+Período de transición profesional y recarga antes de retomar proyectos de tiempo completo en Barcelona.
 
 
 ## Desarrollador Full Stack .NET Core — UST
-**Barcelona, Spain | October 2021 – May 2023**
+**Barcelona, España | Octubre 2021 – Mayo 2023**
 
 **Proyecto:** RB Iberia (Burger King Portugal & Spain)
 
-Led the integration of 300 Burger King stores into the existing ecosystem by building a .NET 7 hosted service to ingest data, run business validations, and call internal APIs, asegurando reliable data flow and system compatibility.
+**Contexto:** Integración de 300 locales de Burger King Portugal al ecosistema operativo de España.
+
+**Responsabilidad:** Lideré la integración construyendo un servicio hospedado en .NET 7 para ingerir datos, validar reglas de negocio y consumir APIs internas con flujo confiable.
 
 **Logros:**
-- Entregué el proyecto con deadlines ajustados while maintaining high confiabilidad and production readiness.
-- Ayudé a introducir prácticas ágiles with the client, mejorando la planificación y la previsibilidad de entrega.
+- Entregué el proyecto con plazos ajustados, manteniendo alta confiabilidad y preparación para producción.
+- Ayudé a introducir prácticas ágiles con el cliente, mejorando la planificación y la previsibilidad de entrega.
 
 **Tecnologías:** .NET 7, SQL Server, Entity Framework
 
 
 ## Desarrollador Full Stack .NET Core — UST
-**Barcelona, Spain | October 2021 – May 2023**
+**Barcelona, España | Octubre 2021 – Mayo 2023**
 
 **Proyecto:** Dell
 
-Tuve un rol clave en refactorizar one of Dell's most critical applications to mejorar la calidad del código and performance general.
+**Contexto:** Aplicación empresarial crítica con oportunidades claras de mejora técnica.
+
+**Responsabilidad:** Tuve un rol clave en la refactorización de una de las aplicaciones más críticas de Dell para mejorar la calidad del código y el rendimiento general.
 
 **Logros:**
-- Mejoré el performance de la aplicación by 30% through code optimization and refactoring.
-- Alcancé ~80% de cobertura de tests by writing missing unit tests.
+- Mejoré el rendimiento de la aplicación en 30% mediante optimización de código y refactorización.
+- Alcancé ~80% de cobertura de tests escribiendo pruebas unitarias faltantes.
 
 **Tecnologías:** .NET Core 3.1, Microservices Architecture, Oracle, xUnit, Moq
 
 
 ## Freelance .NET Core Developer — Freelance
-**Rosario, Argentina | November 2019 – October 2021**
+**Rosario, Argentina | Noviembre 2019 – Octubre 2021**
 
-Entregué mejoras end-to-end across multiple .NET applications, con foco en modernization, performance, and production stability.
+Entregué mejoras de punta a punta en múltiples aplicaciones .NET, con foco en modernización, rendimiento y estabilidad en producción.
 
 **Logros:**
-- Migrated 5+ legacy applications to modern architectures and deployment practices, reducing technical debt and simplifying ongoing maintenance.
+- Migré más de 5 aplicaciones legacy a arquitecturas modernas y prácticas de despliegue, reduciendo deuda técnica y simplificando el mantenimiento continuo.
 
 **Tecnologías:** .NET Framework, .NET Core, SQL Server, Entity Framework, REST APIs
 
 
 ## Desarrollador .NET Core — Adrenalin Media
-**Sydney, Australia | October 2018 – April 2019**
+**Sydney, Australia | Octubre 2018 – Abril 2019**
 
 **Proyecto:** Hungry Jack’s (Burger King)
 
-Mejoré una aplicación de alto tráfico with thousands of active users by agregando features, corrigiendo bugs y mejorando performance.
+Mejoré una aplicación de alto tráfico con miles de usuarios activos agregando funcionalidades, corrigiendo errores y optimizando el rendimiento.
 
 **Logros:**
-- Mejoré la estabilidad de la app, reducing connectivity-related issues by 40%.
-- Aumenté el feedback positivo on app stores by 20%.
+- Mejoré la estabilidad de la app, reduciendo incidentes de conectividad en 40%.
+- Aumenté el feedback positivo en tiendas de aplicaciones en 20%.
 
 **Tecnologías:** .NET Core 2, AWS (CloudFront, CloudWatch, API Gateway, EC2, Lambda, DynamoDB, Redis, S3, SQS, SNS, SES), Azure DevOps, Octopus Deploy
 
 
 ## Desarrollador Full Stack — Stratos Technology Partners
-**Christchurch, New Zealand | June 2016 – June 2018**
+**Christchurch, New Zealand | Junio 2016 – Junio 2018**
 
 **Proyecto:** WineWorks
 
-Reescribí una aplicación legacy desde cero, migrando 200+ clients to the new platform.
+**Contexto:** Aplicación legacy del negocio de embotellado y logística de vino, con necesidad de modernización integral.
+
+**Responsabilidad:** Reescribí la aplicación desde cero y acompañé la migración de más de 200 clientes a la nueva plataforma.
 
 **Logros:**
-- Reduje errores in production work orders by 30% through improved validations.
-- Mejoré la experiencia de usuario with a redesigned AngularJS interface.
+- Reduje errores en órdenes de trabajo de producción en 30% mediante validaciones mejoradas.
+- Mejoré la experiencia de usuario con una interfaz AngularJS rediseñada.
 
 **Tecnologías:** .NET Web API, AngularJS, SQL Server, Entity Framework
 
 
 ## Desarrollador Full Stack — Stratos Technology Partners
-**Christchurch, New Zealand | June 2016 – June 2018**
+**Christchurch, New Zealand | Junio 2016 – Junio 2018**
 
 **Proyecto:** Metrocard
 
-Mejoré el sistema de pagos for Christchurch's public transport, allowing users to check card balances, top-up cards, and update personal information.
+**Contexto:** Portal de pagos para transporte público con alto volumen de usuarios activos.
+
+**Responsabilidad:** Mejoré el sistema para habilitar consulta de saldo, recargas y actualización de datos personales en una experiencia más estable.
 
 **Logros:**
-- Developed a secure and reliable portal for over 200,000 active users, improving system stability and reducing transaction errors by 20%.
+- Desarrollé un portal seguro y confiable para más de 200.000 usuarios activos, mejorando la estabilidad del sistema y reduciendo errores de transacción en 20%.
 
 **Tecnologías:** .NET Web API, AngularJS, SQL Server, Entity Framework
 
 
+## Desarrollador Full Stack — Rosario Bus S.A.
+**Rosario, Argentina | Noviembre 2015 – Abril 2016**
+
+**Proyecto:** IntraBus
+
+**Contexto:** Solución interna orientada a mejorar la comunicación operativa de choferes y procesos administrativos.
+
+**Responsabilidad:** Trabajé con stakeholders del negocio para definir alcance, plazos y prioridades mientras implementaba y desplegaba la solución.
+
+**Logros:**
+- Entregué un canal de comunicación más confiable para choferes de colectivos, reduciendo malentendidos causados por comunicación informal.
+- Reduje el uso de papel en 70% al reemplazar planillas horarias y formularios de licencias por flujos digitales.
+
+**Tecnologías:** AngularJS 1.x, ASP.NET Web API 2, OAuth2, Entity Framework, SQL Server
+
+
 ## Desarrollador .NET — Globant
-**Rosario, Argentina | July 2013 – November 2015**
+**Rosario, Argentina | Julio 2013 – Noviembre 2015**
 
 **Proyecto:** Tenaris - Dispatch Planning
 
-Desarrollé un sistema for managing dispatched baskets, transport types, and notifications.
+Desarrollé un sistema para gestionar canastas despachadas, tipos de transporte y notificaciones.
 
 **Logros:**
-- Mejoré la capacidad del usuario to view and modify critical information in real-time.
-- Agilicé procesos de negocio and reduced manual errors.
+- Mejoré la capacidad de los usuarios para visualizar y modificar información crítica en tiempo real.
+- Agilicé procesos de negocio y reduje errores manuales.
 
 **Tecnologías:** ASP.NET MVC 3, WCF Services, Entity Framework, SQL Server
+
+
+## Administrador y Desarrollador SharePoint 2010 — Neoris
+**Rosario, Argentina | Noviembre 2011 – Julio 2013**
+
+**Proyecto:** NeoEnergia
+
+Implementé soluciones en SharePoint 2010 combinando funcionalidades out-of-the-box y desarrollo personalizado para necesidades empresariales de colaboración.
+
+**Logros:**
+- Creé un layout común para 8 empresas del grupo NeoEnergia.
+- Integré funcionalidades compartidas entre compañías para habilitar alta y baja según disponibilidad.
+
+**Tecnologías:** SharePoint 2010, Visual Studio, SharePoint Designer
+
+
+## Tester de Caja Negra — SIADNet
+**Rosario, Argentina | Diciembre 2008 – Marzo 2010**
+
+**Proyecto:** ESET NOD32 Antivirus & ESET Smart Security
+
+Realicé tareas de testing de caja negra para productos de software de seguridad, con foco en calidad funcional y reporte de incidencias.

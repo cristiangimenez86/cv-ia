@@ -1,2 +1,3 @@
 - Google Associate Cloud Engineer — Abril 2023 (ID: aOL1JI)
 - Google Cloud Digital Leader — Diciembre 2022 (ID: QSLPH9)
+- TS: Microsoft SharePoint 2010, Application Development — Mayo 2013

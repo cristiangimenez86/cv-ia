@@ -1,9 +1,5 @@
-# ATS SSG CV Guardrails Specification
+## MODIFIED Requirements
 
-## Purpose
-Define ATS and semantic guardrails for locale CV pages so generated output remains parseable, accessible, and resilient without client-side rendering dependencies.
-
-## Requirements
 ### Requirement: Core CV content MUST be ATS-compliant in initial HTML
 The frontend MUST deliver CV sections as SSR/SSG-rendered semantic HTML so ATS parsers can extract content without client-side execution, and locale-authored content MUST remain faithful to source markdown semantics after rendering.
 
