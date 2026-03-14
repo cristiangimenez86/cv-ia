@@ -15,7 +15,7 @@ WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY frontend/ ./
-COPY content/ ./content/
+COPY content/ /content/
 
 RUN npm run build
 
@@ -29,19 +29,15 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-COPY frontend/package*.json ./
-RUN npm ci --omit=dev
-
-COPY --from=builder /app/.next ./.next
+# Standalone output + static assets
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/src ./src
-COPY --from=builder /app/content ./content
-COPY --from=builder /app/next.config.ts ./next.config.ts
-COPY --from=builder /app/next-env.d.ts ./next-env.d.ts
-COPY --from=builder /app/postcss.config.mjs ./postcss.config.mjs
-COPY --from=builder /app/tsconfig.json ./tsconfig.json
+
+# Content needed by SSR at runtime
+COPY --from=builder /content /content
 
 USER nextjs
 EXPOSE 80
 
-CMD ["node", "./node_modules/next/dist/bin/next", "start", "-p", "80"]
+CMD ["node", "server.js"]
