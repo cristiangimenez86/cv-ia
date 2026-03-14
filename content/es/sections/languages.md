@@ -1,2 +1,0 @@
-- Español — Nativo
-- Inglés — Competencia profesional (B2)

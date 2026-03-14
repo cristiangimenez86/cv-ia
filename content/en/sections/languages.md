@@ -1,2 +1,0 @@
-- Spanish — Native
-- English — Professional working proficiency (B2)

@@ -1,2 +1,0 @@
-- Ubicación: Barcelona, España · Remoto · Híbrido
-- Preferencias: .NET, React, Cloud-native architectures, Microservices
