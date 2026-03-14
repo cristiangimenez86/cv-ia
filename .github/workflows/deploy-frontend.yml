@@ -45,16 +45,21 @@ jobs:
         env:
           PORTAINER_URL: ${{ secrets.PORTAINER_URL }}
           PORTAINER_TOKEN: ${{ secrets.PORTAINER_TOKEN }}
+          PORTAINER_STACK_ID: ${{ secrets.PORTAINER_STACK_ID }}
         run: |
           set -euo pipefail
 
-          if [ -z "${PORTAINER_URL:-}" ] || [ -z "${PORTAINER_TOKEN:-}" ]; then
-            echo "PORTAINER_URL or PORTAINER_TOKEN is missing."
+          if [ -z "${PORTAINER_URL:-}" ] || [ -z "${PORTAINER_TOKEN:-}" ] || [ -z "${PORTAINER_STACK_ID:-}" ]; then
+            echo "PORTAINER_URL, PORTAINER_TOKEN or PORTAINER_STACK_ID is missing."
             exit 1
           fi
 
           BASE_URL="${PORTAINER_URL%/}"
-          STACK_ID="3"
+          STACK_ID="${PORTAINER_STACK_ID}"
+          if ! [[ "${STACK_ID}" =~ ^[0-9]+$ ]]; then
+            echo "PORTAINER_STACK_ID must be numeric. Received: ${STACK_ID}"
+            exit 1
+          fi
           LAST_HTTP_CODE=""
           LAST_AUTH_SCHEME=""
 
