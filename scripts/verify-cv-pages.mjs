@@ -1,7 +1,14 @@
-import { spawn } from "node:child_process";
-import { execSync } from "node:child_process";
+import {
+  killPortListeners,
+  spawnNpmInherited,
+  waitForExit,
+  waitForHttpOk
+} from "./lib/process-utils.mjs";
 
 const baseUrl = process.env.CV_BASE_URL ?? "http://localhost:3000";
+const parsedBaseUrl = new URL(baseUrl);
+const targetPort =
+  Number(parsedBaseUrl.port) || (parsedBaseUrl.protocol === "https:" ? 443 : 80);
 const locales = ["en", "es"];
 const requiredSectionIds = [
   "about",
@@ -14,53 +21,39 @@ const requiredSectionIds = [
   "contact"
 ];
 
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const npmArgs = ["--prefix", "frontend", "run", "start"];
+let server = null;
+let shuttingDown = false;
 
-const waitForServer = async () => {
-  const timeoutMs = 60000;
-  const startedAt = Date.now();
-  while (Date.now() - startedAt < timeoutMs) {
-    try {
-      const response = await fetch(`${baseUrl}/en`);
-      if (response.ok) return;
-    } catch {}
-    await sleep(1500);
-  }
-  throw new Error("Timed out waiting for Next.js server.");
-};
+const shutdown = async () => {
+  if (shuttingDown) return;
+  shuttingDown = true;
 
-const npmCommand = process.platform === "win32" ? "powershell.exe" : "npm";
-const npmArgs =
-  process.platform === "win32"
-    ? ["-NoProfile", "-Command", "npm --prefix frontend run start"]
-    : ["--prefix", "frontend", "run", "start"];
-
-try {
-  const output = execSync("powershell -NoProfile -Command \"$conn=Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if($conn){$conn.OwningProcess}\"", { encoding: "utf8" }).trim();
-  if (output.length > 0) {
-    execSync(`powershell -NoProfile -Command "Stop-Process -Id ${output} -Force"`, { stdio: "ignore" });
-  }
-} catch {}
-
-const server = spawn(npmCommand, npmArgs, { stdio: "inherit" });
-
-const shutdown = () => {
-  if (server.exitCode === null && !server.killed) {
+  if (server && server.exitCode === null && !server.killed) {
     server.kill("SIGINT");
+    await waitForExit(server, 5000);
   }
-  try {
-    const output = execSync("powershell -NoProfile -Command \"$conn=Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue; if($conn){$conn.OwningProcess}\"", { encoding: "utf8" }).trim();
-    if (output.length > 0) {
-      execSync(`powershell -NoProfile -Command "Stop-Process -Id ${output} -Force"`, { stdio: "ignore" });
-    }
-  } catch {}
+
+  if (server && server.exitCode === null && !server.killed) {
+    server.kill("SIGTERM");
+    await waitForExit(server, 3000);
+  }
+
+  // Fallback cleanup in case child process tree leaves listeners behind.
+  await killPortListeners(targetPort, { excludePids: [process.pid] });
 };
 
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
+process.on("SIGINT", () => {
+  void shutdown().finally(() => process.exit(130));
+});
+process.on("SIGTERM", () => {
+  void shutdown().finally(() => process.exit(143));
+});
 
 try {
-  await waitForServer();
+  await killPortListeners(targetPort, { excludePids: [process.pid] });
+  server = spawnNpmInherited(npmArgs);
+  await waitForHttpOk(`${baseUrl}/en`);
 
   for (const locale of locales) {
     const response = await fetch(`${baseUrl}/${locale}`);
@@ -80,5 +73,5 @@ try {
 
   console.log("Locale page validation passed.");
 } finally {
-  shutdown();
+  await shutdown();
 }

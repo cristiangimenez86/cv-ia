@@ -1,7 +1,16 @@
-import { spawn } from "node:child_process";
+import { spawnInherited, spawnNpmInherited, waitForExit } from "./lib/process-utils.mjs";
 
 const run = (label, command, args) => {
-  const child = spawn(command, args, { stdio: "inherit", shell: true });
+  const child = spawnInherited(command, args);
+  return withExitCode(label, child);
+};
+
+const runNpm = (label, args) => {
+  const child = spawnNpmInherited(args);
+  return withExitCode(label, child);
+};
+
+const withExitCode = (label, child) => {
   child.on("exit", (code) => {
     if (code !== 0) {
       process.exitCode = code ?? 1;
@@ -12,16 +21,33 @@ const run = (label, command, args) => {
 
 const procs = [
   run("backend", "dotnet", ["run", "--project", "backend/CvIa.Backend.csproj"]),
-  run("frontend", "npm", ["--prefix", "frontend", "run", "dev"])
+  runNpm("frontend", ["--prefix", "frontend", "run", "dev"])
 ];
 
-const shutdown = () => {
+let shuttingDown = false;
+
+const shutdown = async () => {
+  if (shuttingDown) return;
+  shuttingDown = true;
+
   for (const proc of procs) {
-    if (!proc.child.killed) {
+    if (proc.child.exitCode === null && !proc.child.killed) {
       proc.child.kill("SIGINT");
+    }
+  }
+
+  await Promise.all(procs.map((proc) => waitForExit(proc.child, 5000)));
+
+  for (const proc of procs) {
+    if (proc.child.exitCode === null && !proc.child.killed) {
+      proc.child.kill("SIGTERM");
     }
   }
 };
 
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
+process.on("SIGINT", () => {
+  void shutdown();
+});
+process.on("SIGTERM", () => {
+  void shutdown();
+});
