@@ -2,5 +2,5 @@
 - Lideré un sistema de generación de tarjetas virtuales (AMEX/Mastercard) de punta a punta, con foco en seguridad y escalabilidad.
 - Implementé Azure Key Vault y Auth0 para robustecer autenticación y gestión de secretos.
 - Integré 300 locales de Burger King al ecosistema existente con un hosted service en .NET y validaciones de negocio.
-- Mejoré el performance de una app crítica en ~30% y llevé la cobertura de unit tests a ~80%.
-- Reduje issues de conectividad en una app de alto tráfico (~40%) y aumenté el feedback positivo en stores (~20%).
+- Mejoré el rendimiento de una aplicación crítica en ~30% y llevé la cobertura de pruebas unitarias a ~80%.
+- Reduje incidencias de conectividad en una aplicación de alto tráfico (~40%) y aumenté el feedback positivo en tiendas de aplicaciones (~20%).

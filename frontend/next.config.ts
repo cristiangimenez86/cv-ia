@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: "standalone",
   outputFileTracingRoot: workspaceRoot,
+  images: {
+    qualities: [75, 90]
+  },
   turbopack: {
     root: workspaceRoot
   }

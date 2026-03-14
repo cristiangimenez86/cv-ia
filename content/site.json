@@ -79,12 +79,12 @@
   "profile": {
     "fullName": "Cristian Gimenez",
     "headline": {
-      "en": "Senior Software Engineer",
-      "es": "Senior Software Engineer"
+      "en": "Senior Full Stack .NET Developer",
+      "es": "Ingeniero de Software Senior"
     },
     "openTo": {
-      "en": "Senior Software Engineer",
-      "es": "Senior Software Engineer"
+      "en": "Senior Full Stack .NET Developer",
+      "es": "Desarrollador Full Stack .NET Senior"
     },
     "location": {
       "en": "Barcelona, Spain",
@@ -105,6 +105,9 @@
     { "name": "Freelance", "logo": "/assets/Freelance-logo.png", "url": "#" },
     { "name": "Adrenalin Media", "logo": "/assets/Adrenalin-logo.jpg", "url": "https://adrenalin.com.au" },
     { "name": "Stratos Technology Partners", "logo": "/assets/Stratos-logo.jpg", "url": "https://www.stratos.net.nz" },
-    { "name": "Globant", "logo": "/assets/Globant-logo.png", "url": "https://www.globant.com" }
+    { "name": "Globant", "logo": "/assets/Globant-logo.png", "url": "https://www.globant.com" },
+    { "name": "Rosario Bus S.A.", "logo": "/assets/RosarioBus-logo.png", "url": "https://www.rosariobus.com.ar" },
+    { "name": "Neoris", "logo": "/assets/Neoris-logo.png", "url": "https://www.neoris.com" },
+    { "name": "SIADNet", "logo": "/assets/SIADNet-logo.png", "url": "https://www.linkedin.com/company/siadnet" }
   ]
 }

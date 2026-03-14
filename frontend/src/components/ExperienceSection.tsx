@@ -212,13 +212,18 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                     group.projects[0].achievements.length === 0 &&
                     group.projects[0].technologies.length === 0 &&
                     !!group.projects[0].description;
+                  const headerMarginClass = isSimpleEntry
+                    ? "ml-10"
+                    : group.logoConfig
+                      ? "ml-4"
+                      : "";
                   const subtitle = isSimpleEntry
                     ? `${group.projects[0].description}${group.location ? ` · ${group.location}` : ""}`
                     : `${group.role}${group.location ? ` · ${group.location}` : ""}`;
 
                   return (
                 <div
-                  className={`flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 ${isSimpleEntry ? "ml-5 mb-4" : "mb-4"} ${group.logoConfig ? "ml-4" : ""}`}
+                  className={`flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-4 ${headerMarginClass}`}
                 >
                   <div className="flex items-start gap-3">
                     {group.logoConfig && (
