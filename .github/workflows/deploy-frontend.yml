@@ -55,6 +55,8 @@ jobs:
 
           BASE_URL="${PORTAINER_URL%/}"
           STACK_ID="3"
+          LAST_HTTP_CODE=""
+          LAST_AUTH_SCHEME=""
 
           request_with_auth() {
             local method="$1"
@@ -86,10 +88,13 @@ jobs:
               fi
 
               if [ "${status}" -ge 200 ] && [ "${status}" -lt 300 ]; then
+                LAST_HTTP_CODE="${status}"
+                LAST_AUTH_SCHEME="${scheme}"
                 echo "Auth scheme '${scheme}' succeeded (${status})."
                 return 0
               fi
 
+              LAST_HTTP_CODE="${status}"
               echo "Auth scheme '${scheme}' returned HTTP ${status}."
             done
 
@@ -109,21 +114,41 @@ jobs:
             exit 1
           fi
 
-          RECREATE_URL="${BASE_URL}/api/stacks/${STACK_ID}/recreate?endpointId=${ENDPOINT_ID}"
-          echo "Triggering recreate at ${RECREATE_URL}"
-
           RECREATE_OUTPUT_FILE="/tmp/portainer-recreate-response.json"
-          if request_with_auth "POST" "${RECREATE_URL}" "${RECREATE_OUTPUT_FILE}" '{"pullImage":true}'; then
-            HTTP_CODE="200"
+          DEPLOY_SUCCESS="false"
+          HAS_GIT_CONFIG="$(echo "${STACK_JSON}" | jq -r '((.GitConfig // .gitConfig // {}) | length) > 0')"
+
+          if [ "${HAS_GIT_CONFIG}" = "true" ]; then
+            echo "Detected Git-managed stack metadata. Prioritizing git redeploy endpoint."
+            CANDIDATES=(
+              "POST|${BASE_URL}/api/stacks/${STACK_ID}/git/redeploy?endpointId=${ENDPOINT_ID}|"
+              "POST|${BASE_URL}/api/stacks/${STACK_ID}/recreate?endpointId=${ENDPOINT_ID}|{\"pullImage\":true}"
+            )
           else
-            HTTP_CODE="401"
+            echo "Detected non Git-managed stack metadata. Prioritizing recreate endpoint."
+            CANDIDATES=(
+              "POST|${BASE_URL}/api/stacks/${STACK_ID}/recreate?endpointId=${ENDPOINT_ID}|{\"pullImage\":true}"
+              "POST|${BASE_URL}/api/stacks/${STACK_ID}/git/redeploy?endpointId=${ENDPOINT_ID}|"
+            )
           fi
 
-          echo "Portainer recreate HTTP status: ${HTTP_CODE}"
-          echo "Portainer response body:"
-          cat "${RECREATE_OUTPUT_FILE}" || true
+          # Portainer API differs by stack type/version. Try known endpoints.
+          for candidate in "${CANDIDATES[@]}"; do
+            IFS='|' read -r method url payload <<< "${candidate}"
+            echo "Trying Portainer deploy endpoint: ${url}"
 
-          if [ "${HTTP_CODE}" -lt 200 ] || [ "${HTTP_CODE}" -ge 300 ]; then
-            echo "Portainer stack recreate failed."
+            if request_with_auth "${method}" "${url}" "${RECREATE_OUTPUT_FILE}" "${payload}"; then
+              DEPLOY_SUCCESS="true"
+              echo "Portainer deploy endpoint succeeded (${LAST_HTTP_CODE}) using auth '${LAST_AUTH_SCHEME}'."
+              break
+            fi
+
+            echo "Endpoint failed with HTTP ${LAST_HTTP_CODE}."
+            echo "Response body:"
+            cat "${RECREATE_OUTPUT_FILE}" || true
+          done
+
+          if [ "${DEPLOY_SUCCESS}" != "true" ]; then
+            echo "Portainer stack redeploy failed for all known endpoints."
             exit 1
           fi
