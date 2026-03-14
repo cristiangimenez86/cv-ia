@@ -31,8 +31,8 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 # Standalone output + static assets
 COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next/static ./frontend/.next/static
+COPY --from=builder /app/public ./frontend/public
 
 # Content needed by SSR at runtime
 COPY --from=builder /content /content
@@ -40,4 +40,4 @@ COPY --from=builder /content /content
 USER nextjs
 EXPOSE 80
 
-CMD ["node", "server.js"]
+CMD ["node", "frontend/server.js"]
