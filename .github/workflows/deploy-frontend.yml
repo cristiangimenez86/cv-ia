@@ -119,38 +119,46 @@ jobs:
           HAS_GIT_CONFIG="$(echo "${STACK_JSON}" | jq -r '((.GitConfig // .gitConfig // {}) | length) > 0')"
 
           if [ "${HAS_GIT_CONFIG}" = "true" ]; then
-            echo "Detected Git-managed stack metadata. Prioritizing git redeploy endpoint."
-            CANDIDATES=(
-              "POST|${BASE_URL}/api/stacks/${STACK_ID}/git/redeploy?endpointId=${ENDPOINT_ID}|"
-              "POST|${BASE_URL}/api/stacks/${STACK_ID}/pull?endpointId=${ENDPOINT_ID}|"
-              "POST|${BASE_URL}/api/stacks/${STACK_ID}/recreate?endpointId=${ENDPOINT_ID}|{\"pullImage\":true}"
-            )
+            echo "Detected Git-managed stack metadata. Trying git redeploy endpoint."
+            if request_with_auth "POST" "${BASE_URL}/api/stacks/${STACK_ID}/git/redeploy?endpointId=${ENDPOINT_ID}" "${RECREATE_OUTPUT_FILE}"; then
+              DEPLOY_SUCCESS="true"
+              echo "Git redeploy succeeded (${LAST_HTTP_CODE}) using auth '${LAST_AUTH_SCHEME}'."
+            else
+              echo "Git redeploy failed with HTTP ${LAST_HTTP_CODE}."
+              echo "Response body:"
+              cat "${RECREATE_OUTPUT_FILE}" || true
+            fi
           else
-            echo "Detected non Git-managed stack metadata. Prioritizing pull endpoint."
-            CANDIDATES=(
-              "POST|${BASE_URL}/api/stacks/${STACK_ID}/pull?endpointId=${ENDPOINT_ID}|"
-              "POST|${BASE_URL}/api/stacks/${STACK_ID}/recreate?endpointId=${ENDPOINT_ID}|{\"pullImage\":true}"
-              "POST|${BASE_URL}/api/stacks/${STACK_ID}/git/redeploy?endpointId=${ENDPOINT_ID}|"
-            )
+            echo "Detected non Git-managed stack metadata. Using stack file + update flow."
+            STACK_FILE_OUTPUT="/tmp/portainer-stack-file.json"
+            if request_with_auth "GET" "${BASE_URL}/api/stacks/${STACK_ID}/file?endpointId=${ENDPOINT_ID}" "${STACK_FILE_OUTPUT}"; then
+              STACK_FILE_CONTENT="$(jq -r '.StackFileContent // .stackFileContent // empty' "${STACK_FILE_OUTPUT}")"
+              if [ -z "${STACK_FILE_CONTENT}" ]; then
+                echo "Stack file content was empty; cannot build update payload."
+              else
+                STACK_ENV_JSON="$(echo "${STACK_JSON}" | jq -c '.Env // .env // []')"
+                UPDATE_PAYLOAD="$(jq -cn \
+                  --arg stackFileContent "${STACK_FILE_CONTENT}" \
+                  --argjson env "${STACK_ENV_JSON}" \
+                  '{StackFileContent: $stackFileContent, Env: $env, Prune: true, PullImage: true}')"
+
+                if request_with_auth "PUT" "${BASE_URL}/api/stacks/${STACK_ID}?endpointId=${ENDPOINT_ID}" "${RECREATE_OUTPUT_FILE}" "${UPDATE_PAYLOAD}"; then
+                  DEPLOY_SUCCESS="true"
+                  echo "Stack update succeeded (${LAST_HTTP_CODE}) using auth '${LAST_AUTH_SCHEME}'."
+                else
+                  echo "Stack update failed with HTTP ${LAST_HTTP_CODE}."
+                  echo "Response body:"
+                  cat "${RECREATE_OUTPUT_FILE}" || true
+                fi
+              fi
+            else
+              echo "Could not retrieve stack file for update flow (HTTP ${LAST_HTTP_CODE})."
+              echo "Response body:"
+              cat "${STACK_FILE_OUTPUT}" || true
+            fi
           fi
 
-          # Portainer API differs by stack type/version. Try known endpoints.
-          for candidate in "${CANDIDATES[@]}"; do
-            IFS='|' read -r method url payload <<< "${candidate}"
-            echo "Trying Portainer deploy endpoint: ${url}"
-
-            if request_with_auth "${method}" "${url}" "${RECREATE_OUTPUT_FILE}" "${payload}"; then
-              DEPLOY_SUCCESS="true"
-              echo "Portainer deploy endpoint succeeded (${LAST_HTTP_CODE}) using auth '${LAST_AUTH_SCHEME}'."
-              break
-            fi
-
-            echo "Endpoint failed with HTTP ${LAST_HTTP_CODE}."
-            echo "Response body:"
-            cat "${RECREATE_OUTPUT_FILE}" || true
-          done
-
           if [ "${DEPLOY_SUCCESS}" != "true" ]; then
-            echo "Portainer stack redeploy failed for all known endpoints."
+            echo "Portainer stack redeploy failed for detected stack strategy."
             exit 1
           fi
