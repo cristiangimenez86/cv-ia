@@ -31,7 +31,12 @@ RUN addgroup --system --gid 1001 nodejs && \
 
 # Standalone output + static assets
 COPY --from=builder /app/.next/standalone ./
+# Copy assets for both standalone layouts:
+# - /app/server.js + /app/.next/static + /app/public
+# - /app/frontend/server.js + /app/frontend/.next/static + /app/frontend/public
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next/static ./frontend/.next/static
+COPY --from=builder /app/public ./public
 COPY --from=builder /app/public ./frontend/public
 
 # Content needed by SSR at runtime
@@ -40,4 +45,4 @@ COPY --from=builder /content /content
 USER nextjs
 EXPOSE 80
 
-CMD ["node", "frontend/server.js"]
+CMD ["sh", "-c", "if [ -f /app/server.js ]; then node /app/server.js; elif [ -f /app/frontend/server.js ]; then node /app/frontend/server.js; else echo 'No standalone server.js found in /app or /app/frontend' && ls -la /app && ls -la /app/frontend 2>/dev/null; exit 1; fi"]
