@@ -3,6 +3,11 @@ import { notFound } from "next/navigation";
 import { loadSiteConfig, loadSectionsForLocale } from "@/lib/content/loader";
 import type { Locale } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
+import {
+  buildCvAiExportDocument,
+  getCvAiExportFilename,
+  toDownloadDataUrl,
+} from "@/lib/export/cvAiExport";
 import { Header } from "@/components/Header";
 import { Section } from "@/components/Section";
 import { ExperienceSection } from "@/components/ExperienceSection";
@@ -60,6 +65,26 @@ export default async function LocalePage({ params }: PageProps) {
 
   const config = loadSiteConfig();
   const sections = loadSectionsForLocale(config, localeParam);
+  const downloadJson =
+    config.profile
+      ? (() => {
+          const exportPayload = buildCvAiExportDocument({
+            locale: localeParam,
+            profile: config.profile,
+            headline: getLocalized(config.profile.headline, localeParam),
+            location: getLocalized(config.profile.location, localeParam),
+            targetRole: config.profile.openTo
+              ? getLocalized(config.profile.openTo, localeParam)
+              : undefined,
+            sections,
+          });
+
+          return {
+            href: toDownloadDataUrl(exportPayload),
+            filename: getCvAiExportFilename(localeParam),
+          };
+        })()
+      : null;
 
   return (
     <>
@@ -74,11 +99,19 @@ export default async function LocalePage({ params }: PageProps) {
                 <div
                   className={`hidden lg:block lg:fixed lg:left-[var(--sidebar-left)] lg:top-[var(--sidebar-offset)] lg:w-[var(--sidebar-width)] lg:z-10`}
                 >
-                  <ProfileCard profile={config.profile} locale={localeParam} />
+                  <ProfileCard
+                    profile={config.profile}
+                    locale={localeParam}
+                    downloadJson={downloadJson}
+                  />
                 </div>
                 {/* Mobile: inline card */}
                 <div className="lg:hidden">
-                  <ProfileCard profile={config.profile} locale={localeParam} />
+                  <ProfileCard
+                    profile={config.profile}
+                    locale={localeParam}
+                    downloadJson={downloadJson}
+                  />
                 </div>
               </div>
             )}

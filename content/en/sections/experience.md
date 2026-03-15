@@ -5,10 +5,11 @@
 
 **Context:** Payment processing platform with business-critical integrations.
 
-**Responsibility:** Contributed to the development and maintenance of payment processing integrations, focusing on reliability, scalability, and secure transaction flows.
+**Responsibility:** Contributed to the development and maintenance of payment processing integrations and AI-enabled features, focusing on reliability, scalability, and secure transaction flows.
 
 **Achievements:**
 - Successfully migrated multiple services from Azure Functions to Service Bus–based worker architecture, enabling Kubernetes-native deployments.
+- Applied an SDD framework with OpenSpec to define and execute product changes with stronger traceability from proposal and design to implementation.
 
 **Technologies:** .NET 8, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
 

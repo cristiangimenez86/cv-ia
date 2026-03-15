@@ -1,9 +1,5 @@
-# Markdown-Driven CV Rendering Specification
+## MODIFIED Requirements
 
-## Purpose
-Define how locale CV pages are rendered from markdown and metadata sources so content remains canonical, deterministic, and locale-consistent.
-
-## Requirements
 ### Requirement: Locale CV pages MUST render from markdown content source
 The frontend MUST render `/en` and `/es` CV pages from `/content/{en|es}/sections/*.md` and locale metadata in `content/site.json`, without hardcoded CV body content in UI components, and MUST preserve single-language consistency within each locale content file.
 

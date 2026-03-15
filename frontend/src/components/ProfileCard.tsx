@@ -6,6 +6,10 @@ import { getLocalized } from "@/lib/content/types";
 type ProfileCardProps = {
   profile: Profile;
   locale: Locale;
+  downloadJson?: {
+    href: string;
+    filename: string;
+  } | null;
 };
 
 /** WhatsApp URL from phone: +34 685 890 502 -> https://wa.me/34685890502 */
@@ -61,7 +65,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
  * All data from content/site.json (no hardcoded CV text).
  * Stays fixed when scrolling (sticky sidebar).
  */
-export function ProfileCard({ profile, locale }: ProfileCardProps) {
+export function ProfileCard({ profile, locale, downloadJson }: ProfileCardProps) {
   const headline = getLocalized(profile.headline, locale);
   const location = getLocalized(profile.location, locale);
   const whatsappUrl = profile.phone ? getWhatsAppUrl(profile.phone) : null;
@@ -158,13 +162,24 @@ export function ProfileCard({ profile, locale }: ProfileCardProps) {
           >
             {downloadPdfLabel}
           </button>
-          <button
-            type="button"
-            className="profile-card-btn w-full h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border flex items-center justify-center"
-            aria-label={downloadJsonLabel}
-          >
-            {downloadJsonLabel}
-          </button>
+          {downloadJson ? (
+            <a
+              href={downloadJson.href}
+              download={downloadJson.filename}
+              className="profile-card-btn w-full h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border flex items-center justify-center"
+              aria-label={downloadJsonLabel}
+            >
+              {downloadJsonLabel}
+            </a>
+          ) : (
+            <button
+              type="button"
+              className="profile-card-btn w-full h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border flex items-center justify-center"
+              aria-label={downloadJsonLabel}
+            >
+              {downloadJsonLabel}
+            </button>
+          )}
         </div>
       </div>
     </aside>
