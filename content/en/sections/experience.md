@@ -32,7 +32,7 @@
 ## Career Transition — Professional Transition
 **Barcelona, Spain | June 2023 – December 2023**
 
-Professional transition period, including time off, before resuming full-time delivery in Barcelona.
+Professional transition period, including time off, before resuming full-time work at Travelport in Barcelona.
 
 
 ## Full Stack .NET Core Developer — UST

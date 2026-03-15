@@ -50,10 +50,10 @@ function findCompany(
  */
 function parseExperienceBlocks(body: string): ParsedBlock[] {
   const blocks: ParsedBlock[] = [];
-  const rawBlocks = body.split(/\n## /).filter((b) => b.trim());
+  const rawBlocks = body.split(/\r?\n## /).filter((b) => b.trim());
 
   for (const block of rawBlocks) {
-    const lines = block.split("\n");
+    const lines = block.split(/\r?\n/);
     const firstLine = (lines[0] ?? "").replace(/^##\s*/, "").trim();
     const rest = lines.slice(1).join("\n");
 
@@ -74,7 +74,7 @@ function parseExperienceBlocks(body: string): ParsedBlock[] {
     let achievements: string[] = [];
     let technologies: string[] = [];
 
-    const locDatesMatch = rest.match(/\*\*([^*]+)\*\*\s*\n/);
+    const locDatesMatch = rest.match(/\*\*([^*]+)\*\*\s*\r?\n/);
     if (locDatesMatch) {
       const locDates = locDatesMatch[1];
       const pipeIdx = locDates.indexOf("|");
@@ -91,7 +91,7 @@ function parseExperienceBlocks(body: string): ParsedBlock[] {
       project = projectMatch[2].trim();
     }
 
-    const achievementsMatch = rest.match(/\*\*(Achievements|Logros):\*\*\s*\n([\s\S]*?)(?=\*\*(?:Project|Proyecto|Achievements|Logros|Technologies|Tecnologías)|$)/i);
+    const achievementsMatch = rest.match(/\*\*(Achievements|Logros):\*\*\s*\r?\n([\s\S]*?)(?=\*\*(?:Project|Proyecto|Achievements|Logros|Technologies|Tecnologías)|$)/i);
     if (achievementsMatch) {
       const bulletText = achievementsMatch[2];
       achievements = bulletText
@@ -109,8 +109,8 @@ function parseExperienceBlocks(body: string): ParsedBlock[] {
         .filter(Boolean);
     }
 
-    const projectBlock = rest.match(/\*\*(Project|Proyecto):\*\*[^\n]+\n\n([\s\S]*?)(?=\*\*(?:Achievements|Logros):\*\*|$)/i);
-    const noProjectBlock = rest.match(/\*\*[^*]+\*\*\s*\n\n([\s\S]*?)(?=\*\*(?:Achievements|Logros):\*\*|$)/i);
+    const projectBlock = rest.match(/\*\*(Project|Proyecto):\*\*[^\r\n]+\r?\n\r?\n([\s\S]*?)(?=\*\*(?:Achievements|Logros):\*\*|$)/i);
+    const noProjectBlock = rest.match(/\*\*[^*]+\*\*\s*\r?\n\r?\n([\s\S]*?)(?=\*\*(?:Achievements|Logros):\*\*|$)/i);
     if (projectBlock) {
       description = projectBlock[2].trim();
     } else if (noProjectBlock) {
@@ -213,12 +213,13 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                     group.projects[0].technologies.length === 0 &&
                     !!group.projects[0].description;
                   const headerMarginClass = isSimpleEntry
-                    ? "ml-10"
+                    ? "ml-7"
                     : group.logoConfig
                       ? "ml-4"
                       : "";
+                  const simpleDescription = group.projects[0]?.description ?? "";
                   const subtitle = isSimpleEntry
-                    ? `${group.projects[0].description}${group.location ? ` · ${group.location}` : ""}`
+                    ? simpleDescription
                     : `${group.role}${group.location ? ` · ${group.location}` : ""}`;
 
                   return (
@@ -282,12 +283,47 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                     )}
 
                     {(proj.description || proj.achievements.length > 0) && (
-                      <ul className="list-disc list-inside text-base text-foreground space-y-1 mb-4">
-                        {proj.description && <li className="leading-relaxed">{proj.description}</li>}
-                        {proj.achievements.map((a, i) => (
-                          <li key={i}>{a}</li>
-                        ))}
-                      </ul>
+                      <div className="mb-4">
+                        {proj.description && (
+                          <div className="text-base text-foreground space-y-1.5 mb-3">
+                            {proj.description
+                              .split("\n")
+                              .map((line) => line.trim())
+                              .filter(Boolean)
+                              .map((line, i) => (
+                                (() => {
+                                  const cleanLine = line.replace(/\*\*(.*?)\*\*/g, "$1");
+                                  const labelMatch = cleanLine.match(
+                                    /^([A-Za-zÁÉÍÓÚÜÑáéíóúüñ][A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s/]+:)\s*(.*)$/
+                                  );
+
+                                  if (labelMatch) {
+                                    const [, label, value] = labelMatch;
+                                    return (
+                                      <p key={i} className="leading-relaxed">
+                                        <span className="font-semibold">{label}</span>
+                                        {value ? ` ${value}` : ""}
+                                      </p>
+                                    );
+                                  }
+
+                                  return (
+                                    <p key={i} className="leading-relaxed">
+                                      {cleanLine}
+                                    </p>
+                                  );
+                                })()
+                              ))}
+                          </div>
+                        )}
+                        {proj.achievements.length > 0 && (
+                          <ul className="list-disc list-inside text-base text-foreground space-y-1">
+                            {proj.achievements.map((a, i) => (
+                              <li key={i}>{a}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
                     )}
 
                     {proj.technologies.length > 0 && (
