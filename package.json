@@ -16,7 +16,7 @@
     "build:backend": "dotnet build backend/src/CvIa.Api/CvIa.Api.csproj",
     "build": "npm run build:frontend && npm run build:backend",
     "test:frontend": "npm --prefix frontend run test",
-    "test:backend": "dotnet test backend/tests/CvIa.Tests/CvIa.Tests.csproj --no-build",
+    "test:backend": "dotnet test backend/tests/CvIa.Tests/CvIa.Tests.csproj",
     "test": "npm run test:frontend && npm run test:backend",
     "verify:boundary": "node scripts/check-frontend-boundary.mjs",
     "verify:health": "node scripts/check-health.mjs",
