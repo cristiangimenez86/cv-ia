@@ -1,3 +1,7 @@
 <Solution>
-  <Project Path="CvIa.Backend.csproj" />
+  <Project Path="src/CvIa.Api/CvIa.Api.csproj" />
+  <Project Path="src/CvIa.Application/CvIa.Application.csproj" />
+  <Project Path="src/CvIa.Domain/CvIa.Domain.csproj" />
+  <Project Path="src/CvIa.Infrastructure/CvIa.Infrastructure.csproj" />
+  <Project Path="tests/CvIa.Tests/CvIa.Tests.csproj" />
 </Solution>

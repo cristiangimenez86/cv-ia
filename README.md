@@ -3,7 +3,7 @@
 This repository contains the baseline scaffold for:
 
 - `frontend` (Next.js App Router, TypeScript strict)
-- `backend` (.NET Web API with `GET /health`)
+- `backend` (.NET Web API with `GET /health`, `GET /api/v1/cv`, and `POST /api/v1/chat/completions`)
 - `infra` (Docker Compose dependencies)
 
 ## Environment Configuration
@@ -12,13 +12,13 @@ Copy the template environment files before first run:
 
 ```powershell
 copy frontend\.env.example frontend\.env.local
-copy backend\.env.example backend\.env
+copy backend\src\CvIa.Api\.env.example backend\src\CvIa.Api\.env
 ```
 
 Configuration rules:
 
 - Frontend reads `NEXT_PUBLIC_API_BASE_URL` and calls backend endpoints only.
-- Backend reads `ASPNETCORE_URLS` and `SERVICE_NAME`.
+- Backend reads `ASPNETCORE_URLS`, `SERVICE_NAME`, and `CvApi:PdfAssetPath` (from `appsettings.json`).
 - Secrets must remain backend-only. Do not put OpenAI keys in frontend env files.
 - CV content is loaded from `/content/{en|es}/sections/*.md`.
 - ATS compliance is mandatory: core CV content must be SSR/SSG in initial HTML (no client-only rendering path).

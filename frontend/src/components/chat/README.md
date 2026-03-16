@@ -36,11 +36,14 @@ async function chatCompletion(userText: string, locale: string): Promise<string>
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/v1/chat/completions`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: userText, lang: locale }),
+    body: JSON.stringify({
+      lang: locale,
+      messages: [{ role: "user", content: userText }],
+    }),
   });
   if (!res.ok) throw new Error(`Chat API error: ${res.status}`);
   const data = await res.json();
-  return data.reply;
+  return data.message.content;
 }
 ```
 

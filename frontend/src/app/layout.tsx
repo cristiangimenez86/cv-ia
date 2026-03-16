@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
+import { BackendHealthIndicator } from "@/components/BackendHealthIndicator";
 import { ChatWidget } from "@/components/chat/ChatWidget";
 
 const geistSans = Geist({
@@ -28,6 +29,7 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        <BackendHealthIndicator />
         <Providers>{children}</Providers>
         <ChatWidget />
       </body>

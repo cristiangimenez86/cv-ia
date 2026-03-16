@@ -65,6 +65,8 @@ export default async function LocalePage({ params }: PageProps) {
 
   const config = loadSiteConfig();
   const sections = loadSectionsForLocale(config, localeParam);
+  const apiBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
+  const downloadPdfHref = `${apiBaseUrl}/api/v1/cv?lang=${localeParam}`;
   const downloadJson =
     config.profile
       ? (() => {
@@ -88,7 +90,7 @@ export default async function LocalePage({ params }: PageProps) {
 
   return (
     <>
-      <Header config={config} locale={localeParam} />
+      <Header config={config} locale={localeParam} downloadPdfHref={downloadPdfHref} />
       <main className="w-full pt-6 pb-8">
         <div className="max-w-[var(--max-content-width)] mx-auto px-4 md:px-6 w-full">
           <div className="w-full grid grid-cols-1 lg:grid-cols-[var(--sidebar-width)_minmax(0,1fr)] gap-6 lg:gap-8">
@@ -102,6 +104,7 @@ export default async function LocalePage({ params }: PageProps) {
                   <ProfileCard
                     profile={config.profile}
                     locale={localeParam}
+                    downloadPdfHref={downloadPdfHref}
                     downloadJson={downloadJson}
                   />
                 </div>
@@ -110,6 +113,7 @@ export default async function LocalePage({ params }: PageProps) {
                   <ProfileCard
                     profile={config.profile}
                     locale={localeParam}
+                    downloadPdfHref={downloadPdfHref}
                     downloadJson={downloadJson}
                   />
                 </div>

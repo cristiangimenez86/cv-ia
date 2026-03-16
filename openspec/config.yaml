@@ -33,11 +33,10 @@ context: |
     - Frontend never talks to OpenAI directly. All AI logic lives in backend.
     - Chat answers must include citations (sourceId, title, snippet) per API contract.
 
-  API endpoints (target contract — only /health is implemented):
+  API endpoints (current contract):
     - GET  /health
-    - GET  /api/v1/cv?lang={es|en}           → CvDocument
-    - GET  /api/v1/cv/sections?lang={es|en}  → CvSectionsResponse
-    - POST /api/v1/chat/completions          → ChatResponse (with citations, rate limiting)
+    - GET  /api/v1/cv?lang={es|en}           → PDF download
+    - POST /api/v1/chat/completions          → ChatResponse
 
   Content-to-API mapping:
     - content/{lang}/site.json                  → profile, section ordering

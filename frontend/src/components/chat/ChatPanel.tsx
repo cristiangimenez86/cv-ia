@@ -48,20 +48,34 @@ function generateId(): string {
   return `msg-${nextId}-${Date.now()}`;
 }
 
-/**
- * Mock backend response. Replace with fetch to POST /api/v1/chat/completions.
- * TODO: Connect to real .NET backend endpoint.
- */
-async function mockChatCompletion(_userText: string): Promise<string> {
-  await new Promise((r) => setTimeout(r, 400));
-  return "(Mock) Puedo responder sobre mi experiencia en .NET, Azure y proyectos. Próximamente conectado al backend.";
+const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
+
+async function requestChatCompletion(userText: string, locale: string): Promise<string> {
+  const response = await fetch(`${API_BASE_URL}/api/v1/chat/completions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      lang: locale,
+      messages: [{ role: "user", content: userText }],
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Chat API error: ${response.status}`);
+  }
+
+  const payload = (await response.json()) as {
+    message?: { content?: string };
+  };
+
+  return payload.message?.content?.trim() || "No response content.";
 }
 
 /* ── Component ───────────────────────────────────────────────────────── */
 
 /**
  * Chat panel: header, scrollable messages, input bar.
- * State is in-memory only (useState). Backend is mocked for now.
+ * State is in-memory only (useState). Replies come from backend API.
  */
 export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelProps) {
   const [input, setInput] = useState("");
@@ -104,8 +118,7 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
       setIsLoading(true);
 
       try {
-        /* TODO: Replace mockChatCompletion with real backend call */
-        const reply = await mockChatCompletion(trimmed);
+        const reply = await requestChatCompletion(trimmed, locale);
         const assistantMsg: ChatMessage = {
           id: generateId(),
           role: "assistant",
@@ -113,12 +126,25 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
           createdAt: new Date(),
         };
         setMessages((prev) => [...prev, assistantMsg]);
+      } catch (error) {
+        const fallback =
+          locale === "es"
+            ? "No pude obtener respuesta del backend en este momento."
+            : "I couldn't get a response from the backend right now.";
+        const assistantMsg: ChatMessage = {
+          id: generateId(),
+          role: "assistant",
+          content: fallback,
+          createdAt: new Date(),
+        };
+        setMessages((prev) => [...prev, assistantMsg]);
+        console.error(error);
       } finally {
         setIsLoading(false);
         inputRef.current?.focus();
       }
     },
-    [isLoading],
+    [isLoading, locale],
   );
 
   const handleSend = useCallback(() => {

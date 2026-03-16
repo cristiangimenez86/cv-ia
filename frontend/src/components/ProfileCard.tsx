@@ -6,6 +6,7 @@ import { getLocalized } from "@/lib/content/types";
 type ProfileCardProps = {
   profile: Profile;
   locale: Locale;
+  downloadPdfHref: string;
   downloadJson?: {
     href: string;
     filename: string;
@@ -65,7 +66,12 @@ function WhatsAppIcon({ className }: { className?: string }) {
  * All data from content/site.json (no hardcoded CV text).
  * Stays fixed when scrolling (sticky sidebar).
  */
-export function ProfileCard({ profile, locale, downloadJson }: ProfileCardProps) {
+export function ProfileCard({
+  profile,
+  locale,
+  downloadPdfHref,
+  downloadJson,
+}: ProfileCardProps) {
   const headline = getLocalized(profile.headline, locale);
   const location = getLocalized(profile.location, locale);
   const whatsappUrl = profile.phone ? getWhatsAppUrl(profile.phone) : null;
@@ -155,13 +161,13 @@ export function ProfileCard({ profile, locale, downloadJson }: ProfileCardProps)
 
         {/* Download buttons — visual only, no action */}
         <div className="space-y-2 border-t border-divider pt-3">
-          <button
-            type="button"
+          <a
+            href={downloadPdfHref}
             className="profile-card-btn profile-card-btn-primary w-full h-9 px-4 text-sm font-semibold rounded-lg bg-primary text-primary-foreground shadow-sm flex items-center justify-center"
             aria-label={downloadPdfLabel}
           >
             {downloadPdfLabel}
-          </button>
+          </a>
           {downloadJson ? (
             <a
               href={downloadJson.href}

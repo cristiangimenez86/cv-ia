@@ -10,6 +10,7 @@ export const SIDEBAR_STICKY_TOP = "top-[var(--sidebar-offset)]";
 type Props = {
   config: SiteConfig;
   locale: Locale;
+  downloadPdfHref: string;
 };
 
 /**
@@ -17,7 +18,7 @@ type Props = {
  * - Left: name + headline
  * - Right: nav (scroll-spy) + Download PDF + locale + theme
  */
-export function Header({ config, locale }: Props) {
+export function Header({ config, locale, downloadPdfHref }: Props) {
   const navItems = config.navSections
     .map((id) => {
       const section = config.requiredSections?.find((s) => s.id === id);
@@ -49,13 +50,13 @@ export function Header({ config, locale }: Props) {
           <NavLinks navItems={navItems} />
 
           <div className="flex items-center gap-2 shrink-0">
-            <button
-              type="button"
+            <a
+              href={downloadPdfHref}
               className="header-btn-primary h-9 px-4 text-sm font-semibold rounded-lg bg-primary text-primary-foreground shadow-sm flex items-center justify-center"
               aria-label={downloadLabel}
             >
               {downloadLabel}
-            </button>
+            </a>
 
             <LocaleToggle currentLocale={locale} />
             <ThemeToggle />
