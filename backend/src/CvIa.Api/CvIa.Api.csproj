@@ -8,4 +8,10 @@
     <ProjectReference Include="..\CvIa.Application\CvIa.Application.csproj" />
     <ProjectReference Include="..\CvIa.Infrastructure\CvIa.Infrastructure.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\**\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

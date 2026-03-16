@@ -90,24 +90,75 @@ npm run verify:cv:ats
 npm run verify:cv-pages
 ```
 
-## Frontend Deployment Automation
+## Deployment Automation
 
 Frontend deploy is automated via `.github/workflows/deploy-frontend.yml`.
+Backend deploy is automated via `.github/workflows/deploy-backend.yml`.
 
 Trigger rules:
 
 - Runs only on `push` to `main`
 - Does not run on pull request events
 
-Pipeline steps:
+Frontend pipeline steps:
 
 1. Build Docker image with repository-root context and `frontend/Dockerfile`
 2. Push `cristiangimenez86/cv-web:latest` to Docker Hub
 3. Call Portainer API to recreate stack `3`
 
-Required GitHub repository secrets:
+Backend pipeline steps:
+
+1. Build Docker image with repository-root context and `backend/Dockerfile`
+2. Push `cristiangimenez86/cv-api:latest` to Docker Hub
+3. Call Portainer API to recreate the configured stack
+
+Required GitHub repository secrets (both workflows):
 
 - `DOCKERHUB_USERNAME`
 - `DOCKERHUB_TOKEN`
 - `PORTAINER_URL`
 - `PORTAINER_TOKEN`
+- `PORTAINER_STACK_ID`
+
+## Portainer Stack Example (Frontend + Backend)
+
+```yaml
+services:
+  cv:
+    image: cristiangimenez86/cv-web:latest
+    container_name: cv
+    ports:
+      - "8055:80"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:80/en"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      cv:
+        ipv4_address: 172.26.0.10
+
+  api:
+    image: cristiangimenez86/cv-api:latest
+    container_name: cv-api
+    ports:
+      - "8056:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      cv:
+        ipv4_address: 172.26.0.11
+
+networks:
+  cv:
+    ipam:
+      config:
+        - subnet: 172.26.0.0/24
+```

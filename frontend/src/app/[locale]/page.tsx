@@ -65,7 +65,7 @@ export default async function LocalePage({ params }: PageProps) {
 
   const config = loadSiteConfig();
   const sections = loadSectionsForLocale(config, localeParam);
-  const apiBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
+  const apiBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
   const downloadPdfHref = `${apiBaseUrl}/api/v1/cv?lang=${localeParam}`;
   const downloadJson =
     config.profile

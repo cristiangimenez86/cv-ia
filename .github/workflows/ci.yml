@@ -27,7 +27,7 @@ jobs:
         run: npm --prefix frontend install
 
       - name: Restore backend
-        run: dotnet restore backend/CvIa.Backend.csproj
+        run: dotnet restore backend/src/CvIa.Api/CvIa.Api.csproj
 
       - name: Lint frontend
         run: npm run lint:frontend
@@ -60,7 +60,7 @@ jobs:
         run: docker compose -f infra/docker-compose.yml up -d
 
       - name: Start backend for readiness check
-        run: dotnet run --project backend/CvIa.Backend.csproj &
+        run: dotnet run --project backend/src/CvIa.Api/CvIa.Api.csproj &
 
       - name: Wait for backend health
         run: npm run verify:health
