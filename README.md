@@ -12,16 +12,25 @@ Copy the template environment files before first run:
 
 ```powershell
 copy frontend\.env.example frontend\.env.local
-copy backend\src\CvIa.Api\.env.example backend\src\CvIa.Api\.env
 ```
 
 Configuration rules:
 
 - Frontend reads `NEXT_PUBLIC_API_BASE_URL` and calls backend endpoints only.
 - Backend reads `ASPNETCORE_URLS`, `SERVICE_NAME`, and `CvApi:PdfAssetPath` (from `appsettings.json`).
+- For local backend runs, set backend env vars via your shell/IDE run profile (the `.env.example` file is a reference template).
 - Secrets must remain backend-only. Do not put OpenAI keys in frontend env files.
 - CV content is loaded from `/content/{en|es}/sections/*.md`.
 - ATS compliance is mandatory: core CV content must be SSR/SSG in initial HTML (no client-only rendering path).
+
+## Local Integration Source of Truth
+
+See `docs/local-integration.md` for the current integration matrix:
+
+- run modes (`dev` without Docker, Docker with proxy)
+- effective URLs and ports (`3000`, `8080`, `8055`, `8056`)
+- frontend/backend env vars and verification scripts
+- runtime request flow (`frontend -> proxy -> api`)
 
 ## First-Run Commands
 
@@ -47,6 +56,12 @@ Run frontend (new terminal):
 
 ```powershell
 npm run dev:frontend
+```
+
+Run frontend + backend together (single terminal):
+
+```powershell
+npm run dev
 ```
 
 Stop infrastructure:
@@ -147,7 +162,7 @@ services:
       - "8056:8080"
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8080/health"]
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:8080/health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3

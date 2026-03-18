@@ -115,14 +115,14 @@ Required sections (order):
   - Same card/button styles as other sections (rounded-xl, border, surface; profile-card-btn)
 
 ## Chat Widget (Floating — Implemented)
-- **Status:** Implemented. Components: `ChatWidget`, `ChatPanel`, `ChatInput`, `ChatMessageList` under `apps/web/src/components/chat/`.
+- **Status:** Implemented. Components: `ChatWidget`, `ChatPanel`, `ChatInput`, `ChatMessageList` under `frontend/src/components/chat/`.
 - Integrated in root layout (`layout.tsx`). Reads locale reactively via `usePathname()` so UI strings update on locale toggle.
 - FAB (floating action button) anchored bottom-right (`position: fixed`, `z-index: 50`).
 - Desktop: panel 380×520 px, bottom-right. Mobile: nearly fullscreen (`inset-3`).
 - Panel uses `.card` class, same tokens as CV cards (surface, border, shadow).
 - User bubbles: `bg-primary text-primary-foreground`. Assistant bubbles: `bg-surface-2 text-foreground border-border`.
 - Suggestion chips shown before first message; bilingual (es/en).
-- Backend is mocked; replace `mockChatCompletion` in `ChatPanel.tsx` with real fetch (see `apps/web/src/components/chat/README.md`).
+- Backend integration is active via `POST /api/v1/chat/completions` (see `frontend/src/components/chat/README.md`).
 - Accessibility:
   - Keyboard-focusable; Escape closes panel; auto-focus on input.
   - Accessible labels on FAB and close button.

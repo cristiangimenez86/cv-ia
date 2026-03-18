@@ -2,7 +2,10 @@
 
 This document describes the **conceptual data model** for CV.
 The project is intentionally content-driven: CV information is stored as **Markdown/JSON** under `content/`
-and is served by the backend as structured JSON for the frontend.
+and can be served by the backend as structured JSON for the frontend.
+
+> Current implementation note: frontend CV rendering currently loads `content/` directly at build/runtime.
+> The `CvDocument` projection in this document is an architectural target/contract model.
 
 The chat feature is **CV-scoped** and must not answer outside the CV content.
 

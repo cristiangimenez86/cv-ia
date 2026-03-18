@@ -20,7 +20,7 @@ const withExitCode = (label, child) => {
 };
 
 const procs = [
-  run("backend", "dotnet", ["run", "--project", "backend/CvIa.Backend.csproj"]),
+  run("backend", "dotnet", ["run", "--project", "backend/src/CvIa.Api/CvIa.Api.csproj"]),
   runNpm("frontend", ["--prefix", "frontend", "run", "dev"])
 ];
 
