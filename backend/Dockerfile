@@ -28,6 +28,9 @@ RUN apt-get update \
 
 COPY --from=build /app/publish ./
 
+# CV markdown for chat (CvApi:MarkdownContentRoot defaults to ../../../content → /content in container)
+COPY content/ /content/
+
 EXPOSE 8080
 
 ENTRYPOINT ["dotnet", "CvIa.Api.dll"]
