@@ -1,3 +1,11 @@
+# Stack: cv-ia-local
+#
+# Set these in Portainer (Stack → Environment) or a .env next to this file:
+#   OPENAI_API_KEY=sk-... or sk-proj-...
+#   OPENAI_PROJECT_ID=proj_...   # required for sk-proj- keys
+#   OPENAI_ORG_ID=org-...        # optional
+#   POSTGRES_PASSWORD=...        # optional; default below is dev-only
+
 name: cv-ia-local
 
 services:
@@ -57,6 +65,9 @@ services:
     restart: unless-stopped
     depends_on:
       - api
+    environment:
+      # Next route handlers (e.g. /api/* proxy) reach the API on the Docker network
+      BACKEND_INTERNAL_URL: http://api:8080
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:80/en"]
       interval: 30s
@@ -68,6 +79,13 @@ services:
     image: cristiangimenez86/cv-api:latest
     container_name: cv-api
     restart: unless-stopped
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      OpenAiChat__ApiKey: ${OPENAI_API_KEY}
+      OpenAiChat__OpenAiProjectId: ${OPENAI_PROJECT_ID}
+      OpenAiChat__OpenAiOrganizationId: ${OPENAI_ORG_ID:-}
+      OpenAiChat__UseStubChatService: "false"
     ports:
       - "8056:8080"
     healthcheck:
@@ -84,7 +102,7 @@ services:
     environment:
       POSTGRES_DB: cvia
       POSTGRES_USER: cvia
-      POSTGRES_PASSWORD: cvia
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cvia}
     ports:
       - "5432:5432"
     healthcheck:

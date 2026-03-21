@@ -50,7 +50,7 @@ function generateId(): string {
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 
-/** Retries for OpenAI / upstream 429 (often transient). */
+/** Retries upstream 429 responses (often transient). */
 const MAX_429_RETRIES = 2;
 
 function sleep(ms: number): Promise<void> {
@@ -201,19 +201,19 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
           if (detail) {
             const hintEs =
               result.apiCode === "provider_auth"
-                ? " Revisá la API key y la facturación en platform.openai.com."
+                ? " Revisá la API key y la facturación en el panel del proveedor."
                 : result.apiCode === "rate_limited"
-                  ? " Esperá un momento o revisá límites/cuota en OpenAI."
+                  ? " Esperá un momento o revisá límites/cuota del proveedor."
                   : result.apiCode === "provider_forbidden"
-                    ? " En OpenAI: la clave restringida debe permitir el modelo configurado en el backend (p. ej. gpt-4o-mini) o usá una clave con permisos All."
+                    ? " La clave restringida debe permitir el modelo configurado en el backend (p. ej. gpt-4o-mini) o usá una clave con permisos All."
                     : "";
             const hintEn =
               result.apiCode === "provider_auth"
-                ? " Check your API key and billing at platform.openai.com."
+                ? " Check your API key and billing in the provider dashboard."
                 : result.apiCode === "rate_limited"
-                  ? " Wait a moment or check usage limits on OpenAI."
+                  ? " Wait a moment or check usage limits with the provider."
                   : result.apiCode === "provider_forbidden"
-                    ? " In OpenAI: allow the backend model (e.g. gpt-4o-mini) on this restricted key, or use a key with All permissions."
+                    ? " Allow the backend model (e.g. gpt-4o-mini) on this restricted key, or use a key with All permissions."
                     : "";
             fallback =
               locale === "es"
@@ -227,8 +227,8 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
           } else if (status >= 500) {
             fallback =
               locale === "es"
-                ? "El servidor respondió con error. Revisá que el backend esté en marcha, la API key de OpenAI y la facturación (crédito > $0)."
-                : "The server returned an error. Check that the backend is running, your OpenAI API key, and billing (credit balance).";
+                ? "El servidor respondió con error. Revisá que el backend esté en marcha, la API key del proveedor y la facturación (crédito > $0)."
+                : "The server returned an error. Check that the backend is running, your provider API key, and billing (credit balance).";
           } else if (status === 0) {
             fallback =
               locale === "es"
@@ -237,8 +237,8 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
           } else if (status === 403) {
             fallback =
               locale === "es"
-                ? "OpenAI rechazó la solicitud (permisos). Revisá la clave restringida y el modelo en OpenAiChat:Model, o usá una clave con permisos All."
-                : "OpenAI rejected the request (permissions). Check your restricted key and OpenAiChat:Model, or use a key with All permissions.";
+                ? "El proveedor rechazó la solicitud (permisos). Revisá la clave restringida y el modelo en la configuración del backend, o usá una clave con permisos All."
+                : "The provider rejected the request (permissions). Check your restricted key and the backend chat model setting, or use a key with All permissions.";
           } else {
             fallback =
               locale === "es"

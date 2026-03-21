@@ -42,7 +42,7 @@ async function requestChatCompletion(userText: string, locale: string): Promise<
 
 The backend endpoint contract is defined in `docs/api/api-spec.yml`.
 
-The API builds the assistant’s CV context from the same markdown sections as the site; that text is **loaded when the backend starts** (not on every message). Changing CV `.md` files requires restarting the backend for chat to see them (`docs/architecture/openai-chat-backend.md`).
+The API builds the assistant’s CV context from the same markdown sections as the site; that text is **loaded when the backend starts** (not on every message). Changing CV `.md` files requires restarting the backend for chat to see them (see architecture docs under `docs/architecture/` for the chat pipeline).
 
 ## Testing locally
 
