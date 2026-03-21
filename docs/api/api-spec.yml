@@ -5,6 +5,7 @@ info:
   description: >
     Public CV API + CV-scoped chat. This API is designed for a CV website (Next.js) with a backend in .NET.
     OpenAI keys must exist only in the backend service.
+    Recommended default model for chat completions (backend configuration): gpt-4o-mini (cost/quality balance; override per deployment).
 
     Implementation status: This spec is the current contract.
     Implemented endpoints: `/health`, `/api/v1/cv` (PDF download), and `/api/v1/chat/completions`.
@@ -71,6 +72,7 @@ paths:
       description: >
         Returns an assistant message constrained to the CV content.
         The backend must enforce guardrails (no unrelated knowledge, no secrets, no arbitrary browsing).
+        The upstream OpenAI model is a backend deployment setting; the documented default is gpt-4o-mini.
       requestBody:
         required: true
         content:
@@ -86,6 +88,24 @@ paths:
                 $ref: "#/components/schemas/ChatResponse"
         "400":
           description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "429":
+          description: AI provider rate limit (when using live OpenAI backend)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
+          description: Bad gateway — AI provider error, auth failure, or unreachable provider
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "504":
+          description: AI provider request timed out
           content:
             application/json:
               schema:
@@ -129,6 +149,9 @@ components:
 
     ChatRequest:
       type: object
+      description: >
+        Temperature and max completion tokens are not accepted from clients;
+        they are configured only via OpenAiChat in appsettings on the server.
       required: [lang, messages]
       properties:
         lang:
@@ -140,16 +163,6 @@ components:
           minItems: 1
           items:
             $ref: "#/components/schemas/ChatMessage"
-        temperature:
-          type: number
-          minimum: 0
-          maximum: 2
-          default: 0.3
-        maxTokens:
-          type: integer
-          minimum: 64
-          maximum: 2048
-          default: 512
 
     ChatMessage:
       type: object

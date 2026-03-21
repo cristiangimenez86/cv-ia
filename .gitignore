@@ -12,3 +12,7 @@ obj/
 .env.development.local
 .env.test.local
 .env.production.local
+# Local OpenAI secrets (copy from appsettings.Development.example.json)
+backend/src/CvIa.Api/appsettings.Development.json
+/backend/src/CvIa.Api/appsettings.Development.example.json
+/backend/src/CvIa.Api/appsettings.Production.json

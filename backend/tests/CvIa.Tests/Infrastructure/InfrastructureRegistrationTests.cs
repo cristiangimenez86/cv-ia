@@ -1,9 +1,11 @@
 using CvIa.Application;
 using CvIa.Infrastructure;
-using Microsoft.Extensions.FileProviders;
+using CvIa.Infrastructure.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Moq;
 using Xunit;
 
 namespace CvIa.Tests.Infrastructure;
@@ -17,30 +19,30 @@ public sealed class InfrastructureRegistrationTests
             .AddInMemoryCollection(
                 new Dictionary<string, string?>
                 {
-                    ["CvApi:PdfAssetPath"] = "Assets/Cv/cv.pdf"
+                    ["CvApi:PdfAssetPath"] = "Assets/Cv/cv.pdf",
+                    ["OpenAiChat:UseStubChatService"] = "true",
+                    ["OpenAiChat:ApiKey"] = ""
                 }
             )
             .Build();
 
+        var hostEnv = new Mock<IHostEnvironment>();
+        hostEnv.Setup(e => e.ContentRootPath).Returns(AppContext.BaseDirectory);
+        hostEnv.Setup(e => e.ApplicationName).Returns("CvIa.Tests");
+        hostEnv.Setup(e => e.EnvironmentName).Returns("Development");
+        hostEnv.Setup(e => e.ContentRootFileProvider).Returns(new NullFileProvider());
+
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton<IConfiguration>(configuration);
-        services.AddSingleton<IHostEnvironment>(
-            new FakeHostEnvironment { ContentRootPath = AppContext.BaseDirectory }
-        );
-        services.AddInfrastructure();
+        services.AddSingleton(hostEnv.Object);
+        services.AddInfrastructure(configuration);
         var provider = services.BuildServiceProvider();
 
         Assert.NotNull(provider.GetService<ICvQueryService>());
+        Assert.NotNull(provider.GetService<CvMarkdownContentStore>());
+        Assert.NotNull(provider.GetService<IOpenAiChatPromptBuilder>());
         Assert.NotNull(provider.GetService<IChatCompletionService>());
     }
-}
-
-file sealed class FakeHostEnvironment : IHostEnvironment
-{
-    public string EnvironmentName { get; set; } = "Development";
-    public string ApplicationName { get; set; } = "CvIa.Tests";
-    public string ContentRootPath { get; set; } = AppContext.BaseDirectory;
-    public IFileProvider ContentRootFileProvider { get; set; } = new NullFileProvider();
 }
 

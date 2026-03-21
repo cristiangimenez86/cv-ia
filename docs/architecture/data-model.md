@@ -182,3 +182,5 @@ The filesystem content under `content/` uses a different structure than the API 
 | `content/{lang}/sections/contact.md` | ContactSection: Open to, Location, Preferences (parsed); buttons use `profile.email` and `profile.links` (LinkedIn, GitHub) |
 
 The backend aggregates Markdown/JSON from `content/` and projects it into the `CvDocument` schema. Section IDs (e.g. `experience`, `core-skills`) are stable and used for citations.
+
+**Chat:** the same section markdown (ordered by `CvSectionIds.json`) is loaded **once at process startup** into an in-memory store for `POST /api/v1/chat/completions`; requests do not re-read those files from disk (restart the API to refresh).

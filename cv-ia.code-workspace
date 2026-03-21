@@ -1,0 +1,11 @@
+{
+  "folders": [
+    {
+      "path": ".",
+      "name": "cv-ia"
+    }
+  ],
+  "settings": {
+    "dotnet.defaultSolution": "backend/CvIa.sln"
+  }
+}

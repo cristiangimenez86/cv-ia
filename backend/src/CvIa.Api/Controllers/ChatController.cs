@@ -1,5 +1,6 @@
 using CvIa.Application;
 using CvIa.Application.Contracts;
+using CvIa.Application.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CvIa.Api.Controllers;
@@ -9,10 +10,7 @@ namespace CvIa.Api.Controllers;
 public sealed class ChatController(IChatCompletionService chatCompletionService, ILogger<ChatController> logger) : ControllerBase
 {
     [HttpPost]
-    public async Task<ActionResult<ChatResponseDto>> Complete(
-        [FromBody] ChatRequestDto request,
-        CancellationToken cancellationToken
-    )
+    public async Task<ActionResult<ChatResponseDto>> Complete([FromBody] ChatRequestDto request, CancellationToken cancellationToken)
     {
         if (request is null)
         {
@@ -31,8 +29,16 @@ public sealed class ChatController(IChatCompletionService chatCompletionService,
         }
 
         logger.LogInformation("Processing chat completion request with {MessageCount} message(s)", request.Messages.Count);
-        var response = await chatCompletionService.CompleteAsync(request, cancellationToken);
-        return Ok(response);
+
+        try
+        {
+            var response = await chatCompletionService.CompleteAsync(request, cancellationToken);
+            return Ok(response);
+        }
+        catch (OpenAiChatException ex)
+        {
+            return StatusCode(ex.StatusCode, ex.Error);
+        }
     }
 }
 

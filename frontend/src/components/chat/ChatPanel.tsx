@@ -50,25 +50,91 @@ function generateId(): string {
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 
-async function requestChatCompletion(userText: string, locale: string): Promise<string> {
-  const response = await fetch(`${API_BASE_URL}/api/v1/chat/completions`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      lang: locale,
-      messages: [{ role: "user", content: userText }],
-    }),
+/** Retries for OpenAI / upstream 429 (often transient). */
+const MAX_429_RETRIES = 2;
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function retryAfterMs(response: Response): number | null {
+  const raw = response.headers.get("retry-after");
+  if (!raw) {
+    return null;
+  }
+  const sec = Number.parseInt(raw, 10);
+  if (!Number.isFinite(sec) || sec < 0) {
+    return null;
+  }
+  return Math.min(sec * 1000, 60_000);
+}
+
+type ChatResult =
+  | { ok: true; content: string }
+  | { ok: false; status: number; apiMessage?: string; apiCode?: string };
+
+function parseApiErrorBody(text: string): { message?: string; code?: string } {
+  try {
+    const j = JSON.parse(text) as Record<string, unknown>;
+    const msg = j.message ?? j.Message;
+    const code = j.code ?? j.Code;
+    return {
+      message: typeof msg === "string" ? msg : undefined,
+      code: typeof code === "string" ? code : undefined,
+    };
+  } catch {
+    return {};
+  }
+}
+
+/**
+ * Fetches chat completion without throwing on HTTP errors — avoids Next.js dev overlay
+ * on expected failures (4xx/5xx). Retries 429 a few times with backoff.
+ */
+async function requestChatCompletion(userText: string, locale: string): Promise<ChatResult> {
+  const url = `${API_BASE_URL}/api/v1/chat/completions`;
+  const body = JSON.stringify({
+    lang: locale,
+    messages: [{ role: "user", content: userText }],
   });
 
-  if (!response.ok) {
-    throw new Error(`Chat API error: ${response.status}`);
+  let attempt = 0;
+
+  while (true) {
+    let response: Response;
+    try {
+      response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      });
+    } catch {
+      return { ok: false, status: 0 };
+    }
+
+    if (response.ok) {
+      try {
+        const payload = (await response.json()) as {
+          message?: { content?: string };
+        };
+        const content = payload.message?.content?.trim() || "No response content.";
+        return { ok: true, content };
+      } catch {
+        return { ok: false, status: 502 };
+      }
+    }
+
+    if (response.status === 429 && attempt < MAX_429_RETRIES) {
+      const waitMs = retryAfterMs(response) ?? 1500 * (attempt + 1);
+      await sleep(waitMs);
+      attempt += 1;
+      continue;
+    }
+
+    const errText = await response.text();
+    const { message: apiMessage, code: apiCode } = parseApiErrorBody(errText);
+    return { ok: false, status: response.status, apiMessage, apiCode };
   }
-
-  const payload = (await response.json()) as {
-    message?: { content?: string };
-  };
-
-  return payload.message?.content?.trim() || "No response content.";
 }
 
 /* ── Component ───────────────────────────────────────────────────────── */
@@ -118,27 +184,75 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
       setIsLoading(true);
 
       try {
-        const reply = await requestChatCompletion(trimmed, locale);
-        const assistantMsg: ChatMessage = {
-          id: generateId(),
-          role: "assistant",
-          content: reply,
-          createdAt: new Date(),
-        };
-        setMessages((prev) => [...prev, assistantMsg]);
-      } catch (error) {
-        const fallback =
-          locale === "es"
-            ? "No pude obtener respuesta del backend en este momento."
-            : "I couldn't get a response from the backend right now.";
-        const assistantMsg: ChatMessage = {
-          id: generateId(),
-          role: "assistant",
-          content: fallback,
-          createdAt: new Date(),
-        };
-        setMessages((prev) => [...prev, assistantMsg]);
-        console.error(error);
+        const result = await requestChatCompletion(trimmed, locale);
+
+        if (result.ok) {
+          const assistantMsg: ChatMessage = {
+            id: generateId(),
+            role: "assistant",
+            content: result.content,
+            createdAt: new Date(),
+          };
+          setMessages((prev) => [...prev, assistantMsg]);
+        } else {
+          const status = result.status;
+          const detail = result.apiMessage?.trim();
+          let fallback: string;
+          if (detail) {
+            const hintEs =
+              result.apiCode === "provider_auth"
+                ? " Revisá la API key y la facturación en platform.openai.com."
+                : result.apiCode === "rate_limited"
+                  ? " Esperá un momento o revisá límites/cuota en OpenAI."
+                  : result.apiCode === "provider_forbidden"
+                    ? " En OpenAI: la clave restringida debe permitir el modelo configurado en el backend (p. ej. gpt-4o-mini) o usá una clave con permisos All."
+                    : "";
+            const hintEn =
+              result.apiCode === "provider_auth"
+                ? " Check your API key and billing at platform.openai.com."
+                : result.apiCode === "rate_limited"
+                  ? " Wait a moment or check usage limits on OpenAI."
+                  : result.apiCode === "provider_forbidden"
+                    ? " In OpenAI: allow the backend model (e.g. gpt-4o-mini) on this restricted key, or use a key with All permissions."
+                    : "";
+            fallback =
+              locale === "es"
+                ? `${detail}${hintEs}`
+                : `${detail}${hintEn}`;
+          } else if (status === 429) {
+            fallback =
+              locale === "es"
+                ? "Límite de uso alcanzado (demasiadas solicitudes). Probá de nuevo en un momento."
+                : "Rate limit reached. Please try again in a moment.";
+          } else if (status >= 500) {
+            fallback =
+              locale === "es"
+                ? "El servidor respondió con error. Revisá que el backend esté en marcha, la API key de OpenAI y la facturación (crédito > $0)."
+                : "The server returned an error. Check that the backend is running, your OpenAI API key, and billing (credit balance).";
+          } else if (status === 0) {
+            fallback =
+              locale === "es"
+                ? "No pude conectar con el backend. ¿Está corriendo en el puerto 8080? Reiniciá el front si cambiaste .env.local."
+                : "Couldn't reach the backend. Is it running on port 8080? Restart the dev server if you changed .env.local.";
+          } else if (status === 403) {
+            fallback =
+              locale === "es"
+                ? "OpenAI rechazó la solicitud (permisos). Revisá la clave restringida y el modelo en OpenAiChat:Model, o usá una clave con permisos All."
+                : "OpenAI rejected the request (permissions). Check your restricted key and OpenAiChat:Model, or use a key with All permissions.";
+          } else {
+            fallback =
+              locale === "es"
+                ? "No se pudo completar el chat. Revisá la consola o probá de nuevo."
+                : "Could not complete the chat. Check the console or try again.";
+          }
+          const assistantMsg: ChatMessage = {
+            id: generateId(),
+            role: "assistant",
+            content: fallback,
+            createdAt: new Date(),
+          };
+          setMessages((prev) => [...prev, assistantMsg]);
+        }
       } finally {
         setIsLoading(false);
         inputRef.current?.focus();

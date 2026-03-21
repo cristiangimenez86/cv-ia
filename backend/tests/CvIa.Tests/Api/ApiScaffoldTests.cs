@@ -1,19 +1,19 @@
 using System.Net;
 using System.Net.Http.Json;
 using CvIa.Application.Contracts;
+using CvIa.Tests;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
 
 namespace CvIa.Tests.Api;
 
-public sealed class ApiScaffoldTests : IClassFixture<WebApplicationFactory<Program>>
+/// <summary>Smoke tests against the API host (stub chat; no real OpenAI).</summary>
+public sealed class ApiScaffoldTests : IClassFixture<StubOpenAiWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public ApiScaffoldTests(WebApplicationFactory<Program> factory)
-    {
+    public ApiScaffoldTests(StubOpenAiWebApplicationFactory factory) =>
         _client = factory.CreateClient();
-    }
 
     [Fact]
     public async Task Health_ShouldReturnExpectedPayloadShape()
@@ -52,9 +52,7 @@ public sealed class ApiScaffoldTests : IClassFixture<WebApplicationFactory<Progr
     {
         var request = new ChatRequestDto(
             Lang: "en",
-            Messages: [new ChatMessageDto("user", "Hello")],
-            Temperature: null,
-            MaxTokens: null
+            Messages: [new ChatMessageDto("user", "Hello")]
         );
 
         var response = await _client.PostAsJsonAsync("/api/v1/chat/completions", request);
@@ -72,9 +70,7 @@ public sealed class ApiScaffoldTests : IClassFixture<WebApplicationFactory<Progr
     {
         var request = new ChatRequestDto(
             Lang: "en",
-            Messages: [new ChatMessageDto("user", "throw")],
-            Temperature: null,
-            MaxTokens: null
+            Messages: [new ChatMessageDto("user", "throw")]
         );
 
         var response = await _client.PostAsJsonAsync("/api/v1/chat/completions", request);

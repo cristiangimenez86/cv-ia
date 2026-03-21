@@ -14,7 +14,7 @@ const nextConfig: NextConfig = {
   },
   turbopack: {
     root: workspaceRoot
-  }
+  },
 };
 
 export default nextConfig;
