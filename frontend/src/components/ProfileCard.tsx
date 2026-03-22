@@ -7,10 +7,6 @@ type ProfileCardProps = {
   profile: Profile;
   locale: Locale;
   downloadPdfHref: string;
-  downloadJson?: {
-    href: string;
-    filename: string;
-  } | null;
 };
 
 /** WhatsApp URL from phone: +34 685 890 502 -> https://wa.me/34685890502 */
@@ -62,7 +58,7 @@ function WhatsAppIcon({ className }: { className?: string }) {
 }
 
 /**
- * Sidebar card: photo, name, headline, location, contact, social links, download buttons.
+ * Sidebar card: photo, name, headline, location, contact, social links, PDF download.
  * All data from content/site.json (no hardcoded CV text).
  * Stays fixed when scrolling (sticky sidebar).
  */
@@ -70,14 +66,12 @@ export function ProfileCard({
   profile,
   locale,
   downloadPdfHref,
-  downloadJson,
 }: ProfileCardProps) {
   const headline = getLocalized(profile.headline, locale);
   const location = getLocalized(profile.location, locale);
   const whatsappUrl = profile.phone ? getWhatsAppUrl(profile.phone) : null;
 
   const downloadPdfLabel = locale === "es" ? "Descargar PDF" : "Download PDF";
-  const downloadJsonLabel = locale === "es" ? "Descargar JSON" : "Download JSON";
 
   return (
     <aside className="w-full">
@@ -159,7 +153,7 @@ export function ProfileCard({
           )}
         </div>
 
-        {/* Download buttons — visual only, no action */}
+        {/* PDF download — JSON export can be re-added here + downloadJson prop + page.tsx payload */}
         <div className="space-y-2 border-t border-divider pt-3">
           <a
             href={downloadPdfHref}
@@ -168,24 +162,6 @@ export function ProfileCard({
           >
             {downloadPdfLabel}
           </a>
-          {downloadJson ? (
-            <a
-              href={downloadJson.href}
-              download={downloadJson.filename}
-              className="profile-card-btn w-full h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border flex items-center justify-center"
-              aria-label={downloadJsonLabel}
-            >
-              {downloadJsonLabel}
-            </a>
-          ) : (
-            <button
-              type="button"
-              className="profile-card-btn w-full h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border flex items-center justify-center"
-              aria-label={downloadJsonLabel}
-            >
-              {downloadJsonLabel}
-            </button>
-          )}
         </div>
       </div>
     </aside>

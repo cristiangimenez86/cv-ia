@@ -1,3 +1,4 @@
+import { Download } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { LocaleToggle } from "@/components/LocaleToggle";
 import { NavLinks } from "@/components/NavLinks";
@@ -18,11 +19,23 @@ type Props = {
  * - Left: name + headline
  * - Right: nav (scroll-spy) + Download PDF + locale + theme
  */
+/** Short nav labels (section H2 may still use full title from site.json). */
+function navLinkTitle(
+  sectionId: string,
+  locale: Locale,
+  fallback: string | undefined
+): string {
+  if (sectionId === "core-skills") {
+    return locale === "es" ? "Habilidades" : "Skills";
+  }
+  return fallback ?? sectionId;
+}
+
 export function Header({ config, locale, downloadPdfHref }: Props) {
   const navItems = config.navSections
     .map((id) => {
       const section = config.requiredSections?.find((s) => s.id === id);
-      const title = section?.title?.[locale] ?? id;
+      const title = navLinkTitle(id, locale, section?.title?.[locale]);
       return { id, title };
     })
     .filter((item) => item.title);
@@ -37,7 +50,7 @@ export function Header({ config, locale, downloadPdfHref }: Props) {
       <div className="max-w-[var(--max-content-width)] mx-auto h-[var(--header-height-mobile)] md:h-[var(--header-height-desktop)] px-4 md:px-6 flex items-center gap-6">
         {/* Left — pl-[7px] aligns with profile card content on mobile and desktop */}
         <div className="min-w-0 flex flex-col justify-center leading-tight pl-[7px]">
-          <span className="text-xl font-semibold text-foreground truncate">
+          <span className="text-xl font-bold dark:font-semibold text-foreground truncate">
             {config.profile?.fullName ?? config.projectName}
           </span>
           {headline ? (
@@ -52,10 +65,14 @@ export function Header({ config, locale, downloadPdfHref }: Props) {
           <div className="flex items-center gap-2 shrink-0">
             <a
               href={downloadPdfHref}
-              className="header-btn-primary h-9 px-4 text-sm font-semibold rounded-lg bg-primary text-primary-foreground shadow-sm flex items-center justify-center"
+              className="header-btn-primary inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary px-0 text-sm font-semibold text-primary-foreground shadow-sm md:w-auto md:px-4"
               aria-label={downloadLabel}
             >
-              {downloadLabel}
+              <Download
+                className="h-5 w-5 shrink-0 md:hidden"
+                aria-hidden
+              />
+              <span className="hidden md:inline">{downloadLabel}</span>
             </a>
 
             <LocaleToggle currentLocale={locale} />

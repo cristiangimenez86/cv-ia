@@ -34,6 +34,32 @@ type CompanyGroup = {
 /** Matches em dash (—), en dash (–), or hyphen (-) with surrounding spaces */
 const DASH_SEPARATOR = /\s+[—\u2013\u2014-]\s+/;
 
+/** Splits on commas not inside parentheses (keeps "AWS (A, B, C)" as one tag). */
+function splitTechnologyList(text: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === "(") {
+      depth += 1;
+    } else if (c === ")") {
+      depth = Math.max(0, depth - 1);
+    } else if (c === "," && depth === 0) {
+      const chunk = text.slice(start, i).trim();
+      if (chunk) {
+        parts.push(chunk);
+      }
+      start = i + 1;
+    }
+  }
+  const last = text.slice(start).trim();
+  if (last) {
+    parts.push(last);
+  }
+  return parts;
+}
+
 function findCompany(
   companyName: string,
   companies: ExperienceCompany[]
@@ -103,10 +129,7 @@ function parseExperienceBlocks(body: string): ParsedBlock[] {
 
     const techMatch = rest.match(/\*\*(Technologies|Tecnologías):\*\*\s*([^\n]+)/i);
     if (techMatch) {
-      technologies = techMatch[2]
-        .split(",")
-        .map((t) => t.trim())
-        .filter(Boolean);
+      technologies = splitTechnologyList(techMatch[2]);
     }
 
     const projectBlock = rest.match(/\*\*(Project|Proyecto):\*\*[^\r\n]+\r?\n\r?\n([\s\S]*?)(?=\*\*(?:Achievements|Logros):\*\*|$)/i);

@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { loadSiteConfig, loadSectionsForLocale } from "@/lib/content/loader";
 import type { Locale } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
-import {
-  buildCvAiExportDocument,
-  getCvAiExportFilename,
-  toDownloadDataUrl,
-} from "@/lib/export/cvAiExport";
 import { Header } from "@/components/Header";
 import { Section } from "@/components/Section";
 import { ExperienceSection } from "@/components/ExperienceSection";
@@ -23,6 +19,27 @@ const VALID_LOCALES: Locale[] = ["es", "en"];
 
 function isValidLocale(value: string): value is Locale {
   return VALID_LOCALES.includes(value as Locale);
+}
+
+/** Vertical rhythm + divider between stacked main sections (not first). */
+function SectionSpacing({
+  showDivider,
+  children,
+}: {
+  showDivider: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className={
+        showDivider
+          ? "min-w-0 mt-12 border-t border-border pt-12"
+          : "min-w-0"
+      }
+    >
+      {children}
+    </div>
+  );
 }
 
 type PageProps = {
@@ -67,26 +84,55 @@ export default async function LocalePage({ params }: PageProps) {
   const sections = loadSectionsForLocale(config, localeParam);
   const apiBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
   const downloadPdfHref = `${apiBaseUrl}/api/v1/cv?lang=${localeParam}`;
-  const downloadJson =
-    config.profile
-      ? (() => {
-          const exportPayload = buildCvAiExportDocument({
-            locale: localeParam,
-            profile: config.profile,
-            headline: getLocalized(config.profile.headline, localeParam),
-            location: getLocalized(config.profile.location, localeParam),
-            targetRole: config.profile.openTo
-              ? getLocalized(config.profile.openTo, localeParam)
-              : undefined,
-            sections,
-          });
 
-          return {
-            href: toDownloadDataUrl(exportPayload),
-            filename: getCvAiExportFilename(localeParam),
-          };
-        })()
-      : null;
+  const mainSections: ReactNode[] = [];
+  for (const section of sections) {
+    const showDivider = mainSections.length > 0;
+
+    let block: ReactNode;
+    switch (section.id) {
+      case "experience":
+        block = (
+          <ExperienceSection
+            section={section}
+            companies={config.experienceCompanies}
+          />
+        );
+        break;
+      case "core-skills":
+        block = <CoreSkillsSection section={section} />;
+        break;
+      case "key-achievements":
+        block = <KeyAchievementsSection section={section} />;
+        break;
+      case "education":
+        block = <EducationSection section={section} />;
+        break;
+      case "certifications":
+        block = <CertificationsSection section={section} />;
+        break;
+      case "languages":
+        block = <LanguagesSection section={section} />;
+        break;
+      case "contact":
+        block = (
+          <ContactSection
+            section={section}
+            profile={config.profile}
+            locale={localeParam}
+          />
+        );
+        break;
+      default:
+        block = <Section section={section} />;
+    }
+
+    mainSections.push(
+      <SectionSpacing key={section.id} showDivider={showDivider}>
+        {block}
+      </SectionSpacing>
+    );
+  }
 
   return (
     <>
@@ -105,7 +151,6 @@ export default async function LocalePage({ params }: PageProps) {
                     profile={config.profile}
                     locale={localeParam}
                     downloadPdfHref={downloadPdfHref}
-                    downloadJson={downloadJson}
                   />
                 </div>
                 {/* Mobile: inline card */}
@@ -114,43 +159,13 @@ export default async function LocalePage({ params }: PageProps) {
                     profile={config.profile}
                     locale={localeParam}
                     downloadPdfHref={downloadPdfHref}
-                    downloadJson={downloadJson}
                   />
                 </div>
               </div>
             )}
             <div className="min-w-0 w-full">
               <div className="card w-full p-6 md:p-8">
-                <div className="space-y-6">
-                  {sections.map((section) =>
-                    section.id === "experience" ? (
-                      <ExperienceSection
-                        key={section.id}
-                        section={section}
-                        companies={config.experienceCompanies}
-                      />
-                    ) : section.id === "core-skills" ? (
-                      <CoreSkillsSection key={section.id} section={section} />
-                    ) : section.id === "key-achievements" ? (
-                      <KeyAchievementsSection key={section.id} section={section} />
-                    ) : section.id === "education" ? (
-                      <EducationSection key={section.id} section={section} />
-                    ) : section.id === "certifications" ? (
-                      <CertificationsSection key={section.id} section={section} />
-                    ) : section.id === "languages" ? (
-                      <LanguagesSection key={section.id} section={section} />
-                    ) : section.id === "contact" ? (
-                      <ContactSection
-                        key={section.id}
-                        section={section}
-                        profile={config.profile}
-                        locale={localeParam}
-                      />
-                    ) : (
-                      <Section key={section.id} section={section} />
-                    )
-                  )}
-                </div>
+                <div className="flex flex-col">{mainSections}</div>
               </div>
             </div>
           </div>

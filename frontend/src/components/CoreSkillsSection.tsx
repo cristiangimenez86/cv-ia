@@ -9,30 +9,71 @@ type SkillGroup = {
   skills: string[];
 };
 
+/** Splits on commas not inside parentheses (e.g. Azure (A, B) stays one item). */
+function splitListItems(text: string): string[] {
+  const parts: string[] = [];
+  let depth = 0;
+  let start = 0;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === "(") {
+      depth += 1;
+    } else if (c === ")") {
+      depth = Math.max(0, depth - 1);
+    } else if (c === "," && depth === 0) {
+      const chunk = text.slice(start, i).trim();
+      if (chunk) {
+        parts.push(chunk);
+      }
+      start = i + 1;
+    }
+  }
+  const last = text.slice(start).trim();
+  if (last) {
+    parts.push(last);
+  }
+  return parts;
+}
+
 /**
- * Parses markdown into skill groups: ## Category followed by - skill1, skill2, ...
+ * Parses markdown into skill groups: ## Category followed by list items.
+ * Supports multi-line bullets (continuation lines without a leading "-").
  */
 function parseSkillGroups(body: string): SkillGroup[] {
   if (!body?.trim()) return [];
   const groups: SkillGroup[] = [];
   const blocks = body.split(/\n## /).filter((b) => b.trim());
 
+  const flushBullet = (text: string, skills: string[]) => {
+    const items = splitListItems(text);
+    skills.push(...items);
+  };
+
   for (const block of blocks) {
     const lines = block.split("\n");
     const firstLine = lines[0] ?? "";
-    const rest = lines.slice(1).join("\n");
+    const restLines = lines.slice(1);
 
     const title = firstLine.replace(/^##\s*/, "").trim();
     const skills: string[] = [];
 
-    const bulletLines = rest
-      .split("\n")
-      .filter((l) => l.trim().startsWith("-"));
-
-    for (const line of bulletLines) {
-      const content = line.replace(/^-\s*/, "").trim();
-      const items = content.split(",").map((s) => s.trim()).filter(Boolean);
-      skills.push(...items);
+    let currentBullet: string | null = null;
+    for (const rawLine of restLines) {
+      const trimmed = rawLine.trim();
+      if (!trimmed) {
+        continue;
+      }
+      if (trimmed.startsWith("-")) {
+        if (currentBullet !== null) {
+          flushBullet(currentBullet, skills);
+        }
+        currentBullet = trimmed.replace(/^-\s*/, "").trim();
+      } else if (currentBullet !== null) {
+        currentBullet += ` ${trimmed}`;
+      }
+    }
+    if (currentBullet !== null) {
+      flushBullet(currentBullet, skills);
     }
 
     if (title && skills.length > 0) {
@@ -56,20 +97,20 @@ export function CoreSkillsSection({ section }: CoreSkillsSectionProps) {
       <h2 className="text-xl font-semibold text-foreground mb-3">
         {section.title}
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-stretch">
         {groups.map((group, i) => (
           <div
             key={i}
-            className="rounded-xl border border-border bg-surface p-4 flex flex-col gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+            className="rounded-xl border border-slate-200 bg-surface p-4 flex h-full min-h-0 flex-col gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-border"
           >
-            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted shrink-0">
               {group.title}
             </h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-wrap content-start gap-2 overflow-x-auto">
               {group.skills.map((skill, j) => (
                 <span
                   key={j}
-                  className="inline-block px-2.5 py-1 text-xs font-medium rounded-md bg-primary/15 text-primary border border-primary/25 shadow-sm"
+                  className="inline-block shrink-0 whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md bg-primary/15 text-primary border border-primary/25 shadow-sm"
                 >
                   {skill}
                 </span>

@@ -24,16 +24,16 @@
 **Responsibility:** Led the development of the virtual credit card generation system from inception to deployment, ensuring high security and scalability.
 
 **Achievements:**
-- Delivered the project end-to-end, resulting in high client satisfaction.
+- Architected the system from scratch integrating Azure Functions, Cosmos DB, and Key Vault, ensuring security and end-to-end traceability.
 - Implemented Azure Key Vault and Auth0, strengthening authentication and secrets management.
 
-**Technologies:** .NET 8, Azure Functions, Entity Framework Core, Cosmos DB, Table Storage, Azure Key Vault, Docker, Azure Pipelines, Auth0
+**Technologies:** .NET 8, Azure Functions, Entity Framework Core, React, Cosmos DB, Azure Key Vault, Docker, Azure Pipelines, Auth0
 
 
 ## Career Transition — Professional Transition
 **Barcelona, Spain | June 2023 – December 2023**
 
-Professional transition period, including time off, before resuming full-time work at Travelport in Barcelona.
+Career break dedicated to upskilling in frontend technologies, including Angular and React (Udemy, 2023).
 
 
 ## Full Stack .NET Core Developer — UST
@@ -49,7 +49,7 @@ Professional transition period, including time off, before resuming full-time wo
 - Delivered the project under tight deadlines while maintaining high reliability and production readiness.
 - Helped introduce Agile practices with the client, improving planning and delivery predictability.
 
-**Technologies:** .NET 7, SQL Server, Entity Framework
+**Technologies:** .NET 7, SQL Server, Entity Framework, Background Services
 
 
 ## Full Stack .NET Core Developer — UST
@@ -75,6 +75,7 @@ Delivered end-to-end improvements across multiple .NET applications, focusing on
 
 **Achievements:**
 - Migrated 5+ legacy applications to modern architectures and deployment practices, reducing technical debt and simplifying ongoing maintenance.
+- Built REST APIs and backend services in .NET Core for clients across different industries, delivering production-ready solutions.
 
 **Technologies:** .NET Framework, .NET Core, SQL Server, Entity Framework, REST APIs
 
@@ -166,11 +167,3 @@ Implemented SharePoint 2010 solutions combining out-of-the-box capabilities and 
 - Consolidated shared functionalities so each company could enable or disable them based on availability.
 
 **Technologies:** SharePoint 2010, Visual Studio, SharePoint Designer
-
-
-## Black Box Tester — SIADNet
-**Rosario, Argentina | December 2008 – March 2010**
-
-**Project:** ESET NOD32 Antivirus & ESET Smart Security
-
-Performed black-box testing activities for security software products, focusing on functional quality and issue reporting.

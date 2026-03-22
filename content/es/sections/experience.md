@@ -1,7 +1,7 @@
 ## Ingeniero de Software Senior — Pay Retailers
 **Barcelona, España | Julio 2025 – Presente**
 
-**Proyecto:** Procesamiento de pagos (Payment Processing)
+**Proyecto:** Payment Processing
 
 **Contexto:** Plataforma de procesamiento de pagos con integraciones críticas para la operación.
 
@@ -24,16 +24,16 @@
 **Responsabilidad:** Lideré el desarrollo del sistema de generación de tarjetas de crédito virtuales desde el inicio hasta el despliegue, con foco en seguridad y escalabilidad.
 
 **Logros:**
-- Entregué el proyecto de punta a punta, logrando alta satisfacción del cliente.
+- Diseñé la arquitectura del sistema desde cero integrando Azure Functions, Cosmos DB y Key Vault, garantizando seguridad y trazabilidad end-to-end.
 - Implementé Azure Key Vault y Auth0, fortaleciendo la autenticación y la gestión de secretos.
 
-**Tecnologías:** .NET 8, Azure Functions, Entity Framework Core, Cosmos DB, Table Storage, Azure Key Vault, Docker, Azure Pipelines, Auth0
+**Tecnologías:** .NET 8, Azure Functions, Entity Framework Core, React, Cosmos DB, Azure Key Vault, Docker, Azure Pipelines, Auth0
 
 
 ## Transición de carrera — Transición de carrera
 **Barcelona, España | Junio 2023 – Diciembre 2023**
 
-Período de transición profesional y recarga antes de retomar proyectos de tiempo completo en Barcelona.
+Pausa profesional dedicada a formación en tecnologías frontend, incluyendo Angular y React (Udemy, 2023).
 
 
 ## Desarrollador Full Stack .NET Core — UST
@@ -49,7 +49,7 @@ Período de transición profesional y recarga antes de retomar proyectos de tiem
 - Entregué el proyecto con plazos ajustados, manteniendo alta confiabilidad y preparación para producción.
 - Ayudé a introducir prácticas ágiles con el cliente, mejorando la planificación y la previsibilidad de entrega.
 
-**Tecnologías:** .NET 7, SQL Server, Entity Framework
+**Tecnologías:** .NET 7, SQL Server, Entity Framework, Background Services
 
 
 ## Desarrollador Full Stack .NET Core — UST
@@ -63,7 +63,7 @@ Período de transición profesional y recarga antes de retomar proyectos de tiem
 
 **Logros:**
 - Mejoré el rendimiento de la aplicación en 30% mediante optimización de código y refactorización.
-- Alcancé ~80% de cobertura de tests escribiendo pruebas unitarias faltantes.
+- Alcancé 80% de cobertura de tests escribiendo pruebas unitarias faltantes.
 
 **Tecnologías:** .NET Core 3.1, Microservices Architecture, Oracle, xUnit, Moq
 
@@ -75,6 +75,7 @@ Entregué mejoras de punta a punta en múltiples aplicaciones .NET, con foco en 
 
 **Logros:**
 - Migré más de 5 aplicaciones legacy a arquitecturas modernas y prácticas de despliegue, reduciendo deuda técnica y simplificando el mantenimiento continuo.
+- Desarrollé APIs REST y servicios backend en .NET Core para clientes de distintos sectores, entregando soluciones production-ready.
 
 **Tecnologías:** .NET Framework, .NET Core, SQL Server, Entity Framework, REST APIs
 
@@ -166,11 +167,3 @@ Implementé soluciones en SharePoint 2010 combinando funcionalidades out-of-the-
 - Integré funcionalidades compartidas entre compañías para habilitar alta y baja según disponibilidad.
 
 **Tecnologías:** SharePoint 2010, Visual Studio, SharePoint Designer
-
-
-## Tester de Caja Negra — SIADNet
-**Rosario, Argentina | Diciembre 2008 – Marzo 2010**
-
-**Proyecto:** ESET NOD32 Antivirus & ESET Smart Security
-
-Realicé tareas de testing de caja negra para productos de software de seguridad, con foco en calidad funcional y reporte de incidencias.

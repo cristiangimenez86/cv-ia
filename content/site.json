@@ -23,7 +23,7 @@
     {
       "id": "core-skills",
       "title": {
-        "en": "Core Skills / Keywords",
+        "en": "Core Skills",
         "es": "Habilidades"
       }
     },
@@ -72,6 +72,7 @@
   ],
   "navSections": [
     "about",
+    "core-skills",
     "experience",
     "education",
     "contact"
@@ -96,7 +97,7 @@
       { "label": "LinkedIn", "href": "https://www.linkedin.com/in/cristiangimenez86/" },
       { "label": "GitHub", "href": "https://github.com/cristiangimenez86" }
     ],
-    "photoSrc": "/assets/profile.jpeg"
+    "photoSrc": "/assets/profile.jpg"
   },
   "experienceCompanies": [
     { "name": "Pay Retailers", "logo": "/assets/PayRetailers-Logo.png", "url": "https://www.payretailers.com" },
@@ -107,7 +108,6 @@
     { "name": "Stratos Technology Partners", "logo": "/assets/Stratos-logo.jpg", "url": "https://www.stratos.net.nz" },
     { "name": "Globant", "logo": "/assets/Globant-logo.png", "url": "https://www.globant.com" },
     { "name": "Rosario Bus S.A.", "logo": "/assets/RosarioBus-logo.png", "url": "https://www.rosariobus.com.ar" },
-    { "name": "Neoris", "logo": "/assets/Neoris-logo.png", "url": "https://www.neoris.com" },
-    { "name": "SIADNet", "logo": "/assets/SIADNet-logo.png", "url": "https://www.linkedin.com/company/siadnet" }
+    { "name": "Neoris", "logo": "/assets/Neoris-logo.png", "url": "https://www.neoris.com" }
   ]
 }

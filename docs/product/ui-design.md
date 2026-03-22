@@ -14,7 +14,7 @@
   - Prefer internal scrolling on desktop (right panel) to keep header and sidebar visible.
   - The **right content panel** scrolls vertically (internal scroll).
   - The **left profile card** remains sticky/visible relative to the viewport.
-- Download actions (PDF/JSON) are visible without requiring scroll (desktop).
+- Download PDF is visible without requiring scroll (desktop). (A JSON export button existed previously and can be re-enabled from `ProfileCard` + `page.tsx` if needed.)
 - Floating chat widget is implemented (see Chat Widget section below).
 
 ## Information Architecture (sections)
@@ -76,14 +76,15 @@ Required sections (order):
   - Name + title
   - Location + contact
   - Social links (LinkedIn/GitHub)
-  - Download actions (PDF/JSON)
+  - Download PDF (primary)
 - Section
   - Title (H2)
   - Content blocks
 - CoreSkillsSection
-  - Title (H2) "Core Skills / Keywords"
-  - Grid of categories (2 cols mobile, 4 cols desktop)
-  - Each category: uppercase label + blue pill tags for skills
+  - Title (H2) from site config: English **Core Skills**, Spanish **Habilidades**
+  - Grid of categories (1 col mobile, 3 cols from `sm` up)
+  - Light mode: category cards use a subtle border (`border-slate-200`); dark mode keeps `border-border`
+  - Each category: uppercase label + blue pill tags for skills (comma-separated lists in markdown; parentheses preserve grouped tags, e.g. `AWS (A, B, C)`)
   - HR-friendly: scannable, ATS keywords, no repetition across categories
 - KeyAchievementsSection
   - Title (H2), larger spacing below
@@ -96,6 +97,7 @@ Required sections (order):
   - Company block (logo, role, location, dates)
   - Logo: clickable link to company website, same hover animation as ProfileCard/navbar buttons (see `ai-specs/changes/CV-0004_experience-logos-specs.md`)
   - Project/initiative cards with bullet highlights + tech chips
+  - Technology line: split on commas outside parentheses so grouped items (e.g. `AWS (CloudFront, …)`) render as a single chip
 - EducationSection
   - Title (H2), card layout
   - Each block (degree, additional courses): card with rounded corners, border, bg-surface

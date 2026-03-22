@@ -157,7 +157,7 @@ From `web/src/app/[locale]/page.tsx`:
 Rendered in this order (from content config and page mapping):
 
 1. About
-2. Core Skills / Keywords
+2. Core Skills (EN) / Habilidades (ES)
 3. Key Achievements
 4. Experience
 5. Education
@@ -308,8 +308,8 @@ From `ProfileCard.tsx` and live class output.
   - square `h-9 w-9`, rounded-lg
   - primary background
 - Downloads:
-  - primary full-width button (PDF)
-  - secondary full-width outlined button (JSON)
+  - primary full-width button (PDF link to `/api/v1/cv`)
+  - JSON sidebar button removed (restore via `ProfileCard` + `[locale]/page.tsx` if needed)
 - Top separators:
   - `border-t border-divider` between card subgroups
 
@@ -330,10 +330,10 @@ From `ProfileCard.tsx` and live class output.
 
 - Grid:
   - mobile: 1 col
-  - `sm`: 2 cols
-  - `lg`: 4 cols
+  - `sm` and up: 3 cols (`grid-cols-1 sm:grid-cols-3`)
 - Each group card:
   - rounded-xl, border, surface, p-4
+  - light mode: `border-slate-200`; dark: `dark:border-border`
   - hover lift + shadow
 - Group title:
   - `text-xs uppercase tracking-wider text-muted`
@@ -368,7 +368,7 @@ From `ProfileCard.tsx` and live class output.
   - `.experience-card` + rounded-xl border p-4/5
   - hover lift + shadow
   - bullet list for description/achievements
-  - technology chips reuse same skill chip style
+  - technology chips reuse same skill chip style; `Technologies:` / `Tecnologías:` line is split on commas **outside parentheses** so one chip can contain `AWS (Service A, Service B, …)`
 - Dark override:
   - `.dark .experience-card { background-color: hsl(var(--surface-2)); }`
 

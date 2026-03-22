@@ -1,2 +1,2 @@
 - Location: Barcelona, Spain · Remote · Hybrid
-- Preferences: .NET, React, Cloud-native architectures, Microservices
+- Preferences: .NET, React, Cloud-native architectures, Microservices, AI-powered systems

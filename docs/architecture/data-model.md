@@ -171,7 +171,7 @@ The filesystem content under `content/` uses a different structure than the API 
 
 | Content source | API field / projection |
 |----------------|------------------------|
-| `content/{lang}/site.json` (profile, sectionsOrder, navSections) | `profile`, section ordering |
+| `content/site.json` (profile, sectionsOrder, navSections, `experienceCompanies`) | `profile`, section ordering; timeline company logos must match `## Role — Company` headings in `content/{lang}/sections/experience.md` (drop a logo entry when a role is removed) |
 | `content/{lang}/sections/about.md` | `profile.summary` or about section |
 | `content/{lang}/sections/core-skills.md` | `skills[]` (parsed by category) |
 | `content/{lang}/sections/key-achievements.md` | Highlights / achievements |

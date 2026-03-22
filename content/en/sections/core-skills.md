@@ -1,23 +1,18 @@
 ## Backend
-- .NET Core, .NET Framework, Entity Framework, RESTful APIs, xUnit, Moq
+- .NET 10, Entity Framework, RESTful APIs, Worker Services, Minimal APIs, Polly, xUnit, Moq
 
 ## Frontend
-- Angular, React, TypeScript, JavaScript
+- Angular, React, TypeScript, JavaScript, Node
 
 ## Data
-- SQL Server, Oracle, DynamoDB, Azure Cosmos DB, Azure Table Storage
+- SQL Server, Oracle, DynamoDB, Azure Cosmos DB, MongoDB, Redis
 
-## Cloud
-- AWS (EC2, Lambda, API Gateway), Azure (Functions, Key Vault, Service Bus)
+## Cloud & Messaging
+- Azure Functions, Azure Service Bus, Key Vault, Application Insights
+- AWS Lambda, API Gateway, AWS SQS, AWS SNS
 
-## DevOps
-- Azure DevOps, Docker, Kubernetes, CI/CD pipelines, Terraform
-
-## Methodologies
-- Agile (Scrum/Kanban), Hybrid/Waterfall
+## DevOps & Observability
+- Azure DevOps, Bitbucket Pipelines, GitHub Actions, Docker, Kubernetes, Terraform, OpenTelemetry, Grafana, Elastic Search
 
 ## Engineering Practices
-- DDD, TDD, Spec/Contract-Driven Development
-
-## Soft Skills
-- Leadership, problem-solving, teamwork, adaptability, time management, mentoring
+- DDD, TDD, CQRS, Event-Driven Architecture, Agile, Scrum, Kanban, Spec-Driven Development, Claude Code, Cursor
