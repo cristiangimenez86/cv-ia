@@ -19,7 +19,7 @@ public sealed class InfrastructureRegistrationTests
             .AddInMemoryCollection(
                 new Dictionary<string, string?>
                 {
-                    ["CvApi:PdfAssetPath"] = "Assets/Cv/cv.pdf",
+                    ["CvApi:PdfAssetPath"] = "Assets/Cv/cv.en.pdf",
                     ["OpenAiChat:UseStubChatService"] = "true",
                     ["OpenAiChat:ApiKey"] = ""
                 }

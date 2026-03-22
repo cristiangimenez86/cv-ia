@@ -1,20 +1,33 @@
 using CvIa.Application;
+using CvIa.Application.Configuration;
 using CvIa.Application.Contracts;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace CvIa.Infrastructure.Services;
 
 public sealed class CvPdfAssetService(
-    IConfiguration configuration,
+    IOptions<CvApiOptions> options,
     IHostEnvironment hostEnvironment,
     ILogger<CvPdfAssetService> logger
 ) : ICvQueryService
 {
     public Task<CvPdfAssetDto> GetPdfAsync(string lang, CancellationToken cancellationToken)
     {
-        var relativePath = configuration["CvApi:PdfAssetPath"] ?? "Assets/Cv/cv.pdf";
+        var opts = options.Value;
+        var langKey = lang.ToLowerInvariant();
+        string relativePath;
+        if (opts.PdfAssetPaths?.TryGetValue(langKey, out var configured) == true
+            && !string.IsNullOrWhiteSpace(configured))
+        {
+            relativePath = configured;
+        }
+        else
+        {
+            relativePath = opts.PdfAssetPath;
+        }
+
         var absolutePath = Path.GetFullPath(Path.Combine(hostEnvironment.ContentRootPath, relativePath));
 
         if (!File.Exists(absolutePath))
@@ -27,4 +40,3 @@ public sealed class CvPdfAssetService(
         return Task.FromResult(new CvPdfAssetDto(absolutePath, downloadFileName, "application/pdf"));
     }
 }
-

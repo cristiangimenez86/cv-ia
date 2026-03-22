@@ -5,8 +5,14 @@ public sealed class CvApiOptions
 {
     public const string SectionName = "CvApi";
 
-    /// <summary>Relative to <see cref="Microsoft.Extensions.Hosting.IHostEnvironment.ContentRootPath"/>.</summary>
-    public string PdfAssetPath { get; set; } = "Assets/Cv/cv.pdf";
+    /// <summary>
+    /// Fallback PDF when <see cref="PdfAssetPaths"/> has no entry for the requested language.
+    /// Relative to <see cref="Microsoft.Extensions.Hosting.IHostEnvironment.ContentRootPath"/>.
+    /// </summary>
+    public string PdfAssetPath { get; set; } = "Assets/Cv/cv.en.pdf";
+
+    /// <summary>Relative paths per language (<c>en</c>, <c>es</c>), keyed by lowercase code.</summary>
+    public Dictionary<string, string>? PdfAssetPaths { get; set; }
 
     /// <summary>
     /// Root folder that contains <c>en/sections</c> and <c>es/sections</c> (repo <c>content/</c>).
