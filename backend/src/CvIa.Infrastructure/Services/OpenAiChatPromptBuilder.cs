@@ -32,7 +32,8 @@ public sealed class OpenAiChatPromptBuilder : IOpenAiChatPromptBuilder
         var cvMarkdown = LoadCvMarkdown(lang);
         var windowSize = Math.Max(1, _options.MaxMessagesInWindow);
 
-        var system = FormatSystemPrompt(cvMarkdown).Trim();
+        var langNorm = string.Equals(lang, "es", StringComparison.OrdinalIgnoreCase) ? "es" : "en";
+        var system = FormatSystemPrompt(cvMarkdown, langNorm).Trim();
         var list = new List<OpenAiChatMessagePayload>
         {
             new("system", system)
@@ -80,7 +81,7 @@ public sealed class OpenAiChatPromptBuilder : IOpenAiChatPromptBuilder
     }
 
     /// <summary>Wraps raw CV markdown in the fixed assistant instructions (no I/O).</summary>
-    private static string FormatSystemPrompt(string cvMarkdown)
+    private static string FormatSystemPrompt(string cvMarkdown, string lang)
     {
         var cvBlock = string.IsNullOrWhiteSpace(cvMarkdown)
             ? """
@@ -88,11 +89,18 @@ public sealed class OpenAiChatPromptBuilder : IOpenAiChatPromptBuilder
               """
             : cvMarkdown.Trim();
 
+        var sectionIdsLine = string.Join(", ", CvMarkdownSectionIds.Ordered);
+
         return $"""
             You are an assistant that answers only using the CV markdown provided below (Cristian Gimenez — experience, skills, education, certifications, languages, contact, etc.).
             Treat the markdown as the single source of truth. Do not invent employers, dates, technologies, or achievements that are not supported by that text.
             If something is not in the CV text below, say so clearly and offer to rephrase or ask about a specific section.
-            Use a professional tone suitable for recruiters and engineering managers.
+
+            Tone: Sound conversational and human—warm, direct, and recruiter-friendly. You may use first person when describing the profile (e.g. "I worked on…") when it fits the CV text. Use short paragraphs. Avoid robotic disclaimers (e.g. do not say "As an AI language model"). Stay fact-grounded in the CV below.
+
+            Formatting: Use GitHub-flavored Markdown in every reply—**bold**, *italic*, bullet or numbered lists when helpful, inline `code` for tech terms, and fenced code blocks only when a short snippet helps. Do not wrap the entire answer in a single code block.
+
+            CV section links: When you point the user to a part of the site, use a Markdown link with this exact pattern only: [descriptive label](/{lang}#section-id). Example: [Experience](/{lang}#experience). Lang for this conversation is "{lang}". Allowed section-id fragments are: {sectionIdsLine}. Do not add other paths, query strings, or hosts. Do not use http(s) URLs, mailto:, or links to external websites.
 
             Language: Always respond in the same language the user uses in their messages (e.g. Spanish question → Spanish answer; English → English). If the user mixes languages, follow the language of their latest user message.
 

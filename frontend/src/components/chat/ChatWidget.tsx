@@ -45,9 +45,9 @@ export function ChatWidget() {
     <>
       {isOpen && (
         <>
-          {/* Backdrop: click outside to close */}
+          {/* Backdrop: light dim + subtle blur (strong blur + heavy scrim strains the eyes; see prefers-reduced-motion) */}
           <div
-            className="fixed inset-0 z-40"
+            className="fixed inset-0 z-40 bg-background/65 backdrop-blur-sm motion-reduce:backdrop-blur-none transition-opacity"
             onClick={close}
             aria-hidden
           />

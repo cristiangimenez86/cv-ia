@@ -28,8 +28,8 @@ public sealed class OpenAiChatOptions
     /// <summary>HTTP client timeout for OpenAI requests (seconds). Appsettings only per project decision.</summary>
     public int HttpTimeoutSeconds { get; set; } = 60;
 
-    /// <summary>Chat sampling temperature (OpenAI <c>temperature</c>). Set only in configuration.</summary>
-    public double Temperature { get; set; } = 0.3;
+    /// <summary>Chat sampling temperature (OpenAI <c>temperature</c>). Set only in configuration. Default 0.5 for a slightly more natural tone; lower if answers drift.</summary>
+    public double Temperature { get; set; } = 0.5;
 
     /// <summary>Max completion tokens per response (OpenAI <c>max_tokens</c>). Set only in configuration.</summary>
     public int MaxTokens { get; set; } = 512;

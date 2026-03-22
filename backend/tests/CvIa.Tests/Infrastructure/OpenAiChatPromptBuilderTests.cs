@@ -79,4 +79,30 @@ public sealed class OpenAiChatPromptBuilderTests
         Assert.Equal(2, built.Count);
         Assert.Equal("m29", built[^1].Content);
     }
+
+    [Fact]
+    public void BuildMessages_system_prompt_includes_markdown_section_links_and_tone_for_english()
+    {
+        var built = CreateBuilder(CvMarkdownSample, new OpenAiChatOptions { MaxMessagesInWindow = 10 }).BuildMessages(
+            [new ChatMessageDto("user", "Hello")],
+            "en");
+
+        var system = built[0].Content;
+        Assert.Contains("/en#", system, StringComparison.Ordinal);
+        Assert.Contains("about", system, StringComparison.Ordinal);
+        Assert.Contains("experience", system, StringComparison.Ordinal);
+        Assert.Contains("Markdown", system, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("conversational", system, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("http(s)", system, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
+    public void BuildMessages_system_prompt_uses_spanish_path_in_link_examples()
+    {
+        var built = CreateBuilder(CvMarkdownSample, new OpenAiChatOptions { MaxMessagesInWindow = 10 }).BuildMessages(
+            [new ChatMessageDto("user", "Hola")],
+            "es");
+
+        Assert.Contains("/es#", built[0].Content, StringComparison.Ordinal);
+    }
 }

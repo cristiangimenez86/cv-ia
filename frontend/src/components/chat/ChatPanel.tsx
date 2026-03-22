@@ -147,6 +147,8 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  /** Previous `isLoading` — used to detect true → false (request finished). */
+  const wasLoadingRef = useRef(false);
 
   const chips = CHIPS[locale] ?? CHIPS.en;
   const placeholder = PLACEHOLDER[locale] ?? PLACEHOLDER.en;
@@ -166,6 +168,18 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
     document.addEventListener("keydown", handler);
     return () => document.removeEventListener("keydown", handler);
   }, [onClose]);
+
+  /* After the assistant finishes (loading ends), focus the textarea — `finally` ran while input was still disabled. */
+  useEffect(() => {
+    const wasLoading = wasLoadingRef.current;
+    wasLoadingRef.current = isLoading;
+    if (wasLoading && !isLoading) {
+      const id = requestAnimationFrame(() => {
+        inputRef.current?.focus({ preventScroll: true });
+      });
+      return () => cancelAnimationFrame(id);
+    }
+  }, [isLoading]);
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -255,7 +269,6 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
         }
       } finally {
         setIsLoading(false);
-        inputRef.current?.focus();
       }
     },
     [isLoading, locale],
@@ -277,7 +290,9 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
       className="card flex flex-col overflow-hidden
         fixed z-50
         inset-3 max-h-[calc(100dvh-1.5rem)]
-        sm:inset-auto sm:bottom-20 sm:right-4 sm:w-[380px] sm:h-[520px] sm:max-h-none"
+        sm:inset-auto sm:bottom-20 sm:right-4
+        sm:w-[min(600px,calc(100vw-2rem))] sm:h-[min(700px,calc(100dvh-5rem))] sm:max-h-none
+        md:w-[600px] md:h-[min(700px,calc(100dvh-5rem))]"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
@@ -302,6 +317,8 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
         chips={chips}
         onChipClick={handleChipClick}
         isLoading={isLoading}
+        locale={locale}
+        onClose={onClose}
       />
 
       {/* Input */}

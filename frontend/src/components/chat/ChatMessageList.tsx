@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { ChatAssistantMarkdown } from "./ChatAssistantMarkdown";
 import type { ChatMessage, ChatChip } from "./types";
 
 type ChatMessageListProps = {
@@ -8,6 +9,8 @@ type ChatMessageListProps = {
   chips?: ChatChip[];
   onChipClick?: (value: string) => void;
   isLoading?: boolean;
+  locale: string;
+  onClose: () => void;
 };
 
 /**
@@ -19,6 +22,8 @@ export function ChatMessageList({
   chips,
   onChipClick,
   isLoading,
+  locale,
+  onClose,
 }: ChatMessageListProps) {
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -51,13 +56,21 @@ export function ChatMessageList({
           className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
         >
           <div
-            className={`max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed whitespace-pre-wrap ${
+            className={`max-w-[85%] rounded-xl px-3.5 py-2.5 text-sm leading-relaxed ${
               msg.role === "user"
-                ? "bg-primary text-primary-foreground"
-                : "bg-surface-2 text-foreground border border-border"
+                ? "whitespace-pre-wrap bg-primary text-primary-foreground"
+                : "border border-border bg-surface-2 text-foreground"
             }`}
           >
-            {msg.content}
+            {msg.role === "user" ? (
+              msg.content
+            ) : (
+              <ChatAssistantMarkdown
+                content={msg.content}
+                locale={locale}
+                onClose={onClose}
+              />
+            )}
           </div>
         </div>
       ))}

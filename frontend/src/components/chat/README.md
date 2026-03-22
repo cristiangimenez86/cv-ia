@@ -9,13 +9,14 @@ Intercom-style floating chat for the CV website.
 | `types.ts` | `ChatMessage` and `ChatChip` types |
 | `ChatInput.tsx` | Textarea + send button (client) |
 | `ChatMessageList.tsx` | Scrollable bubble list + suggestion chips (client) |
+| `ChatAssistantMarkdown.tsx` | Assistant bubbles: GFM Markdown + `rehype-sanitize`; in-app section links only (`@/lib/cvChatLink`) |
 | `ChatPanel.tsx` | Full panel: header, messages, input, backend fetch integration (client) |
-| `ChatWidget.tsx` | FAB button + open/close state, renders ChatPanel (client) |
+| `ChatWidget.tsx` | FAB + open/close, backdrop blur/dim, renders ChatPanel (client) |
 
 ## Integration
 
 `ChatWidget` is rendered once in the root layout (`frontend/src/app/layout.tsx`).
-It receives `locale` as a prop from the server layout and is positioned `fixed` so it
+Locale is derived from the URL path on the client (`/en/…`, `/es/…`). The widget is `fixed` so it
 does not interfere with the sticky header or the two-column grid.
 
 ## Backend Integration
@@ -55,4 +56,6 @@ npm run dev:frontend
 3. Click it to open the chat panel.
 4. Click a suggestion chip or type a message and press Enter.
 5. The response is requested from `POST /api/v1/chat/completions`.
-6. Press Escape or the X button to close.
+6. Press Escape, the X button, or click outside the panel to close (backdrop closes the chat).
+
+Assistant replies render as Markdown (bold, lists, code). Links to CV sections use `/{locale}#…` with fragments from `shared/section-ids.json`; other URLs are shown as plain text.
