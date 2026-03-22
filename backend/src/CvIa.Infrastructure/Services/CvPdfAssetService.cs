@@ -36,7 +36,7 @@ public sealed class CvPdfAssetService(
             throw new FileNotFoundException("Configured CV PDF asset was not found.", absolutePath);
         }
 
-        var downloadFileName = $"cv.{lang}.pdf";
+        var downloadFileName = $"cv_cristian_gimenez_{lang}.pdf";
         return Task.FromResult(new CvPdfAssetDto(absolutePath, downloadFileName, "application/pdf"));
     }
 }
