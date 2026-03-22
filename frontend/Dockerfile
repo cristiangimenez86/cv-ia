@@ -16,6 +16,8 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY frontend/ ./
 COPY content/ /content/
+# Resolves with frontend/src/lib/cvSectionIds.ts → ../../../shared/section-ids.json (= /shared/… in this image)
+COPY shared/ /shared/
 
 RUN npm run build
 
