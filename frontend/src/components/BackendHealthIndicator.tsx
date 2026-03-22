@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
 const HEALTH_URL = `${API_BASE_URL}/health`;
@@ -8,8 +8,10 @@ const HEALTH_URL = `${API_BASE_URL}/health`;
 const POLL_INTERVAL_MS = 15000;
 const REQUEST_TIMEOUT_MS = 3000;
 
+type HealthState = "pending" | "healthy" | "unhealthy";
+
 export function BackendHealthIndicator() {
-  const [isHealthy, setIsHealthy] = useState(false);
+  const [state, setState] = useState<HealthState>("pending");
 
   useEffect(() => {
     let isMounted = true;
@@ -29,10 +31,10 @@ export function BackendHealthIndicator() {
           return;
         }
 
-        setIsHealthy(response.ok);
+        setState(response.ok ? "healthy" : "unhealthy");
       } catch {
         if (isMounted) {
-          setIsHealthy(false);
+          setState("unhealthy");
         }
       } finally {
         window.clearTimeout(timeoutId);
@@ -50,24 +52,23 @@ export function BackendHealthIndicator() {
     };
   }, []);
 
-  const title = useMemo(
-    () => (isHealthy ? "Backend health: OK" : "Backend health: Error"),
-    [isHealthy],
-  );
+  if (state !== "unhealthy") {
+    return null;
+  }
+
+  const label = "Backend health: error — no response or unhealthy";
 
   return (
     <div
       className="fixed bottom-3 left-3 z-[70] inline-flex items-center justify-center"
-      title={title}
-      aria-label={title}
+      title={label}
+      aria-label={label}
       role="status"
     >
       <span
-        className={`h-3 w-3 rounded-full border border-black/20 ${
-          isHealthy ? "bg-green-500" : "bg-red-500"
-        }`}
+        className="h-3 w-3 rounded-full border border-black/20 bg-red-500"
+        aria-hidden
       />
     </div>
   );
 }
-
