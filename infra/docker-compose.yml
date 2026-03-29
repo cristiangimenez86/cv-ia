@@ -79,6 +79,9 @@ services:
     image: cristiangimenez86/cv-api:latest
     container_name: cv-api
     restart: unless-stopped
+    depends_on:
+      pgvector:
+        condition: service_healthy
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080

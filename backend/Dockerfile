@@ -22,8 +22,9 @@ WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:8080
 ENV DOTNET_EnableDiagnostics=0
 
+# wget: healthchecks; libgssapi-krb5-2: Npgsql may probe Kerberos libs on connect (avoids noisy load errors in minimal images)
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends wget \
+    && apt-get install -y --no-install-recommends wget libgssapi-krb5-2 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/publish ./

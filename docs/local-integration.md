@@ -91,3 +91,11 @@ curl -X POST "http://localhost:8056/internal/v1/rag/reindex" ^
   - `8055:80` for `proxy`
   - `8056:8080` for `api`
   - `5432:5432` for `pgvector`
+
+## Troubleshooting (Docker / Portainer)
+
+- **`Health check failed: PostgreSQL unreachable`** with `Rag:Enabled=true`:
+  - Ensure **`api` depends on a healthy `pgvector`** (compose `depends_on` + `condition: service_healthy`) so Postgres accepts connections before the API probes `/health`.
+  - **`POSTGRES_PASSWORD` must match the cluster**: if the named volume was first created with password `cvia` and you later set a different `POSTGRES_PASSWORD` in Portainer, Postgres still uses the **old** password on disk while the API connects with the **new** one → authentication fails. Fix: set the env back to the original password, or remove the `pgvector` volume (data loss) and redeploy so init runs again.
+  - Confirm `ConnectionStrings__Rag` uses host **`pgvector`** (service name) inside the stack, not `localhost`.
+- **`libgssapi_krb5.so.2`**: Npgsql may log this on minimal images; the API Docker image should include `libgssapi-krb5-2`. Rebuild and redeploy `cv-api` if the message persists after a clean connect.

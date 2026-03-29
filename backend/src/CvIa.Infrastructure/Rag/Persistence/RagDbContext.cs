@@ -1,5 +1,6 @@
 using CvIa.Domain.Rag;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Pgvector;
 
 namespace CvIa.Infrastructure.Rag.Persistence;
@@ -29,7 +30,12 @@ public sealed class RagDbContext(DbContextOptions<RagDbContext> options) : DbCon
                 .IsRequired()
                 .HasConversion(
                     floats => new Vector(floats),
-                    vector => vector.ToArray());
+                    vector => vector.ToArray())
+                .Metadata.SetValueComparer(
+                    new ValueComparer<float[]>(
+                        (a, b) => ReferenceEquals(a, b) || (a != null && b != null && a.SequenceEqual(b)),
+                        v => v.Aggregate(0, (h, x) => HashCode.Combine(h, x.GetHashCode())),
+                        v => v.ToArray()));
             entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
 
             entity.HasIndex(x => new { x.SourceId, x.Lang });
