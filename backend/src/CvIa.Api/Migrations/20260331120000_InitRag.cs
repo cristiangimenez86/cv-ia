@@ -4,9 +4,13 @@ using Pgvector;
 
 #nullable disable
 
-namespace CvIa.Infrastructure.Rag.Persistence.Migrations;
+namespace CvIa.Api.Migrations;
 
-/// <summary>Single RAG schema migration: pgvector extension, content_chunk, unique (source_id, document_key, chunk_index, lang).</summary>
+/// <summary>RAG schema: pgvector extension, content_chunk, unique (source_id, document_key, chunk_index, lang).</summary>
+/// <remarks>
+/// Migrations live in CvIa.Api (not Infrastructure) so they ship in the published entry assembly;
+/// EF was not discovering migrations in CvIa.Infrastructure.dll in some Docker/publish setups.
+/// </remarks>
 [Migration("20260331120000_InitRag")]
 public sealed class InitRag : Migration
 {

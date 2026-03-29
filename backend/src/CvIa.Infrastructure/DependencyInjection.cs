@@ -43,7 +43,12 @@ public static class DependencyInjection
             services.AddDbContext<RagDbContext>((sp, options) =>
             {
                 var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
-                options.UseNpgsql(dataSource, npgsql => npgsql.UseVector());
+                // Migrations live in CvIa.Api (EF Core 10: MigrationsAssembly on relational builder, not UseMigrationsAssembly).
+                options.UseNpgsql(dataSource, npgsql =>
+                {
+                    npgsql.UseVector();
+                    npgsql.MigrationsAssembly("CvIa.Api");
+                });
             });
 
             services.AddScoped<IRagSourceLoader, CvSectionsRagSourceLoader>();

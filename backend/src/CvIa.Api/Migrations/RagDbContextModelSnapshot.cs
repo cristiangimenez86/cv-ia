@@ -9,7 +9,7 @@ using Pgvector;
 
 #nullable disable
 
-namespace CvIa.Infrastructure.Rag.Persistence.Migrations;
+namespace CvIa.Api.Migrations;
 
 [DbContext(typeof(RagDbContext))]
 partial class RagDbContextModelSnapshot : ModelSnapshot

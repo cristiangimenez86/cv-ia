@@ -17,7 +17,11 @@ public sealed class RagDbContextFactory : IDesignTimeDbContextFactory<RagDbConte
         var dataSource = dataSourceBuilder.Build();
 
         var options = new DbContextOptionsBuilder<RagDbContext>()
-            .UseNpgsql(dataSource, npgsql => npgsql.UseVector())
+            .UseNpgsql(dataSource, npgsql =>
+            {
+                npgsql.UseVector();
+                npgsql.MigrationsAssembly("CvIa.Api");
+            })
             .Options;
 
         return new RagDbContext(options);
