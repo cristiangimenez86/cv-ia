@@ -1,3 +1,4 @@
+using System.Data;
 using CvIa.Api.Models;
 using CvIa.Application.Configuration;
 using CvIa.Infrastructure.Rag.Persistence;
@@ -31,17 +32,20 @@ public sealed class HealthController(
 
             try
             {
-                var canConnect = await ragDbContext.Database.CanConnectAsync();
-                if (!canConnect)
+                var conn = ragDbContext.Database.GetDbConnection();
+                if (conn.State != ConnectionState.Open)
                 {
-                    logger.LogWarning("Health check failed: PostgreSQL unreachable");
-                    return StatusCode(503, new HealthResponse("unhealthy", serviceName, now));
+                    await conn.OpenAsync(HttpContext.RequestAborted);
                 }
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "Health check failed: PostgreSQL connectivity check threw");
+                logger.LogWarning(ex, "Health check failed: PostgreSQL unreachable");
                 return StatusCode(503, new HealthResponse("unhealthy", serviceName, now));
+            }
+            finally
+            {
+                ragDbContext.Database.CloseConnection();
             }
         }
 

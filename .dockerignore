@@ -1,0 +1,19 @@
+# Frontend image build: docker build -f frontend/Dockerfile -t cv-web .
+.git
+.github
+**/.git
+
+backend
+infra
+openspec
+docs
+*.md
+
+# Context bloat (deps stage reinstalls from package-lock)
+frontend/node_modules
+frontend/.next
+
+# Other roots
+**/bin
+**/obj
+**/.vs

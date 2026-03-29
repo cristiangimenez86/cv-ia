@@ -21,6 +21,11 @@ COPY shared/ /shared/
 
 RUN npm run build
 
+# Next emits the app folder as `frontend` (local monorepo) or `app` (Docker COPY to /app).
+RUN for d in /app/.next/standalone/*/; do \
+      if [ -f "${d}server.js" ]; then mv "$d" /app/.next/standalone/_run; break; fi; \
+    done && test -f /app/.next/standalone/_run/server.js
+
 FROM node:20-alpine AS runner
 WORKDIR /app
 
@@ -31,14 +36,16 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Standalone output + static assets
-# Use standard Next.js runtime files to avoid standalone layout drift.
-COPY --from=builder /app ./
+# Next.js standalone trace only (not full node_modules — avoids multi‑GB images).
+# Builder renames the traced app dir to _run (see above).
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone/_run ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Content needed by SSR at runtime
-COPY --from=builder /content /content
+# Content needed by SSR at runtime (see getContentDir in loader)
+COPY --from=builder --chown=nextjs:nodejs /content /content
 
 USER nextjs
 EXPOSE 80
 
-CMD ["node_modules/.bin/next", "start", "-p", "80", "-H", "0.0.0.0"]
+CMD ["node", "server.js"]
