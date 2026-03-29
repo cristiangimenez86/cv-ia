@@ -1,9 +1,10 @@
-# Frontend image build: docker build -f frontend/Dockerfile -t cv-web .
+# Shared context for frontend + backend images (docker build -f … from repo root).
+# Do NOT list `backend` or `frontend` here — both Dockerfiles COPY those trees.
 .git
 .github
 **/.git
 
-backend
+backend/tests
 infra
 openspec
 docs
