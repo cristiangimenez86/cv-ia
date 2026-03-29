@@ -1,2 +1,5 @@
+- Teléfono: +34 685 890 502
+- WhatsApp: +34 685 890 502
+- Email: cristiangimenez86@gmail.com
 - Ubicación: Barcelona, España · Remoto · Híbrido
 - Preferencias: .NET, React, arquitecturas cloud-native, microservicios, sistemas con IA
