@@ -82,6 +82,9 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Rag: Host=pgvector;Port=5432;Database=cvia;Username=cvia;Password=${POSTGRES_PASSWORD:-cvia}
+      Rag__Enabled: "false"
+      Rag__IngestionApiKey: ${RAG_INGESTION_API_KEY:-}
       OpenAiChat__ApiKey: ${OPENAI_API_KEY}
       OpenAiChat__OpenAiProjectId: ${OPENAI_PROJECT_ID}
       OpenAiChat__OpenAiOrganizationId: ${OPENAI_ORG_ID:-}

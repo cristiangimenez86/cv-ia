@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddSingleton<RagIngestionSingleFlightGate>();
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>

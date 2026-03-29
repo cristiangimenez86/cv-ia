@@ -72,13 +72,15 @@ A chunk is a slice of a ContentDocument used for semantic search and citations.
 
 **Fields**
 - `id` (string)
-- `documentId` (string)
+- `sourceId` (string): logical corpus identifier (e.g. `cv`, future: travel notes)
+- `documentKey` (string): stable identifier within a source (e.g. section id or relative path)
 - `lang` (`es|en`)
+- `sectionId` (string|nullable): populated for CV section content
 - `chunkIndex` (int)
 - `text` (string)
-- `sourcePath` (string)
+- `sourcePath` (string|nullable): optional filesystem path for human-readable citations
 - `range` (optional): start/end positions
-- `embeddingRef` (string|nullable): pointer to vector store entry (implementation-specific)
+- `embedding` (vector): stored in PostgreSQL pgvector (implementation)
 
 ### 2.6 RetrievalCitation (chat output)
 Represents what the assistant cites in the response.

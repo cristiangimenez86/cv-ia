@@ -1,10 +1,19 @@
 using CvIa.Application;
 using CvIa.Application.Configuration;
+using CvIa.Application.Rag;
 using CvIa.Infrastructure.OpenAi;
+using CvIa.Infrastructure.Rag.Configuration;
+using CvIa.Infrastructure.Rag.Persistence;
+using CvIa.Infrastructure.Rag.Persistence.Repositories;
+using CvIa.Infrastructure.Rag.Services;
+using CvIa.Infrastructure.Rag.SourceLoaders;
 using CvIa.Infrastructure.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Npgsql;
+using Pgvector;
 
 namespace CvIa.Infrastructure;
 
@@ -14,11 +23,58 @@ public static class DependencyInjection
     {
         services.Configure<OpenAiChatOptions>(configuration.GetSection(OpenAiChatOptions.SectionName));
         services.Configure<CvApiOptions>(configuration.GetSection(CvApiOptions.SectionName));
+        services.Configure<RagOptions>(configuration.GetSection(RagOptions.SectionName));
 
         services.AddScoped<ICvQueryService, CvPdfAssetService>();
 
         services.AddSingleton<CvMarkdownContentStore>();
         services.AddHostedService<CvMarkdownContentStartupLoader>();
+
+        var ragConnectionString = configuration.GetConnectionString("Rag");
+        if (!string.IsNullOrWhiteSpace(ragConnectionString))
+        {
+            services.AddSingleton(sp =>
+            {
+                var dataSourceBuilder = new NpgsqlDataSourceBuilder(ragConnectionString);
+                dataSourceBuilder.UseVector();
+                return dataSourceBuilder.Build();
+            });
+
+            services.AddDbContext<RagDbContext>((sp, options) =>
+            {
+                var dataSource = sp.GetRequiredService<NpgsqlDataSource>();
+                options.UseNpgsql(dataSource, npgsql => npgsql.UseVector());
+            });
+
+            services.AddScoped<IRagSourceLoader, CvSectionsRagSourceLoader>();
+            services.AddScoped<IRagSourceLoaderRegistry, RagSourceLoaderRegistry>();
+            services.AddScoped<RagChunkSimilarityRepository>();
+            services.AddScoped<IRagIngestionService, RagIngestionService>();
+            services.AddScoped<IRagRetrievalService, RagRetrievalService>();
+            services.AddHostedService<RagConfigurationStartupValidator>();
+            services
+                .AddHttpClient<OpenAiEmbeddingsClient>((sp, client) =>
+                {
+                    var options = sp.GetRequiredService<IOptions<OpenAiChatOptions>>().Value;
+                    var baseUrl = options.BaseUrl.TrimEnd('/');
+                    if (!baseUrl.EndsWith("/v1", StringComparison.OrdinalIgnoreCase))
+                    {
+                        baseUrl = $"{baseUrl}/v1";
+                    }
+
+                    client.BaseAddress = new Uri($"{baseUrl}/");
+                    client.Timeout = TimeSpan.FromSeconds(Math.Max(1, options.HttpTimeoutSeconds));
+                })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5));
+
+            services.AddScoped<IOpenAiEmbeddingsClient>(sp => sp.GetRequiredService<OpenAiEmbeddingsClient>());
+        }
+        else
+        {
+            services.AddScoped<IRagIngestionService, DisabledRagIngestionService>();
+            services.AddScoped<IRagRetrievalService, DisabledRagRetrievalService>();
+            services.AddScoped<IRagSourceLoaderRegistry, DisabledRagSourceLoaderRegistry>();
+        }
 
         services.AddScoped<IOpenAiChatPromptBuilder, OpenAiChatPromptBuilder>();
         services.AddHostedService<OpenAiChatConfigurationStartupValidator>();

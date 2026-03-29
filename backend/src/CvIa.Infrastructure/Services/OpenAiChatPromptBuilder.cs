@@ -29,11 +29,18 @@ public sealed class OpenAiChatPromptBuilder : IOpenAiChatPromptBuilder
     /// <inheritdoc />
     public IReadOnlyList<OpenAiChatMessagePayload> BuildMessages(IReadOnlyList<ChatMessageDto> messages, string lang)
     {
-        var cvMarkdown = LoadCvMarkdown(lang);
+        return BuildMessages(messages, lang, retrievedContextMarkdown: null);
+    }
+
+    /// <inheritdoc />
+    public IReadOnlyList<OpenAiChatMessagePayload> BuildMessages(IReadOnlyList<ChatMessageDto> messages, string lang, string? retrievedContextMarkdown)
+    {
+        var fallbackCvMarkdown = LoadCvMarkdown(lang);
         var windowSize = Math.Max(1, _options.MaxMessagesInWindow);
 
         var langNorm = string.Equals(lang, "es", StringComparison.OrdinalIgnoreCase) ? "es" : "en";
-        var system = FormatSystemPrompt(cvMarkdown, langNorm).Trim();
+        var grounding = string.IsNullOrWhiteSpace(retrievedContextMarkdown) ? fallbackCvMarkdown : retrievedContextMarkdown;
+        var system = FormatSystemPrompt(grounding, langNorm).Trim();
         var list = new List<OpenAiChatMessagePayload>
         {
             new("system", system)

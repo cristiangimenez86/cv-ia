@@ -39,7 +39,7 @@ context: |
     - POST /api/v1/chat/completions          → ChatResponse
 
   Content-to-API mapping:
-    - content/{lang}/site.json                  → profile, section ordering
+    - content/site.json                         → profile, section ordering (single file; bilingual fields inside)
     - content/{lang}/sections/about.md          → profile.summary
     - content/{lang}/sections/core-skills.md    → skills[] (parsed by category)
     - content/{lang}/sections/experience.md     → experience[]

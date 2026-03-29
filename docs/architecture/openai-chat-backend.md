@@ -27,6 +27,12 @@ Register new services in `DependencyInjection.AddInfrastructure`.
 
 CV sections (`CvMarkdownSectionIds` + `content/{lang}/sections/*.md`) are read **once at host startup** by `CvMarkdownContentStartupLoader` (`IHostedService`) into `CvMarkdownContentStore` (singleton). `OpenAiChatCompletionService` calls `CvMarkdownContentStore.Get(lang)` (no disk I/O per chat request). **Operational note:** editing markdown on disk does not update running instances until the process restarts.
 
+## RAG context (pgvector)
+
+When RAG is enabled (`Rag:Enabled=true`) the chat pipeline retrieves **top-K** chunks from PostgreSQL/pgvector (scoped by `lang`) and uses those chunks as primary grounding context. If retrieval is empty or RAG is disabled/unavailable, the pipeline falls back to `CvMarkdownContentStore` (full markdown) so chat remains operable.
+
+Indexing and reindexing are executed via the internal operator endpoint `POST /internal/v1/rag/reindex` (direct API access only; not through the public proxy).
+
 ## Tests
 
 `backend/tests/CvIa.Tests/Infrastructure/OpenAiChat/`:

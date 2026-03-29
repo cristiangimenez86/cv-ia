@@ -18,6 +18,12 @@ This document is the operational source of truth for local frontend/backend inte
 
 OpenAPI contract: `docs/api/api-spec.yml`.
 
+## Internal (operator-only) endpoints
+
+- `POST /internal/v1/rag/reindex`
+  - **Not exposed through the public proxy** (`8055`) or the Next.js `/api/*` proxy.
+  - Call the backend **directly** (local Docker: `http://localhost:8056`), or from another container via `http://api:8080`.
+
 ## Environment Variables
 
 ### Frontend
@@ -32,8 +38,33 @@ OpenAPI contract: `docs/api/api-spec.yml`.
 - `SERVICE_NAME` (example: `cv-ia-backend`)
 - `CvApi` section in `appsettings.json`: **`PdfAssetPath`**, **`MarkdownContentRoot`**, **`SectionIdsPath`** (paths to the PDF asset and to `content/` + `CvSectionIds.json`). Chat uses the markdown sections for the OpenAI prompt; those files are read **once at API startup** and kept in memory—**restart `dotnet run`** (or the container) after changing CV `.md` files or section order so chat sees updates.
 - **OpenAI chat:** `OpenAiChat` section in `appsettings.json` (default model **`gpt-4o-mini`**, stub mode when `UseStubChatService` is true or `ApiKey` is empty). **Project-scoped keys (`sk-proj-...`):** set **`OpenAiProjectId`** to your project id (`proj_...` from **OpenAI → Projects**). The backend sends the `OpenAI-Project` header; without it, OpenAI returns **401**. **HTTP timeout:** `OpenAiChat:HttpTimeoutSeconds` in appsettings only. Optional env overrides: `OpenAiChat__ApiKey`, `OpenAiChat__OpenAiProjectId`, `OpenAiChat__UseStubChatService`, `OpenAiChat__Model` (never in frontend).
+- **RAG / pgvector:**
+  - `ConnectionStrings__Rag`: PostgreSQL connection string for pgvector (Docker: host `pgvector`, port `5432`).
+  - `Rag__Enabled`: `true|false` (when true, `/health` actively checks DB connectivity and returns **503** if DB is down).
+  - `Rag__IngestionApiKey`: shared secret for `POST /internal/v1/rag/reindex` (sent in header `X-Rag-Ingestion-Key`).
+  - `Rag__Sources__0__Id`, `Rag__Sources__0__Type`, `Rag__Sources__0__ContentRoot` (at minimum the `cv` source).
 
 `backend/src/CvIa.Api/.env.example` is a template reference. When running `dotnet run`, provide env vars through your shell/IDE profile.
+
+## RAG ingestion (manual)
+
+Incremental reindex CV source only:
+
+```bash
+curl -X POST "http://localhost:8056/internal/v1/rag/reindex" ^
+  -H "Content-Type: application/json" ^
+  -H "X-Rag-Ingestion-Key: <your secret>" ^
+  -d "{\"mode\":\"incremental\",\"sourceIds\":[\"cv\"]}"
+```
+
+Full rebuild (all configured sources):
+
+```bash
+curl -X POST "http://localhost:8056/internal/v1/rag/reindex" ^
+  -H "Content-Type: application/json" ^
+  -H "X-Rag-Ingestion-Key: <your secret>" ^
+  -d "{\"mode\":\"full\"}"
+```
 
 ## Request Flow
 

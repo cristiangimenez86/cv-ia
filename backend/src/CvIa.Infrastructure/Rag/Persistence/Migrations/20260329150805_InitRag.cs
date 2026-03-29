@@ -1,0 +1,55 @@
+using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+using Pgvector;
+
+#nullable disable
+
+namespace CvIa.Infrastructure.Rag.Persistence.Migrations;
+
+/// <inheritdoc />
+public partial class InitRag : Migration
+{
+    /// <inheritdoc />
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.AlterDatabase()
+            .Annotation("Npgsql:PostgresExtension:vector", ",,");
+
+        migrationBuilder.CreateTable(
+            name: "content_chunk",
+            columns: table => new
+            {
+                Id = table.Column<Guid>(type: "uuid", nullable: false),
+                source_id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: false),
+                document_key = table.Column<string>(type: "character varying(512)", maxLength: 512, nullable: false),
+                section_id = table.Column<string>(type: "character varying(128)", maxLength: 128, nullable: true),
+                lang = table.Column<string>(type: "character varying(8)", maxLength: 8, nullable: true),
+                chunk_index = table.Column<int>(type: "integer", nullable: false),
+                text = table.Column<string>(type: "text", nullable: false),
+                embedding = table.Column<Vector>(type: "vector(1536)", nullable: false),
+                updated_at_utc = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false)
+            },
+            constraints: table =>
+            {
+                table.PrimaryKey("PK_content_chunk", x => x.Id);
+            });
+
+        migrationBuilder.CreateIndex(
+            name: "IX_content_chunk_source_id_document_key_chunk_index",
+            table: "content_chunk",
+            columns: new[] { "source_id", "document_key", "chunk_index" },
+            unique: true);
+
+        migrationBuilder.CreateIndex(
+            name: "IX_content_chunk_source_id_lang",
+            table: "content_chunk",
+            columns: new[] { "source_id", "lang" });
+    }
+
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropTable(
+            name: "content_chunk");
+    }
+}
