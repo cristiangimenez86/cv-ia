@@ -11,28 +11,23 @@ public partial class ContentChunkUniqueIncludeLang : Migration
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.DropIndex(
-            name: "IX_content_chunk_source_id_document_key_chunk_index",
-            table: "content_chunk");
-
-        migrationBuilder.CreateIndex(
-            name: "IX_content_chunk_source_id_document_key_chunk_index_lang",
-            table: "content_chunk",
-            columns: new[] { "source_id", "document_key", "chunk_index", "lang" },
-            unique: true);
+        // IF EXISTS: startup repair may have dropped the old index before this migration runs.
+        migrationBuilder.Sql(
+            """
+            DROP INDEX IF EXISTS "IX_content_chunk_source_id_document_key_chunk_index";
+            CREATE UNIQUE INDEX IF NOT EXISTS "IX_content_chunk_source_id_document_key_chunk_index_lang"
+              ON content_chunk (source_id, document_key, chunk_index, lang);
+            """);
     }
 
     /// <inheritdoc />
     protected override void Down(MigrationBuilder migrationBuilder)
     {
-        migrationBuilder.DropIndex(
-            name: "IX_content_chunk_source_id_document_key_chunk_index_lang",
-            table: "content_chunk");
-
-        migrationBuilder.CreateIndex(
-            name: "IX_content_chunk_source_id_document_key_chunk_index",
-            table: "content_chunk",
-            columns: new[] { "source_id", "document_key", "chunk_index" },
-            unique: true);
+        migrationBuilder.Sql(
+            """
+            DROP INDEX IF EXISTS "IX_content_chunk_source_id_document_key_chunk_index_lang";
+            CREATE UNIQUE INDEX IF NOT EXISTS "IX_content_chunk_source_id_document_key_chunk_index"
+              ON content_chunk (source_id, document_key, chunk_index);
+            """);
     }
 }
