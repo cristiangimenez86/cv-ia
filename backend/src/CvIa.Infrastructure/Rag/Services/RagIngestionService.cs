@@ -76,11 +76,17 @@ public sealed class RagIngestionService(
 
             if (entities.Count > 0)
             {
-                await db.ContentChunks.AddRangeAsync(entities, cancellationToken);
+                var deduped = entities
+                    .DistinctBy(e => (e.SourceId, e.DocumentKey, e.ChunkIndex, e.Lang))
+                    .ToList();
+                await db.ContentChunks.AddRangeAsync(deduped, cancellationToken);
                 await db.SaveChangesAsync(cancellationToken);
+                writtenBySource[source.Id] = deduped.Count;
             }
-
-            writtenBySource[source.Id] = entities.Count;
+            else
+            {
+                writtenBySource[source.Id] = 0;
+            }
         }
 
         var duration = DateTimeOffset.UtcNow - startedAt;
