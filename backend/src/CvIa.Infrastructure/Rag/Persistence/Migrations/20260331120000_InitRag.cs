@@ -6,8 +6,9 @@ using Pgvector;
 
 namespace CvIa.Infrastructure.Rag.Persistence.Migrations;
 
-/// <inheritdoc />
-public partial class InitRag : Migration
+/// <summary>Single RAG schema migration: pgvector extension, content_chunk, unique (source_id, document_key, chunk_index, lang).</summary>
+[Migration("20260331120000_InitRag")]
+public sealed class InitRag : Migration
 {
     /// <inheritdoc />
     protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,9 +36,9 @@ public partial class InitRag : Migration
             });
 
         migrationBuilder.CreateIndex(
-            name: "IX_content_chunk_source_id_document_key_chunk_index",
+            name: "IX_content_chunk_source_id_document_key_chunk_index_lang",
             table: "content_chunk",
-            columns: new[] { "source_id", "document_key", "chunk_index" },
+            columns: new[] { "source_id", "document_key", "chunk_index", "lang" },
             unique: true);
 
         migrationBuilder.CreateIndex(

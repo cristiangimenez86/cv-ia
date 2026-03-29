@@ -48,28 +48,5 @@ static async Task ApplyRagMigrationsIfConfiguredAsync(WebApplication app)
     }
 
     await db.Database.MigrateAsync();
-
-    // Older deployments only had InitRag (unique on source_id, document_key, chunk_index) which breaks
-    // en+es rows. Images without migration ContentChunkUniqueIncludeLang never fix the index — repair here.
-    await RepairRagContentChunkUniqueIndexAsync(db, app.Logger);
-
     app.Logger.LogInformation("RAG database schema is up to date (EF migrations applied).");
-}
-
-static async Task RepairRagContentChunkUniqueIndexAsync(RagDbContext db, ILogger logger)
-{
-    try
-    {
-        await db.Database.ExecuteSqlRawAsync(
-            """
-            DROP INDEX IF EXISTS "IX_content_chunk_source_id_document_key_chunk_index";
-            CREATE UNIQUE INDEX IF NOT EXISTS "IX_content_chunk_source_id_document_key_chunk_index_lang"
-              ON content_chunk (source_id, document_key, chunk_index, lang);
-            """);
-    }
-    catch (Exception ex)
-    {
-        logger.LogWarning(ex,
-            "Could not repair content_chunk unique index (table may not exist yet). Reindex may fail until this succeeds.");
-    }
 }
