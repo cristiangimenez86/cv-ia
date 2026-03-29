@@ -74,7 +74,7 @@ partial class RagDbContextModelSnapshot : ModelSnapshot
 
                 b.HasIndex("SourceId", "Lang");
 
-                b.HasIndex("SourceId", "DocumentKey", "ChunkIndex")
+                b.HasIndex("SourceId", "DocumentKey", "ChunkIndex", "Lang")
                     .IsUnique();
 
                 b.ToTable("content_chunk", (string)null);

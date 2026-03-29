@@ -39,7 +39,8 @@ public sealed class RagDbContext(DbContextOptions<RagDbContext> options) : DbCon
             entity.Property(x => x.UpdatedAtUtc).HasColumnName("updated_at_utc").IsRequired();
 
             entity.HasIndex(x => new { x.SourceId, x.Lang });
-            entity.HasIndex(x => new { x.SourceId, x.DocumentKey, x.ChunkIndex }).IsUnique();
+            // Lang is required for uniqueness: same section/document_key + chunk_index exists per language (en/es).
+            entity.HasIndex(x => new { x.SourceId, x.DocumentKey, x.ChunkIndex, x.Lang }).IsUnique();
         });
     }
 }
