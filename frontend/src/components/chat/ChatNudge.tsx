@@ -13,11 +13,11 @@ type ChatNudgeProps = {
 
 const TEXTS: Record<string, { message: string; cta: string }> = {
   es: {
-    message: "¿Quieres un resumen rápido de mi perfil?",
+    message: "¿Querés charlar conmigo como en una primera conversación?",
     cta: "Abrir chat",
   },
   en: {
-    message: "Want a quick overview of my profile?",
+    message: "Want to chat with me like in a first screening call?",
     cta: "Open chat",
   },
 };
@@ -62,7 +62,7 @@ export function ChatNudge({ onOpenChat, locale }: ChatNudgeProps) {
           </p>
           <button
             onClick={dismiss}
-            aria-label="Dismiss"
+            aria-label={locale === "es" ? "Cerrar" : "Dismiss"}
             className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded text-muted hover:text-foreground transition-colors"
           >
             <X className="h-3.5 w-3.5" />

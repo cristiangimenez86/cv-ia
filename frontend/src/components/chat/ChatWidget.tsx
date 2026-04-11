@@ -9,6 +9,11 @@ import type { ChatMessage } from "./types";
 
 const VALID_LOCALES = new Set(["es", "en"]);
 
+const FAB_ARIA: Record<string, { open: string; close: string }> = {
+  es: { open: "Abrir chat con Cristian", close: "Cerrar chat" },
+  en: { open: "Open chat with Cristian", close: "Close chat" },
+};
+
 /**
  * Global chat widget: FAB (bottom-right) that toggles a chat panel.
  * Render once in the root layout. Does not interfere with sticky header or grid.
@@ -28,6 +33,7 @@ export function ChatWidget() {
   /* Extract locale from URL path (e.g. /es/... -> "es") */
   const segment = pathname?.split("/")[1] ?? "";
   const locale = VALID_LOCALES.has(segment) ? segment : "en";
+  const fabAria = FAB_ARIA[locale] ?? FAB_ARIA.en;
 
   const toggle = useCallback(() => {
     setIsOpen((prev) => !prev);
@@ -69,7 +75,7 @@ export function ChatWidget() {
       <div className={`fixed bottom-4 right-4 z-50 ${isOpen ? "sm:block hidden" : ""}`}>
         <button
           onClick={toggle}
-          aria-label={isOpen ? "Close chat" : "Open chat"}
+          aria-label={isOpen ? fabAria.close : fabAria.open}
           className="profile-card-btn profile-card-btn-primary relative inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg"
         >
           {isOpen ? (

@@ -36,8 +36,13 @@ const PLACEHOLDER: Record<string, string> = {
 };
 
 const HEADER_TITLE: Record<string, string> = {
-  es: "Preguntale al CV",
-  en: "Ask the CV",
+  es: "Pregúntale a Cristian",
+  en: "Ask Cristian",
+};
+
+const CLOSE_ARIA: Record<string, string> = {
+  es: "Cerrar chat",
+  en: "Close chat",
 };
 
 /* ── Helpers ─────────────────────────────────────────────────────────── */
@@ -153,6 +158,7 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
   const chips = CHIPS[locale] ?? CHIPS.en;
   const placeholder = PLACEHOLDER[locale] ?? PLACEHOLDER.en;
   const headerTitle = HEADER_TITLE[locale] ?? HEADER_TITLE.en;
+  const closeAria = CLOSE_ARIA[locale] ?? CLOSE_ARIA.en;
 
   /* Focus input on mount */
   useEffect(() => {
@@ -304,7 +310,7 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
         </div>
         <button
           onClick={onClose}
-          aria-label="Close chat"
+          aria-label={closeAria}
           className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-foreground transition-colors"
         >
           <X className="h-4 w-4" />
