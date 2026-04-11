@@ -105,4 +105,19 @@ public sealed class OpenAiChatPromptBuilderTests
 
         Assert.Contains("/es#", built[0].Content, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void BuildMessages_with_retrieved_context_keeps_full_cv_and_appends_rag()
+    {
+        const string rag = "[source=cv document=hr-interview-simulation] excerpt only";
+        var built = CreateBuilder(CvMarkdownSample, new OpenAiChatOptions { MaxMessagesInWindow = 10 }).BuildMessages(
+            [new ChatMessageDto("user", "Hello")],
+            "en",
+            rag);
+
+        var system = built[0].Content;
+        Assert.Contains("Hello CV", system, StringComparison.Ordinal);
+        Assert.Contains("excerpt only", system, StringComparison.Ordinal);
+        Assert.Contains("Additional retrieved context", system, StringComparison.Ordinal);
+    }
 }

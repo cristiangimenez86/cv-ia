@@ -8,7 +8,8 @@ public interface IOpenAiChatPromptBuilder
     IReadOnlyList<OpenAiChatMessagePayload> BuildMessages(IReadOnlyList<ChatMessageDto> messages, string lang);
 
     /// <summary>
-    /// Builds payloads using retrieved RAG context when provided; otherwise uses the full CV markdown loaded at startup.
+    /// Builds payloads with the full CV markdown always included. When <paramref name="retrievedContextMarkdown"/> is non-empty,
+    /// it is appended after the CV as supplementary context (RAG); the CV remains authoritative for factual claims.
     /// </summary>
     IReadOnlyList<OpenAiChatMessagePayload> BuildMessages(IReadOnlyList<ChatMessageDto> messages, string lang, string? retrievedContextMarkdown);
 }

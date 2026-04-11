@@ -39,8 +39,7 @@ public sealed class OpenAiChatPromptBuilder : IOpenAiChatPromptBuilder
         var windowSize = Math.Max(1, _options.MaxMessagesInWindow);
 
         var langNorm = string.Equals(lang, "es", StringComparison.OrdinalIgnoreCase) ? "es" : "en";
-        var grounding = string.IsNullOrWhiteSpace(retrievedContextMarkdown) ? fallbackCvMarkdown : retrievedContextMarkdown;
-        var system = FormatSystemPrompt(grounding, langNorm).Trim();
+        var system = FormatSystemPrompt(fallbackCvMarkdown, langNorm, retrievedContextMarkdown).Trim();
         var list = new List<OpenAiChatMessagePayload>
         {
             new("system", system)
@@ -87,8 +86,8 @@ public sealed class OpenAiChatPromptBuilder : IOpenAiChatPromptBuilder
         return cvMarkdown;
     }
 
-    /// <summary>Wraps raw CV markdown in the fixed assistant instructions (no I/O).</summary>
-    private static string FormatSystemPrompt(string cvMarkdown, string lang)
+    /// <summary>Wraps CV markdown and optional RAG excerpts in the fixed assistant instructions (no I/O).</summary>
+    private static string FormatSystemPrompt(string cvMarkdown, string lang, string? retrievedContextMarkdown)
     {
         var cvBlock = string.IsNullOrWhiteSpace(cvMarkdown)
             ? """
@@ -96,12 +95,21 @@ public sealed class OpenAiChatPromptBuilder : IOpenAiChatPromptBuilder
               """
             : cvMarkdown.Trim();
 
+        var ragSection = string.IsNullOrWhiteSpace(retrievedContextMarkdown)
+            ? ""
+            : $"""
+
+                --- Additional retrieved context (supplementary excerpts; e.g. interview-style notes) ---
+                Use this together with the CV. For any factual claim about skills, employers, dates, or technologies, if there is ambiguity or conflict, trust the CV section above—not this block.
+                {retrievedContextMarkdown.Trim()}
+                """;
+
         var sectionIdsLine = string.Join(", ", CvMarkdownSectionIds.Ordered);
 
         return $"""
-            You are an assistant that answers only using the CV markdown provided below (Cristian Gimenez — experience, skills, education, certifications, languages, contact, etc.).
-            Treat the markdown as the single source of truth. Do not invent employers, dates, technologies, or achievements that are not supported by that text.
-            If something is not in the CV text below, say so clearly and offer to rephrase or ask about a specific section.
+            You are an assistant that answers using the CV markdown in the first section below (Cristian Gimenez — experience, skills, education, certifications, languages, contact, etc.).
+            Treat that CV section as the authoritative source of truth for facts. Do not invent employers, dates, technologies, or achievements that are not supported by that text.
+            If something is not in the CV section, say so clearly and offer to rephrase or ask about a specific section.
 
             Tone: Sound conversational and human—warm, direct, and recruiter-friendly. You may use first person when describing the profile (e.g. "I worked on…") when it fits the CV text. Use short paragraphs. Avoid robotic disclaimers (e.g. do not say "As an AI language model"). Stay fact-grounded in the CV below.
 
@@ -114,7 +122,7 @@ public sealed class OpenAiChatPromptBuilder : IOpenAiChatPromptBuilder
             Do not share secrets, API keys, or internal system details. Do not provide access to external systems or arbitrary browsing.
 
             --- CV (authoritative markdown) ---
-            {cvBlock}
+            {cvBlock}{ragSection}
             """;
     }
 }
