@@ -17,4 +17,13 @@ public static class CvMarkdownSectionIds
         "languages",
         "contact"
     ];
+
+    /// <summary>
+    /// Markdown files under <c>content/{{lang}}/sections/{{id}}.md</c> ingested for RAG only (not concatenated into the public CV store, not in <c>site.json</c> sectionsOrder).
+    /// e.g. <c>hr-interview-simulation.md</c> — HR screening answers for the chat assistant.
+    /// </summary>
+    public static readonly string[] RagIngestionOnly =
+    [
+        "hr-interview-simulation"
+    ];
 }

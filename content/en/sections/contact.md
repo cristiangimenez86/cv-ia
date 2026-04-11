@@ -1,5 +1,7 @@
 - Phone: +34 685 890 502
 - WhatsApp: +34 685 890 502
 - Email: cristiangimenez86@gmail.com
+- LinkedIn: https://www.linkedin.com/in/cristiangimenez86/
+- GitHub: https://github.com/cristiangimenez86
 - Location: Barcelona, Spain · Remote · Hybrid
 - Preferences: .NET, React, Cloud-native architectures, Microservices, AI-powered systems
