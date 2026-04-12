@@ -92,7 +92,8 @@ public sealed class OpenAiChatPromptBuilderTests
         Assert.Contains("about", system, StringComparison.Ordinal);
         Assert.Contains("experience", system, StringComparison.Ordinal);
         Assert.Contains("Markdown", system, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("conversational", system, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("first person", system, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("recruiter", system, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("http(s)", system, StringComparison.OrdinalIgnoreCase);
     }
 

@@ -60,7 +60,7 @@ The backend chat system prompt SHALL require that assistant replies use Markdown
 
 - **WHEN** a user sends a CV-scoped question in Spanish
 - **THEN** the model instructions SHALL encourage Markdown formatting in the assistant reply
-- **AND** factual content SHALL still be constrained to the CV source text supplied to the model for that request (retrieved chunks when RAG is active, or full Markdown context when fallback mode is used)
+- **AND** factual content SHALL still be constrained to the materials supplied to the model for that request: the full CV markdown is always included as the authoritative base, with optional retrieved excerpts as supplementary context when RAG is active
 
 ### Requirement: System prompt SHALL require section references as inline links to known anchors only
 
@@ -81,25 +81,25 @@ The system prompt SHALL state that the assistant MUST NOT include links to exter
 - **WHEN** the assistant message is generated
 - **THEN** prompt instructions SHALL discourage marketing links, third-party URLs, and non-CV navigation
 
-### Requirement: System prompt SHALL define a conversational, human tone
+### Requirement: System prompt SHALL define a first-person candidate persona for HR
 
-The system prompt SHALL instruct the assistant to respond in a natural, conversational tone appropriate for recruiters and hiring managers, avoiding robotic disclaimers, while remaining accurate and grounded in the CV text.
+The system prompt SHALL be written in English and SHALL instruct the model to answer as Cristian Gimenez in the first person, as if HR or a recruiter is screening the candidate, while replies to the end user SHALL follow the language of the user's messages (e.g. Spanish or English). The prompt SHALL remain accurate and grounded in the supplied CV and optional retrieved context.
 
 #### Scenario: Warm tone without losing facts
 
 - **WHEN** the user asks about experience or skills
-- **THEN** the assistant SHOULD sound personable and direct (e.g. first person when describing the profile where appropriate)
-- **AND** the assistant MUST NOT invent employers, dates, or technologies not present in the CV source text supplied for that request
+- **THEN** the assistant SHOULD sound professional, warm, and recruiter-friendly in the first person
+- **AND** the assistant MUST NOT invent employers, dates, or technologies not present in the materials supplied for that request
 
-### Requirement: Chat completion MUST ground answers in retrieved CV chunks when RAG is enabled
+### Requirement: Chat completion MUST ground answers in full CV markdown with optional retrieved excerpts when RAG is enabled
 
-When RAG configuration is enabled and the chunk index is populated, the backend SHALL assemble the OpenAI system/user context so that primary factual grounding for the assistant is the retrieved chunk text for the request `lang`.
+When RAG configuration is enabled and the chunk index is populated, the backend SHALL assemble the OpenAI system context so that the **full CV markdown for the request `lang` is always included** as the authoritative factual base, and retrieved chunk text is included as **supplementary** context. On conflict between retrieved excerpts and the full CV, the full CV SHALL win.
 
-#### Scenario: Retrieved chunks constrain facts
+#### Scenario: Retrieved chunks supplement full CV
 
 - **WHEN** RAG is enabled and retrieval returns at least one chunk for the user message
-- **THEN** the OpenAI chat request SHALL include that retrieved text as the primary CV grounding material
-- **AND** the assistant MUST treat that text as authoritative for factual claims in the reply
+- **THEN** the OpenAI chat request SHALL include both the full CV markdown and the retrieved text in the system context
+- **AND** factual claims in the reply MUST be supported by those materials, with the full CV taking precedence when excerpts disagree
 
 ### Requirement: Chat completion MUST support safe fallback when RAG is disabled or retrieval is empty
 
