@@ -85,12 +85,10 @@ services:
       # SSL Mode=Disable: typical for Postgres in Docker; avoids Npgsql SSL negotiation issues.
       ConnectionStrings__Rag: Host=pgvector;Port=5432;Database=cvia;Username=cvia;Password=${POSTGRES_PASSWORD:-cvia};SSL Mode=Disable
       # Set true only when pgvector is up and migrated; /health checks DB when enabled.
-      Rag__Enabled: "true"
       Rag__IngestionApiKey: ${RAG_INGESTION_API_KEY:-}
       OpenAiChat__ApiKey: ${OPENAI_API_KEY}
       OpenAiChat__OpenAiProjectId: ${OPENAI_PROJECT_ID}
       OpenAiChat__OpenAiOrganizationId: ${OPENAI_ORG_ID:-}
-      OpenAiChat__UseStubChatService: "false"
     ports:
       - "8056:8080"
     healthcheck:
