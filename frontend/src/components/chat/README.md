@@ -11,6 +11,7 @@ Intercom-style floating chat for the CV website.
 | `ChatMessageList.tsx` | Scrollable bubble list + suggestion chips (client) |
 | `ChatAssistantMarkdown.tsx` | Assistant bubbles: GFM Markdown + `rehype-sanitize`; in-app section links + `/api/v1/cv?lang=` PDF links (`@/lib/cvChatLink`, `@/lib/cvPdfDownload`) |
 | `ChatPanel.tsx` | Full panel: header, messages, input, backend fetch integration (client) |
+| `useChatMobileVisualViewport.ts` | Below `sm`, panel height tracks `visualViewport` so the OS keyboard does not cover the thread |
 | `ChatWidget.tsx` | FAB + open/close, backdrop blur/dim, renders ChatPanel (client) |
 | `chatCloseEvents.ts` | `CV_IA_CLOSE_CHAT_EVENT` — header dispatches so chat closes when using the top bar (above backdrop z-index) |
 

@@ -4,6 +4,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { X, MessageCircle } from "lucide-react";
 import { ChatMessageList } from "./ChatMessageList";
 import { ChatInput } from "./ChatInput";
+import { useChatMobileVisualViewport } from "./useChatMobileVisualViewport";
 import type { ChatMessage, ChatChip } from "./types";
 
 type ChatPanelProps = {
@@ -161,6 +162,7 @@ async function requestChatCompletion(userText: string, locale: string): Promise<
  * State is in-memory only (useState). Replies come from backend API.
  */
 export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelProps) {
+  const mobileVv = useChatMobileVisualViewport();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -308,14 +310,24 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
     [sendMessage],
   );
 
+  const useVvLayout = mobileVv !== null;
+
   return (
     <div
-      className="card flex flex-col overflow-hidden
-        fixed z-50
-        inset-3 max-h-[calc(100dvh-1.5rem)]
+      className={`card flex flex-col overflow-hidden fixed z-50
+        ${useVvLayout ? "left-3 right-3 max-w-none" : "inset-3 max-h-[calc(100dvh-1.5rem)]"}
         sm:inset-auto sm:bottom-20 sm:right-4
         sm:w-[min(600px,calc(100vw-2rem))] sm:h-[min(700px,calc(100dvh-5rem))] sm:max-h-none
-        md:w-[600px] md:h-[min(700px,calc(100dvh-5rem))]"
+        md:w-[600px] md:h-[min(700px,calc(100dvh-5rem))]`}
+      style={
+        useVvLayout
+          ? {
+              top: mobileVv.top,
+              height: mobileVv.height,
+              maxHeight: mobileVv.height,
+            }
+          : undefined
+      }
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
