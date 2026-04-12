@@ -17,7 +17,7 @@ Other chat-related types in `Services/`:
 
 | Piece | Role |
 |-------|------|
-| `CvMarkdownSectionIds` | Hardcoded ordered section ids (keep in sync with `shared/section-ids.json`; `npm run verify:section-ids`). |
+| `CvMarkdownSectionIds` | Hardcoded ordered section ids (keep in sync with `shared/section-ids.json`; `npm run verify:section-ids`). `ChatPromptSupplementOnly` appends extra markdown files (e.g. `work-authorization`) to the chat system prompt only—not the public page. `RagIngestionOnly` adds chunks for retrieval without rendering on the site. |
 | `CvMarkdownContentStartupLoader` | `IHostedService` — runs before the server accepts traffic; fills `CvMarkdownContentStore`. |
 | `CvMarkdownContentStore` | Singleton holding markdown strings per locale; injected into `OpenAiChatCompletionService` for prompt building. |
 

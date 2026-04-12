@@ -1,0 +1,1 @@
+**Autorización de trabajo (España / UE):** Doble nacionalidad—Argentina (nacimiento) e Italia—y residencia legal en España con NIE y afiliación a la Seguridad Social al día. Puede trabajar en España y en el espacio UE sin necesidad de visado patrocinado por el empleador para esas condiciones.

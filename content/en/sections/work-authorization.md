@@ -1,0 +1,1 @@
+**Work authorization (Spain / EU):** Dual nationality—Argentina (birth) and Italy—and legally resident in Spain with valid NIE and social security (Seguridad Social) registration. Eligible to work in Spain and the broader EU without requiring employer-sponsored visa sponsorship for those statuses.

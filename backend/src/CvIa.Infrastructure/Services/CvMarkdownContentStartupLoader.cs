@@ -17,7 +17,9 @@ public sealed class CvMarkdownContentStartupLoader(
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        var ids = CvMarkdownSectionIds.Ordered;
+        var ids = CvMarkdownSectionIds.Ordered
+            .Concat(CvMarkdownSectionIds.ChatPromptSupplementOnly)
+            .ToArray();
         if (ids.Length == 0)
         {
             store.SetEmpty();

@@ -24,6 +24,16 @@ public static class CvMarkdownSectionIds
     /// </summary>
     public static readonly string[] RagIngestionOnly =
     [
-        "hr-interview-simulation"
+        "hr-interview-simulation",
+        "work-authorization"
+    ];
+
+    /// <summary>
+    /// Appended to the in-memory CV markdown used for chat (system prompt) after <see cref="Ordered"/>, but not rendered on the public CV page and not in <c>shared/section-ids.json</c>.
+    /// Keep small—large files belong in <see cref="RagIngestionOnly"/> only.
+    /// </summary>
+    public static readonly string[] ChatPromptSupplementOnly =
+    [
+        "work-authorization"
     ];
 }
