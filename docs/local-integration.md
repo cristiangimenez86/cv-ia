@@ -40,6 +40,7 @@ OpenAPI contract: `docs/api/api-spec.yml`.
 
 ### Backend
 
+- **Configuration layers:** Base **`appsettings.json`** is tuned for **local dev / CI** (`UseStubChatService: true`, `Rag:Enabled: false`, `ApiAccess:RequireToken: false`). **`appsettings.Production.json`** turns on **real chat**, **RAG**, and **API bearer** (`RequireToken: true`) and sets **CORS** allow list. The **API Docker image** sets **`ASPNETCORE_ENVIRONMENT=Production`** so the container loads Production overrides without relying on compose alone. **`dotnet test`** forces **Development** in test factories so **Production** is not loaded during CI.
 - `ASPNETCORE_URLS` (example: `http://localhost:8080`)
 - `SERVICE_NAME` (example: `cv-ia-backend`)
 - `CvApi` section in `appsettings.json`: **`PdfAssetPath`**, **`MarkdownContentRoot`**, **`SectionIdsPath`** (paths to the PDF asset and to `content/` + `CvSectionIds.json`). Chat uses the markdown sections for the OpenAI prompt; those files are read **once at API startup** and kept in memory—**restart `dotnet run`** (or the container) after changing CV `.md` files or section order so chat sees updates.

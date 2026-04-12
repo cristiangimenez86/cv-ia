@@ -20,6 +20,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 ENV ASPNETCORE_URLS=http://+:8080
+# Merge appsettings.Production.json (real OpenAI, RAG on, API bearer gate, CORS list).
+ENV ASPNETCORE_ENVIRONMENT=Production
 ENV DOTNET_EnableDiagnostics=0
 
 # wget: healthchecks; libgssapi-krb5-2: Npgsql may probe Kerberos libs on connect (avoids noisy load errors in minimal images)

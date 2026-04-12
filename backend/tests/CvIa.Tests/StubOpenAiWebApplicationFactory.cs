@@ -10,6 +10,8 @@ public sealed class StubOpenAiWebApplicationFactory : WebApplicationFactory<Prog
 {
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        // Avoid appsettings.Production.json (RAG on, no Postgres in test host).
+        builder.UseEnvironment("Development");
         builder.UseSetting("OpenAiChat:UseStubChatService", "true");
         builder.UseSetting("OpenAiChat:ApiKey", "");
         builder.UseSetting("OpenAiChat:OpenAiProjectId", "");

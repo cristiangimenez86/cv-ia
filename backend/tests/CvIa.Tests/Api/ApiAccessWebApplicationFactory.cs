@@ -20,6 +20,7 @@ internal sealed class ApiAccessWebApplicationFactory : WebApplicationFactory<Pro
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment("Development");
         builder.UseSetting($"{ApiAccessOptions.SectionName}:RequireToken", _requireToken ? "true" : "false");
         builder.UseSetting($"{ApiAccessOptions.SectionName}:Token", _token);
         builder.UseSetting("OpenAiChat:UseStubChatService", "true");

@@ -20,6 +20,7 @@ internal sealed class RagWebApplicationFactory : WebApplicationFactory<Program>
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment("Development");
         builder.UseSetting($"{RagOptions.SectionName}:IngestionApiKey", _key);
         builder.UseSetting($"{RagOptions.SectionName}:Enabled", "false");
 
