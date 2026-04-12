@@ -12,12 +12,17 @@ Intercom-style floating chat for the CV website.
 | `ChatAssistantMarkdown.tsx` | Assistant bubbles: GFM Markdown + `rehype-sanitize`; in-app section links + `/api/v1/cv?lang=` PDF links (`@/lib/cvChatLink`, `@/lib/cvPdfDownload`) |
 | `ChatPanel.tsx` | Full panel: header, messages, input, backend fetch integration (client) |
 | `ChatWidget.tsx` | FAB + open/close, backdrop blur/dim, renders ChatPanel (client) |
+| `chatCloseEvents.ts` | `CV_IA_CLOSE_CHAT_EVENT` — header dispatches so chat closes when using the top bar (above backdrop z-index) |
 
 ## Integration
 
 `ChatWidget` is rendered once in the root layout (`frontend/src/app/layout.tsx`).
 Locale is derived from the URL path on the client (`/en/…`, `/es/…`). The widget is `fixed` so it
 does not interfere with the sticky header or the two-column grid.
+
+The sticky header uses `HeaderInteractiveChrome` (`z-50`) above the chat backdrop (`z-40`); any pointer
+down on the header dispatches `CV_IA_CLOSE_CHAT_EVENT` while the panel is open so the chat closes
+without blocking nav, PDF, locale, or theme controls.
 
 ## Backend Integration
 

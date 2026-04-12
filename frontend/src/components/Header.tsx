@@ -2,6 +2,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { CvPdfDownloadButton } from "@/components/CvPdfDownloadButton";
 import { LocaleToggle } from "@/components/LocaleToggle";
 import { NavLinks } from "@/components/NavLinks";
+import { HeaderInteractiveChrome } from "@/components/HeaderInteractiveChrome";
 import type { SiteConfig, Locale } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
 
@@ -47,7 +48,7 @@ export function Header({ config, locale, cvPdfFetchUrl, cvPdfAccessToken }: Prop
   const downloadLabel = locale === "es" ? "Descargar PDF" : "Download PDF";
 
   return (
-    <header className="header sticky top-0 z-50 w-full bg-surface card-header">
+    <HeaderInteractiveChrome className="header sticky top-0 z-50 w-full bg-surface card-header">
       <div className="max-w-[var(--max-content-width)] mx-auto h-[var(--header-height-mobile)] md:h-[var(--header-height-desktop)] px-4 md:px-6 flex items-center gap-6">
         {/* Left — pl-[7px] aligns with profile card content on mobile and desktop */}
         <div className="min-w-0 flex flex-col justify-center leading-tight pl-[7px]">
@@ -77,6 +78,6 @@ export function Header({ config, locale, cvPdfFetchUrl, cvPdfAccessToken }: Prop
           </div>
         </div>
       </div>
-    </header>
+    </HeaderInteractiveChrome>
   );
 }

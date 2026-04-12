@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, X } from "lucide-react";
 import { ChatPanel } from "./ChatPanel";
 import { ChatNudge } from "./ChatNudge";
+import { CV_IA_CLOSE_CHAT_EVENT } from "./chatCloseEvents";
 import type { ChatMessage } from "./types";
 
 const VALID_LOCALES = new Set(["es", "en"]);
@@ -41,6 +42,18 @@ export function ChatWidget() {
   }, []);
 
   const close = useCallback(() => setIsOpen(false), []);
+
+  /* Top bar (z-50) sits above the chat backdrop (z-40); close when user interacts with the header. */
+  useEffect(() => {
+    if (!isOpen) {
+      return;
+    }
+    const handler = () => {
+      setIsOpen(false);
+    };
+    window.addEventListener(CV_IA_CLOSE_CHAT_EVENT, handler);
+    return () => window.removeEventListener(CV_IA_CLOSE_CHAT_EVENT, handler);
+  }, [isOpen]);
 
   const openFromNudge = useCallback(() => {
     setIsOpen(true);
