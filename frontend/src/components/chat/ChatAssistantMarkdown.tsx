@@ -5,7 +5,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSanitize from "rehype-sanitize";
 import type { ReactNode } from "react";
-import { normalizeCvSectionHref } from "@/lib/cvChatLink";
+import { normalizeCvSectionHref, parseCvPdfChatLink } from "@/lib/cvChatLink";
+import { downloadCvPdfClient } from "@/lib/cvPdfDownload";
 
 type ChatAssistantMarkdownProps = {
   content: string;
@@ -14,8 +15,10 @@ type ChatAssistantMarkdownProps = {
 };
 
 /**
- * Renders assistant chat content as GFM Markdown with XSS sanitization and safe in-app section links only.
+ * Renders assistant chat content as GFM Markdown with XSS sanitization, safe in-app section links, and CV PDF API links.
  */
+const CHAT_API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
+
 export function ChatAssistantMarkdown({
   content,
   locale,
@@ -125,6 +128,34 @@ function AssistantLink({
   onClose: () => void;
 }) {
   const router = useRouter();
+  const pdf = parseCvPdfChatLink(href);
+  if (pdf) {
+    const fetchUrl = CHAT_API_BASE_URL
+      ? `${CHAT_API_BASE_URL}${pdf.fetchPath}`
+      : pdf.fetchPath;
+    const accessToken = CHAT_API_BASE_URL
+      ? (process.env.NEXT_PUBLIC_API_ACCESS_TOKEN ?? "").trim()
+      : "";
+
+    return (
+      <button
+        type="button"
+        className="inline cursor-pointer border-0 bg-transparent p-0 text-left font-medium text-primary underline underline-offset-2 hover:opacity-90"
+        onClick={() => {
+          void (async () => {
+            await downloadCvPdfClient(
+              fetchUrl,
+              `cv-${pdf.lang}`,
+              accessToken || undefined,
+            );
+          })();
+        }}
+      >
+        {children}
+      </button>
+    );
+  }
+
   const normalized = normalizeCvSectionHref(href, locale);
   if (!normalized) {
     return <span className="text-foreground">{children}</span>;

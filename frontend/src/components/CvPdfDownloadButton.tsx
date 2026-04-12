@@ -3,6 +3,7 @@
 import { useCallback, useState } from "react";
 import { Download } from "lucide-react";
 import type { Locale } from "@/lib/content/types";
+import { downloadCvPdfClient } from "@/lib/cvPdfDownload";
 
 type CvPdfDownloadButtonProps = {
   /** Absolute path on same origin (e.g. `/api/v1/cv?lang=en`) or full URL to the API. */
@@ -33,25 +34,7 @@ export function CvPdfDownloadButton({
     }
     setBusy(true);
     try {
-      const headers: HeadersInit = {};
-      const t = accessToken.trim();
-      if (t) {
-        headers.Authorization = `Bearer ${t}`;
-      }
-      const res = await fetch(fetchUrl, { headers, cache: "no-store" });
-      if (!res.ok) {
-        return;
-      }
-      const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `cv-${locale}.pdf`;
-      a.rel = "noopener";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
+      await downloadCvPdfClient(fetchUrl, `cv-${locale}`, accessToken);
     } finally {
       setBusy(false);
     }

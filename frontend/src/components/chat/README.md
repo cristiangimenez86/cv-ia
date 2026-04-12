@@ -9,7 +9,7 @@ Intercom-style floating chat for the CV website.
 | `types.ts` | `ChatMessage` and `ChatChip` types |
 | `ChatInput.tsx` | Textarea + send button (client) |
 | `ChatMessageList.tsx` | Scrollable bubble list + suggestion chips (client) |
-| `ChatAssistantMarkdown.tsx` | Assistant bubbles: GFM Markdown + `rehype-sanitize`; in-app section links only (`@/lib/cvChatLink`) |
+| `ChatAssistantMarkdown.tsx` | Assistant bubbles: GFM Markdown + `rehype-sanitize`; in-app section links + `/api/v1/cv?lang=` PDF links (`@/lib/cvChatLink`, `@/lib/cvPdfDownload`) |
 | `ChatPanel.tsx` | Full panel: header, messages, input, backend fetch integration (client) |
 | `ChatWidget.tsx` | FAB + open/close, backdrop blur/dim, renders ChatPanel (client) |
 
