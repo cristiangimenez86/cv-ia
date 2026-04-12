@@ -1,12 +1,6 @@
-# Stack: cv-ia-local
-#
-# Set these in Portainer (Stack → Environment) or a .env next to this file:
-#   OPENAI_API_KEY=sk-... or sk-proj-...
-#   OPENAI_PROJECT_ID=proj_...   # required for sk-proj- keys
-#   OPENAI_ORG_ID=org-...        # optional
-#   POSTGRES_PASSWORD=...        # optional; default below is dev-only
-
-name: cv-ia-local
+# Optional stack env (Portainer → Stack → Environment):
+#   OPENAI_API_KEY, OPENAI_PROJECT_ID, OPENAI_ORG_ID, POSTGRES_PASSWORD, RAG_INGESTION_API_KEY
+#   BACKEND_API_ACCESS_TOKEN — optional; forwarded to ApiAccess__Token (api) and Next (cv) when using bearer gate
 
 services:
   proxy:
@@ -47,8 +41,9 @@ services:
                   proxy_set_header X-Forwarded-Proto $$scheme;
               }
 
+              # /api/* via Next so Route Handlers can attach BACKEND_API_ACCESS_TOKEN to the .NET API.
               location /api/ {
-                  proxy_pass http://api:8080;
+                  proxy_pass http://cv:80;
                   proxy_http_version 1.1;
                   proxy_set_header Host $$host;
                   proxy_set_header X-Real-IP $$remote_addr;
@@ -66,8 +61,9 @@ services:
     depends_on:
       - api
     environment:
-      # Next route handlers (e.g. /api/* proxy) reach the API on the Docker network
+      # Next /api/* proxy target on the Docker network
       BACKEND_INTERNAL_URL: http://api:8080
+      BACKEND_API_ACCESS_TOKEN: ${BACKEND_API_ACCESS_TOKEN:-}
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:80/en"]
       interval: 30s
@@ -85,6 +81,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080
+      ApiAccess__Token: ${BACKEND_API_ACCESS_TOKEN:-}
       # SSL Mode=Disable: typical for Postgres in Docker; avoids Npgsql SSL negotiation issues.
       ConnectionStrings__Rag: Host=pgvector;Port=5432;Database=cvia;Username=cvia;Password=${POSTGRES_PASSWORD:-cvia};SSL Mode=Disable
       # Set true only when pgvector is up and migrated; /health checks DB when enabled.

@@ -1,12 +1,14 @@
 import Image from "next/image";
 import { MapPin, Mail, Phone } from "lucide-react";
+import { CvPdfDownloadButton } from "@/components/CvPdfDownloadButton";
 import type { Profile, Locale } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
 
 type ProfileCardProps = {
   profile: Profile;
   locale: Locale;
-  downloadPdfHref: string;
+  cvPdfFetchUrl: string;
+  cvPdfAccessToken?: string;
 };
 
 /** WhatsApp URL from phone: +34 685 890 502 -> https://wa.me/34685890502 */
@@ -65,7 +67,8 @@ function WhatsAppIcon({ className }: { className?: string }) {
 export function ProfileCard({
   profile,
   locale,
-  downloadPdfHref,
+  cvPdfFetchUrl,
+  cvPdfAccessToken,
 }: ProfileCardProps) {
   const headline = getLocalized(profile.headline, locale);
   const location = getLocalized(profile.location, locale);
@@ -155,13 +158,13 @@ export function ProfileCard({
 
         {/* PDF download — JSON export can be re-added here + downloadJson prop + page.tsx payload */}
         <div className="space-y-2 border-t border-divider pt-3">
-          <a
-            href={downloadPdfHref}
-            className="profile-card-btn profile-card-btn-primary w-full h-9 px-4 text-sm font-semibold rounded-lg bg-primary text-primary-foreground shadow-sm flex items-center justify-center"
-            aria-label={downloadPdfLabel}
-          >
-            {downloadPdfLabel}
-          </a>
+          <CvPdfDownloadButton
+            fetchUrl={cvPdfFetchUrl}
+            locale={locale}
+            accessToken={cvPdfAccessToken}
+            variant="profile"
+            downloadLabel={downloadPdfLabel}
+          />
         </div>
       </div>
     </aside>

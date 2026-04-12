@@ -8,17 +8,37 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.Configure<SiteCorsOptions>(builder.Configuration.GetSection(SiteCorsOptions.SectionName));
+builder.Services.Configure<ApiAccessOptions>(builder.Configuration.GetSection(ApiAccessOptions.SectionName));
+
 builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSingleton<RagIngestionSingleFlightGate>();
+
+var corsOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+const string CorsPolicyName = "CvIaBrowser";
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
-        policy
-            .AllowAnyHeader()
-            .AllowAnyMethod()
-            .SetIsOriginAllowed(_ => true)
-    );
+    options.AddPolicy(
+        CorsPolicyName,
+        policy =>
+        {
+            if (corsOrigins.Length == 0)
+            {
+                policy
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .SetIsOriginAllowed(_ => true);
+            }
+            else
+            {
+                policy
+                    .WithOrigins(corsOrigins)
+                    .WithMethods("GET", "POST", "OPTIONS")
+                    .WithHeaders("Authorization", "Content-Type")
+                    .SetPreflightMaxAge(TimeSpan.FromHours(1));
+            }
+        });
 });
 
 var app = builder.Build();
@@ -27,7 +47,8 @@ await ApplyRagMigrationsIfConfiguredAsync(app);
 
 DevelopmentMode.LogOpenAiDevelopmentSummary(app.Environment, builder.Configuration, app.Logger);
 
-app.UseCors();
+app.UseCors(CorsPolicyName);
+app.UseMiddleware<ApiAccessBearerMiddleware>();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.MapControllers();
 

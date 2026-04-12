@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getBackendBaseUrl } from "@/lib/backend-url";
+import { backendProxyAuthHeaders } from "@/lib/backend-proxy-auth";
 
 export const runtime = "nodejs";
 
@@ -20,6 +21,18 @@ async function proxy(request: NextRequest, context: RouteContext): Promise<NextR
     }
     headers.set(key, value);
   });
+
+  const serverAuth = backendProxyAuthHeaders();
+  if (
+    typeof serverAuth === "object" &&
+    serverAuth !== null &&
+    "Authorization" in serverAuth
+  ) {
+    headers.set(
+      "Authorization",
+      (serverAuth as { Authorization: string }).Authorization,
+    );
+  }
 
   const init: RequestInit = {
     method: request.method,

@@ -35,6 +35,8 @@ paths:
   /api/v1/cv:
     get:
       tags: [CV]
+      security:
+        - bearerAuth: []
       summary: Download CV PDF by locale
       parameters:
         - in: query
@@ -64,10 +66,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Missing or invalid API access token (when ApiAccess:RequireToken is enabled)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
   /api/v1/chat/completions:
     post:
       tags: [Chat]
+      security:
+        - bearerAuth: []
       summary: CV-scoped chat completion (public)
       description: >
         Returns an assistant message constrained to the CV content.
@@ -116,8 +126,24 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorResponse"
+        "401":
+          description: Missing or invalid API access token (when ApiAccess:RequireToken is enabled)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: opaque
+      description: >
+        Optional deployment gate. When `ApiAccess:RequireToken` is true on the backend, clients must send
+        `Authorization: Bearer <token>` matching `ApiAccess:Token`. `GET /health` is never protected by this scheme.
+        The Next.js site typically injects this header server-side via `BACKEND_API_ACCESS_TOKEN` when proxying `/api/*`.
+
   schemas:
     HealthResponse:
       type: object

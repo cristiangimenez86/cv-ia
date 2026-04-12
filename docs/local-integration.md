@@ -7,7 +7,7 @@ This document is the operational source of truth for local frontend/backend inte
 | Mode | Frontend URL | Backend URL | Notes |
 |---|---|---|---|
 | Local dev (no Docker) | `http://localhost:3000` | `http://localhost:8080` | Prefer **`NEXT_PUBLIC_API_BASE_URL` empty**: App Router route handlers (`src/app/api/[...path]/route.ts`, `src/app/health/route.ts`) proxy to `BACKEND_INTERNAL_URL` (default `http://127.0.0.1:8080`). Optionally set `NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8080` for direct browser→API calls (CORS must allow the front origin). |
-| Docker (direct API) | `http://localhost:8055` (via proxy) | `http://localhost:8056` (direct API port) | `proxy` routes `/` to frontend and `/api/*` + `/health` to backend. |
+| Docker (direct API) | `http://localhost:8055` (via proxy) | `http://localhost:8056` (direct API port) | `proxy` routes `/` to frontend, **`/api/*` to Next (`cv`)** so Route Handlers can add `Authorization`, and **`/health` still to `api`**. |
 | Docker (through proxy) | `http://localhost:8055` | `http://localhost:8055` | Preferred browser entrypoint for end-to-end smoke checks. |
 
 ## Backend Endpoints Implemented
@@ -30,7 +30,13 @@ OpenAPI contract: `docs/api/api-spec.yml`.
 
 - `NEXT_PUBLIC_API_BASE_URL`
   - Example (local dev): `http://localhost:8080`
-  - If empty, frontend calls relative paths (`/health`, `/api/...`) which is compatible with the Docker proxy on `8055`.
+  - If empty, the browser calls same-origin paths (`/health`, `/api/...`). **`/api/*` is implemented by Next** (`src/app/api/[...path]/route.ts`), which proxies to `BACKEND_INTERNAL_URL` and attaches **`BACKEND_API_ACCESS_TOKEN`** when set (server-only; not bundled for the client).
+- `BACKEND_INTERNAL_URL`
+  - Server-only target for the catch-all API proxy (default `http://127.0.0.1:8080`; Docker **`cv`** stack: `http://api:8080`).
+- `BACKEND_API_ACCESS_TOKEN`
+  - Server-only bearer **without** the `Bearer ` prefix. Must match **`ApiAccess:Token`** on the .NET API when **`ApiAccess:RequireToken`** is true.
+- `NEXT_PUBLIC_API_ACCESS_TOKEN` (optional)
+  - Only when **`NEXT_PUBLIC_API_BASE_URL`** is non-empty (browser talks directly to the API). Same raw token value; it is **public** in the client bundle—prefer same-origin `/api/*` + `BACKEND_API_ACCESS_TOKEN` instead.
 
 ### Backend
 
@@ -43,6 +49,9 @@ OpenAPI contract: `docs/api/api-spec.yml`.
   - `Rag__Enabled`: `true|false` (when true, `/health` actively checks DB connectivity and returns **503** if DB is down).
   - `Rag__IngestionApiKey`: shared secret for `POST /internal/v1/rag/reindex` (sent in header `X-Rag-Ingestion-Key`).
   - `Rag__Sources__0__Id`, `Rag__Sources__0__Type`, `Rag__Sources__0__ContentRoot` (at minimum the `cv` source).
+- **Public API bearer (optional):**
+  - `ApiAccess:RequireToken` / `ApiAccess:Token`: set in **`appsettings.json`** / **`appsettings.Production.json`** (not required as compose env). **`Token`** is often overridden at runtime with **`ApiAccess__Token`** (e.g. `BACKEND_API_ACCESS_TOKEN` in Docker) so the secret is not committed. When `RequireToken` is true, use the same value as Next **`BACKEND_API_ACCESS_TOKEN`**.
+  - `Cors:AllowedOrigins`: non-empty list in **`appsettings.Production.json`** for the Docker stack (default `localhost` / `127.0.0.1` on port **8055**). Empty list in base **`appsettings.json`** keeps permissive CORS for local `dotnet run`. For a public URL, edit **`appsettings.Production.json`** (or add another environment-specific file) to include your real origin(s).
 
 `backend/src/CvIa.Api/.env.example` is a template reference. When running `dotnet run`, provide env vars through your shell/IDE profile.
 
@@ -76,7 +85,20 @@ curl -X POST "http://localhost:8056/internal/v1/rag/reindex" ^
 
 `browser (8055) -> proxy -> cv (/)`
 
-`browser (8055) -> proxy -> api (/health, /api/*)`
+`browser (8055) -> proxy -> cv (/api/* -> Next proxy -> api:8080 with optional Bearer)`
+
+`browser (8055) -> proxy -> api (/health only)`
+
+## CORS preflight (optional check)
+
+When `Cors:AllowedOrigins` is non-empty, an allowed origin should receive `Access-Control-Allow-*` headers on preflight:
+
+```bash
+curl -i -X OPTIONS "http://localhost:8080/api/v1/chat/completions" ^
+  -H "Origin: http://localhost:3000" ^
+  -H "Access-Control-Request-Method: POST" ^
+  -H "Access-Control-Request-Headers: authorization,content-type"
+```
 
 ## Verification Commands
 

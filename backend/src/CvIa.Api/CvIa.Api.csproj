@@ -5,6 +5,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="CvIa.Tests" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\CvIa.Application\CvIa.Application.csproj" />
     <ProjectReference Include="..\CvIa.Domain\CvIa.Domain.csproj" />
     <ProjectReference Include="..\CvIa.Infrastructure\CvIa.Infrastructure.csproj" />

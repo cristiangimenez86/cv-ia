@@ -54,6 +54,9 @@ function generateId(): string {
 }
 
 const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
+const DIRECT_API_ACCESS_TOKEN = (
+  process.env.NEXT_PUBLIC_API_ACCESS_TOKEN ?? ""
+).trim();
 
 /** Retries upstream 429 responses (often transient). */
 const MAX_429_RETRIES = 2;
@@ -97,11 +100,20 @@ function parseApiErrorBody(text: string): { message?: string; code?: string } {
  * on expected failures (4xx/5xx). Retries 429 a few times with backoff.
  */
 async function requestChatCompletion(userText: string, locale: string): Promise<ChatResult> {
-  const url = `${API_BASE_URL}/api/v1/chat/completions`;
+  const url = API_BASE_URL
+    ? `${API_BASE_URL}/api/v1/chat/completions`
+    : "/api/v1/chat/completions";
   const body = JSON.stringify({
     lang: locale,
     messages: [{ role: "user", content: userText }],
   });
+
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (API_BASE_URL && DIRECT_API_ACCESS_TOKEN) {
+    headers.Authorization = `Bearer ${DIRECT_API_ACCESS_TOKEN}`;
+  }
 
   let attempt = 0;
 
@@ -110,7 +122,7 @@ async function requestChatCompletion(userText: string, locale: string): Promise<
     try {
       response = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers,
         body,
       });
     } catch {
@@ -259,6 +271,11 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
               locale === "es"
                 ? "El proveedor rechazó la solicitud (permisos). Revisá la clave restringida y el modelo en la configuración del backend, o usá una clave con permisos All."
                 : "The provider rejected the request (permissions). Check your restricted key and the backend chat model setting, or use a key with All permissions.";
+          } else if (status === 401) {
+            fallback =
+              locale === "es"
+                ? "No autorizado para usar el API (token de acceso). Revisá la configuración del sitio o del backend."
+                : "Not authorized to call the API (access token). Check site or backend configuration.";
           } else {
             fallback =
               locale === "es"

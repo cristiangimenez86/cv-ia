@@ -21,13 +21,16 @@ does not interfere with the sticky header or the two-column grid.
 
 ## Backend Integration
 
-`ChatPanel.tsx` uses `NEXT_PUBLIC_API_BASE_URL` and sends:
+`ChatPanel.tsx` uses **`NEXT_PUBLIC_API_BASE_URL`** when set (direct browser→API), otherwise **`/api/v1/chat/completions`** on the same origin so Next’s **`src/app/api/[...path]/route.ts`** proxy can attach **`BACKEND_API_ACCESS_TOKEN`**. Optional **`NEXT_PUBLIC_API_ACCESS_TOKEN`** only for the direct-API mode.
 
 ```typescript
 async function requestChatCompletion(userText: string, locale: string): Promise<string> {
-  const res = await fetch(`${API_BASE_URL}/api/v1/chat/completions`, {
+  const url = API_BASE_URL
+    ? `${API_BASE_URL}/api/v1/chat/completions`
+    : "/api/v1/chat/completions";
+  const res = await fetch(url, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", /* + Authorization if direct mode */ },
     body: JSON.stringify({
       lang: locale,
       messages: [{ role: "user", content: userText }],
