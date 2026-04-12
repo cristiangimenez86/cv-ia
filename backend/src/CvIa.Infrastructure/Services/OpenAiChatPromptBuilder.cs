@@ -117,7 +117,9 @@ public sealed class OpenAiChatPromptBuilder : IOpenAiChatPromptBuilder
 
             Formatting: Use GitHub-flavored Markdown in every reply—**bold**, *italic*, bullet or numbered lists when helpful, inline `code` for tech terms, and fenced code blocks only when a short snippet helps. Do not wrap the entire answer in a single code block.
 
-            CV section links: When you point the user to a part of the site, use a Markdown link with this exact pattern only: [descriptive label](/{lang}#section-id). Example: [Experience](/{lang}#experience). Lang for this conversation is "{lang}". Allowed section-id fragments are: {sectionIdsLine}. Do not add other paths, query strings, or hosts. Do not use http(s) URLs, mailto:, or links to external websites.
+            CV PDF download: If the user asks how to download your CV as a PDF (or similar), answer in the user's language and always include both download links in the same reply—Spanish and English—with Markdown using exactly these paths (no other query strings, hosts, or http(s) URLs): [use a clear label in the user's language](/api/v1/cv?lang=es) for the Spanish PDF and [use a clear label in the user's language](/api/v1/cv?lang=en) for the English PDF. Always offer both even when the user mentioned only one language. Do not refuse or say you lack PDF download capability for these endpoints.
+
+            CV section links (in-page only): When you point the user to a section of the CV page (not PDF), use a Markdown link with this pattern only: [descriptive label](/{lang}#section-id). Example: [Experience](/{lang}#experience). Lang for this conversation is "{lang}". Allowed section-id fragments are: {sectionIdsLine}. Besides those anchors and the two PDF paths above, do not add other paths, query strings, or hosts. Do not use http(s) URLs, mailto:, or links to external websites.
 
             Language: Always respond in the same language the user uses in their messages (e.g. Spanish question → Spanish answer; English → English). If the user mixes languages, follow the language of their latest user message.
 

@@ -64,7 +64,7 @@ The backend chat system prompt SHALL require that assistant replies use Markdown
 
 ### Requirement: System prompt SHALL require section references as inline links to known anchors only
 
-The system prompt SHALL include the authoritative list of CV section IDs and SHALL instruct the model to reference sections using Markdown links whose targets are only paths of the form `/{lang}#{section-id}` where `{lang}` matches the request `lang` (`es` or `en`) and `{section-id}` is from the allowed list.
+The system prompt SHALL include the authoritative list of CV section IDs and SHALL instruct the model to reference on-page CV sections using Markdown links whose targets are only paths of the form `/{lang}#{section-id}` where `{lang}` matches the request `lang` (`es` or `en`) and `{section-id}` is from the allowed list. PDF download uses separate allowed paths (see PDF requirement below).
 
 #### Scenario: Section link uses allowed ID
 
@@ -72,9 +72,19 @@ The system prompt SHALL include the authoritative list of CV section IDs and SHA
 - **THEN** the reply SHOULD use a Markdown link such as `[Experience](/en#experience)` for English or the Spanish equivalent label with `/es#experience`
 - **AND** the fragment SHALL match one of the allowed section IDs
 
+### Requirement: System prompt SHALL instruct dual-locale PDF download links when asked
+
+The system prompt SHALL require that when the user asks how to download the CV as a PDF (or equivalent), the assistant includes **both** Markdown links in the same reply, with targets exactly `/api/v1/cv?lang=es` and `/api/v1/cv?lang=en`, and link labels appropriate to the user's language.
+
+#### Scenario: PDF question yields Spanish and English endpoints
+
+- **WHEN** the user asks where or how to download the CV in PDF
+- **THEN** prompt instructions SHALL direct the assistant to provide both PDF endpoints in one reply
+- **AND** the assistant SHALL NOT refuse on the basis of lacking PDF download capability for those API paths
+
 ### Requirement: System prompt SHALL forbid external and arbitrary URLs in assistant replies
 
-The system prompt SHALL state that the assistant MUST NOT include links to external websites, HTTP(S) URLs, or paths other than the allowed `/{lang}#{section-id}` pattern for navigation.
+The system prompt SHALL state that the assistant MUST NOT include links to external websites, HTTP(S) URLs, mailto links, or paths other than (a) the allowed `/{lang}#{section-id}` pattern for on-page CV navigation and (b) `/api/v1/cv?lang=es` and `/api/v1/cv?lang=en` when answering PDF download questions.
 
 #### Scenario: No external links
 
