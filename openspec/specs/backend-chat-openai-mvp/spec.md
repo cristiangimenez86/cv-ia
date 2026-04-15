@@ -12,7 +12,7 @@ The backend MUST implement `POST /api/v1/chat/completions` using a real OpenAI p
 - **AND** the response remains aligned with the existing API DTO contract
 
 ### Requirement: Backend chat runtime MUST enforce configuration-driven provider access
-The backend MUST read provider credentials and model/runtime settings from backend configuration and MUST keep provider secrets out of frontend/runtime client exposure.
+The backend MUST read provider credentials and model/runtime settings from backend configuration and MUST keep provider secrets out of frontend/runtime client exposure. The backend MUST also enforce a server-side rate limit for `POST /api/v1/chat/completions` so provider calls remain protected against abuse and cost spikes.
 
 #### Scenario: Provider configuration is present
 - **WHEN** required OpenAI configuration is available at startup/runtime
@@ -24,6 +24,11 @@ The backend MUST read provider credentials and model/runtime settings from backe
 - **THEN** the backend returns a machine-readable error response
 - **AND** the process remains healthy for other endpoints
 
+#### Scenario: Rate limit exceeded returns 429
+- **WHEN** a client exceeds the configured rate limit for `POST /api/v1/chat/completions`
+- **THEN** the backend returns HTTP `429`
+- **AND** the response remains machine-readable for clients to implement backoff
+
 ### Requirement: Default OpenAI model MUST be gpt-4o-mini unless overridden
 The backend MUST use **`gpt-4o-mini`** as the default OpenAI model for chat completions when configuration does not specify another model, balancing cost and quality for short bilingual CV Q&A.
 
@@ -32,7 +37,7 @@ The backend MUST use **`gpt-4o-mini`** as the default OpenAI model for chat comp
 - **THEN** the OpenAI API request targets the `gpt-4o-mini` model unless explicitly overridden by deployment configuration
 
 ### Requirement: Backend chat behavior MUST apply MVP guardrails
-The backend MUST enforce baseline prompt guardrails in this MVP so responses remain scoped to CV context, respect requested locale, and avoid fabricated claims when confidence is low.
+The backend MUST enforce baseline prompt guardrails in this MVP so responses remain scoped to CV context, respect requested locale, and avoid fabricated claims when confidence is low. The backend MUST also enforce critical guardrails server-side (not prompt-only) for prompt-injection resilience.
 
 #### Scenario: User asks CV-related question in Spanish
 - **WHEN** `lang` is `es` and the question is in CV scope
@@ -43,6 +48,11 @@ The backend MUST enforce baseline prompt guardrails in this MVP so responses rem
 - **WHEN** the user request is unrelated to CV/profile context
 - **THEN** the assistant provides a safe constrained response instead of unrelated free-form knowledge
 - **AND** no internal secrets or provider configuration details are exposed
+
+#### Scenario: Assistant reply includes disallowed links
+- **WHEN** the provider returns an assistant message containing any link target outside the allowed CV navigation anchors and the allowed PDF endpoints
+- **THEN** the backend MUST NOT return the disallowed link to the client
+- **AND** the backend MUST return a safe CV-scoped assistant message instead (still `200` with `ChatResponseDto`)
 
 ### Requirement: Backend chat implementation MUST allow a future streaming transport with minimal migration
 The backend MUST implement non-streaming completions so that prompt assembly, guardrails, and provider integration are isolated from HTTP transport concerns, enabling a future streaming endpoint (e.g. SSE) to be added with minimal churn to the core completion pipeline.

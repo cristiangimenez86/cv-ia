@@ -80,12 +80,12 @@
   "profile": {
     "fullName": "Cristian Gimenez",
     "headline": {
-      "en": "Senior Full Stack .NET Developer",
+      "en": "Senior Software Engineer",
       "es": "Ingeniero de Software Senior"
     },
     "openTo": {
-      "en": "Senior Full Stack .NET Developer",
-      "es": "Desarrollador Full Stack .NET Senior"
+      "en": "Senior Software Engineer",
+      "es": "Ingeniero de Software Senior"
     },
     "location": {
       "en": "Barcelona, Spain",
@@ -95,7 +95,7 @@
     "phone": "+34 685 890 502",
     "links": [
       { "label": "LinkedIn", "href": "https://www.linkedin.com/in/cristiangimenez86/" },
-      { "label": "GitHub", "href": "https://github.com/cristiangimenez86" }
+      { "label": "GitHub", "href": "https://github.com/cristiangimenez86/cv-ia" }
     ],
     "photoSrc": "/assets/profile.jpg"
   },

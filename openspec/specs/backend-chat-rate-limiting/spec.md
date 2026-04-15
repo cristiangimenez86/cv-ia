@@ -1,5 +1,8 @@
-## ADDED Requirements
+# backend-chat-rate-limiting Specification
 
+## Purpose
+TBD - created by archiving change backend-chat-rate-limiting. Update Purpose after archive.
+## Requirements
 ### Requirement: Chat completions endpoint MUST be rate-limited server-side
 The backend MUST enforce a server-side rate limit for `POST /api/v1/chat/completions` to mitigate abuse and control provider spend.
 
@@ -23,7 +26,7 @@ When deployed behind a reverse proxy, the backend MUST be able to derive the cor
 - **THEN** the rate-limit partition key uses the forwarded client IP (per backend configuration)
 
 ### Requirement: Throttled responses MUST provide a retry signal when available
-When returning HTTP `429` due to rate limiting, the backend SHOULD include a `Retry-After` header when the underlying limiter can compute a retry delay.
+The backend MUST include a `Retry-After` header on HTTP `429` responses caused by rate limiting when the underlying limiter can compute a retry delay.
 
 #### Scenario: Retry-After is included
 - **WHEN** a chat completion request is throttled and the retry delay is known
@@ -35,3 +38,4 @@ The backend MUST allow operators to configure rate limit parameters (window size
 #### Scenario: Operator tunes limits via config
 - **WHEN** the operator changes configured rate limit parameters and restarts/reloads the service
 - **THEN** the new limits are applied to subsequent requests
+

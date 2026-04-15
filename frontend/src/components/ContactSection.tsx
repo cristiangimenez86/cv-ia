@@ -47,7 +47,10 @@ function getWhatsAppUrl(phone: string): string {
 }
 
 export function ContactSection({ section, profile, locale }: ContactSectionProps) {
-  const fields = parseContactFields(section.body ?? "");
+  const hiddenFieldLabels = new Set(["whatsapp", "linkedin", "github"]);
+  const fields = parseContactFields(section.body ?? "").filter(
+    (f) => !hiddenFieldLabels.has(f.label.trim().toLowerCase())
+  );
   const contactLabel = locale === "es" ? "Contactar" : "Contact me";
   const linkedIn = profile?.links?.find((l) => l.label === "LinkedIn");
   const github = profile?.links?.find((l) => l.label === "GitHub");

@@ -15,10 +15,10 @@ test("AI export payload contract contains required top-level fields", () => {
     version: "1.0",
     generatedAt: "2026-03-15T00:00:00.000Z",
     locale: "en",
-    targetRole: "Senior Full Stack .NET Developer",
+    targetRole: "Senior Software Engineer",
     profile: {
       fullName: "Cristian Gimenez",
-      headline: "Senior Full Stack .NET Developer",
+      headline: "Senior Software Engineer",
       location: "Barcelona, Spain",
       email: "cristiangimenez86@gmail.com",
       links: [],
