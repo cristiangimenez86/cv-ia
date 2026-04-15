@@ -138,6 +138,21 @@ public sealed class OpenAiChatCompletionService : IChatCompletionService
             var raw = await httpResponse.Content.ReadAsStringAsync(cancellationToken);
             sw.Stop();
             var baseResponse = _responseProcessor.MapResponseOrThrow(raw, httpResponse, correlation, sw);
+
+            // Server-side output policy enforcement: allowlisted link targets only.
+            // If output violates policy, return a deterministic safe fallback instead of leaking disallowed links.
+            var targets = ChatMarkdownLinkTargetExtractor.ExtractTargets(baseResponse.Message.Content);
+            var hasDisallowed = targets.Any(t => !ChatLinkAllowlistPolicy.IsAllowedTarget(t));
+            if (hasDisallowed)
+            {
+                _logger.LogWarning(
+                    "Chat output violated link allowlist policy; returning safe fallback. CorrelationId={CorrelationId} Targets={Targets}",
+                    correlation,
+                    string.Join(", ", targets));
+                var safe = ChatSafeFallbackResponseGenerator.CreateSafeAssistantMessage(langNorm, request);
+                baseResponse = baseResponse with { Message = safe };
+            }
+
             if (citations is null || citations.Count == 0)
             {
                 return baseResponse;
@@ -173,7 +188,9 @@ public sealed class OpenAiChatCompletionService : IChatCompletionService
             return (null, null);
         }
 
-        var queryEmbedding = await _embeddings.CreateEmbeddingAsync(lastUser.Trim(), _ragOptions.EmbeddingModel, cancellationToken);
+        var maxMessageChars = Math.Max(200, _options.MaxMessageChars);
+        var normalizedLastUser = ChatInputNormalizer.NormalizeAndTruncate(lastUser, maxMessageChars);
+        var queryEmbedding = await _embeddings.CreateEmbeddingAsync(normalizedLastUser, _ragOptions.EmbeddingModel, cancellationToken);
         var chunks = await _retrieval.RetrieveAsync(lang, queryEmbedding, _ragOptions.TopK, cancellationToken);
         if (chunks.Count == 0)
         {

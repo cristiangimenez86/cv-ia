@@ -37,6 +37,12 @@ public sealed class OpenAiChatOptions
     /// <summary>Maximum chat messages (after system) to send to the provider.</summary>
     public int MaxMessagesInWindow { get; set; } = 20;
 
+    /// <summary>
+    /// Maximum characters allowed per incoming chat message content before forwarding to the provider.
+    /// This reduces oversized prompt-injection payloads and protects provider request size.
+    /// </summary>
+    public int MaxMessageChars { get; set; } = 4000;
+
     /// <summary>When true, or when <see cref="ApiKey"/> is empty, the stub chat service is used.</summary>
     public bool UseStubChatService { get; set; } = true;
 }

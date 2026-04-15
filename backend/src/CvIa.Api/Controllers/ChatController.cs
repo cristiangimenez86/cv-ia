@@ -2,6 +2,7 @@ using CvIa.Application;
 using CvIa.Application.Contracts;
 using CvIa.Application.Exceptions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace CvIa.Api.Controllers;
 
@@ -10,6 +11,7 @@ namespace CvIa.Api.Controllers;
 public sealed class ChatController(IChatCompletionService chatCompletionService, ILogger<ChatController> logger) : ControllerBase
 {
     [HttpPost]
+    [EnableRateLimiting("ChatCompletions")]
     public async Task<ActionResult<ChatResponseDto>> Complete([FromBody] ChatRequestDto request, CancellationToken cancellationToken)
     {
         if (request is null)
