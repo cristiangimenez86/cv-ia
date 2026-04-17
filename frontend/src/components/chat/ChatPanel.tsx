@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, useRef, useCallback, useEffect } from "react";
-import { X, MessageCircle } from "lucide-react";
+import { X, MessageCircle, UserX } from "lucide-react";
 import { ChatMessageList } from "./ChatMessageList";
 import { ChatInput } from "./ChatInput";
 import { useChatMobileVisualViewport } from "./useChatMobileVisualViewport";
+import { useVisitorName } from "./useVisitorName";
+import { detectOptOut, extractBareName } from "./renameDetection";
+import { formatWithName, getVisitorNameStrings } from "./visitorNameStrings";
 import type { ChatMessage, ChatChip } from "./types";
 
 type ChatPanelProps = {
@@ -168,17 +171,70 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
   const inputRef = useRef<HTMLTextAreaElement>(null);
   /** Previous `isLoading` — used to detect true → false (request finished). */
   const wasLoadingRef = useRef(false);
+  /** Ensures the greeting is seeded at most once per panel mount, even if locale changes. */
+  const greetingSeededRef = useRef(false);
+
+  const visitor = useVisitorName();
+  const visitorStrings = getVisitorNameStrings(locale);
 
   const chips = CHIPS[locale] ?? CHIPS.en;
   const placeholder = PLACEHOLDER[locale] ?? PLACEHOLDER.en;
   const headerTitle = HEADER_TITLE[locale] ?? HEADER_TITLE.en;
   const closeAria = CLOSE_ARIA[locale] ?? CLOSE_ARIA.en;
 
+  /* Never disable the input for the name prompt: the name flow is conversational,
+     so the visitor must always be able to reply (with a name, an opt-out phrase,
+     or any other message). */
+  const inputDisabled = isLoading;
+
   /* Focus input on mount */
   useEffect(() => {
     const timer = setTimeout(() => inputRef.current?.focus(), 100);
     return () => clearTimeout(timer);
   }, []);
+
+  /* Seed a single opening assistant message on the first render with a resolved visitor state
+     and an empty message list. Runs at most once per panel mount; reopening the panel triggers
+     a fresh mount from ChatWidget so the seed happens again with the latest visitor state. */
+  useEffect(() => {
+    if (greetingSeededRef.current) {
+      return;
+    }
+    if (visitor.status === "loading") {
+      return;
+    }
+    if (messages.length > 0) {
+      greetingSeededRef.current = true;
+      return;
+    }
+
+    let content: string;
+    if (visitor.status === "needs-prompt") {
+      content = visitorStrings.askForName.message;
+    } else if (visitor.status === "has-name" && visitor.name) {
+      content = formatWithName(visitorStrings.greeting.returning, visitor.name);
+    } else {
+      content = visitorStrings.greeting.anonymous;
+    }
+
+    setMessages((prev) => {
+      if (prev.length > 0) {
+        return prev;
+      }
+      return [
+        ...prev,
+        {
+          id: generateId(),
+          role: "assistant",
+          content,
+          createdAt: new Date(),
+        },
+      ];
+    });
+    greetingSeededRef.current = true;
+    /* Locale-at-mount: we never replace the initial message mid-conversation, by design. */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visitor.status, visitor.name, messages.length, setMessages]);
 
   /* Escape key closes panel */
   useEffect(() => {
@@ -215,6 +271,71 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
 
       setMessages((prev) => [...prev, userMsg]);
       setInput("");
+
+      const renameLocale: "es" | "en" = locale === "es" ? "es" : "en";
+
+      /* First-message flow (visitor was just asked for their name).
+         - Explicit rename phrase or bare-text name → store + personalized ack; do NOT forward.
+         - Explicit opt-out phrase → opt out + neutral welcome; do NOT forward.
+         - Anything else (e.g. a CV question, "hola", or any text we cannot confidently classify):
+           do NOT touch localStorage and forward the message to the backend normally. The name
+           question stays unresolved, so it will be re-seeded on the next panel session — that
+           is intentional: silently opting the visitor out for an unrecognized reply turned out
+           to be too aggressive (a friendly "hola" would lose personalization forever). */
+      if (visitor.status === "needs-prompt") {
+        const renameFirst = visitor.detectRename(trimmed, renameLocale);
+        const bareName = renameFirst ? null : extractBareName(trimmed);
+        const capturedName = renameFirst ?? bareName;
+
+        if (capturedName) {
+          visitor.setName(capturedName);
+          const content = formatWithName(visitorStrings.greeting.firstTime, capturedName);
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: generateId(),
+              role: "assistant",
+              content,
+              createdAt: new Date(),
+            },
+          ]);
+          return;
+        }
+
+        if (detectOptOut(trimmed, renameLocale)) {
+          visitor.optOut();
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: generateId(),
+              role: "assistant",
+              content: visitorStrings.greeting.anonymous,
+              createdAt: new Date(),
+            },
+          ]);
+          return;
+        }
+
+        /* Passthrough: do nothing to storage and fall through to the normal backend call. */
+      } else {
+        /* Rename intent mid-chat (e.g. "call me Ana", "mejor llamame Ana"): update storage and
+           synthesize a confirmation bubble. The original user text is still sent to the backend. */
+        const newName = visitor.detectRename(trimmed, renameLocale);
+        if (newName && newName !== visitor.name) {
+          visitor.setName(newName);
+          const confirmation = formatWithName(visitorStrings.rename.confirmation, newName);
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: generateId(),
+              role: "assistant",
+              content: confirmation,
+              createdAt: new Date(),
+            },
+          ]);
+        }
+      }
+
       setIsLoading(true);
 
       try {
@@ -296,7 +417,7 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
         setIsLoading(false);
       }
     },
-    [isLoading, locale],
+    [isLoading, locale, setMessages, visitor, visitorStrings],
   );
 
   const handleSend = useCallback(() => {
@@ -337,13 +458,25 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
             {headerTitle}
           </h3>
         </div>
-        <button
-          onClick={onClose}
-          aria-label={closeAria}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-foreground transition-colors"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        <div className="flex items-center gap-1">
+          {(visitor.status === "has-name" || visitor.status === "opted-out") && (
+            <button
+              onClick={visitor.forget}
+              aria-label={visitorStrings.forget.ariaLabel}
+              title={visitorStrings.forget.label}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-foreground transition-colors"
+            >
+              <UserX className="h-4 w-4" />
+            </button>
+          )}
+          <button
+            onClick={onClose}
+            aria-label={closeAria}
+            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-foreground transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
@@ -361,7 +494,7 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
         value={input}
         onChange={setInput}
         onSend={handleSend}
-        disabled={isLoading}
+        disabled={inputDisabled}
         placeholder={placeholder}
         inputRef={inputRef}
       />
