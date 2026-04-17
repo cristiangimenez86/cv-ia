@@ -14,10 +14,45 @@
 
 import { normalizeVisitorName, VISITOR_NAME_MAX_LENGTH } from "./visitorNameStorage";
 
+/*
+ * Triggers are global (`g`) + case-insensitive + Unicode so we can iterate every
+ * occurrence in a user message and pick the LAST valid one. That handles common
+ * corrections like "No soy Pablo, soy Claudio" → Claudio, because:
+ *
+ *   - the negative lookbehind rejects the first trigger when it is preceded by
+ *     a negation ("no " in ES, "not " in EN);
+ *   - the capture group excludes commas/semicolons, so we never swallow
+ *     two comma-separated clauses as a single name;
+ *   - we keep iterating via `exec()` and return the LAST cleaned candidate.
+ */
 const TRIGGERS: Record<"es" | "en", RegExp> = {
-  es: /(?:prefiero que me llames|mejor ll[aá]mame|mejor dec[ií]me|ll[aá]mame|dec[ií]me|me llamo|mi nombre es|soy)\s+([^\n\r]{1,120})/iu,
-  en: /(?:please call me|you can call me|call me|my name is|i am|i'm|im)\s+([^\n\r]{1,120})/iu,
+  es: /(?<!\bno\s)(?:prefiero que me llames|mejor ll[aá]mame|mejor dec[ií]me|ll[aá]mame|dec[ií]me|me llamo|mi nombre es|soy)\s+([^\n\r,;]{1,80})/giu,
+  en: /(?<!\bnot\s)(?:please call me|you can call me|call me|my name is|i am|i'm|im)\s+([^\n\r,;]{1,80})/giu,
 };
+
+/**
+ * Connective stopwords. When any of these appears AFTER the triggered name we
+ * treat the sentence as "continues with unrelated content" and truncate the
+ * candidate before the stopword. Examples of what this prevents:
+ *   - "soy Claudio y tengo dudas" → "Claudio" (not "Claudio y tengo")
+ *   - "call me Sam but later" → "Sam" (not "Sam but later")
+ */
+const FOLLOW_UP_STOPWORD = /\s+(?:pero|y|e|o|u|que|porque|cuando|but|and|or|who|because|when|then|so)\s+/iu;
+
+/**
+ * Words that should NEVER appear inside a captured name. Their presence is a
+ * strong signal that the regex captured two clauses or an unrelated phrase.
+ * Rejecting such captures is safer than trying to fix them heuristically.
+ */
+const INTERNAL_TRIGGER_OR_CONNECTOR = /\b(?:soy|ll[aá]mame|dec[ií]me|llamo|nombre|call|name|am|i'm|im|pero|but|and|or)\b/iu;
+
+/**
+ * If the captured text opens with a negation ("not Pablo", "no Pablo",
+ * "n't Pablo"), the trigger was semantically negated and must be rejected.
+ * This covers cases where the negation sits AFTER the trigger, which the
+ * regex lookbehind cannot catch (e.g. "I'm not Pablo").
+ */
+const LEADING_NEGATION = /^(?:no|not|n['']t)\s+/iu;
 
 /** Phrases that mean "I'd rather not share my name". */
 const OPT_OUT_PATTERNS: Record<"es" | "en", RegExp> = {
@@ -117,6 +152,18 @@ const TRAILING_NOISE =
 function cleanCandidate(raw: string): string | null {
   let value = raw.trim();
   value = value.replace(TRAILING_NOISE, "");
+
+  // Reject captures that open with a negation ("I'm not Pablo" style).
+  if (LEADING_NEGATION.test(value)) {
+    return null;
+  }
+
+  // Truncate at the first connective stopword (" y ", " pero ", " but ", …).
+  const stopMatch = FOLLOW_UP_STOPWORD.exec(value);
+  if (stopMatch && stopMatch.index !== undefined) {
+    value = value.slice(0, stopMatch.index).trim();
+  }
+
   const tokens = value.split(/\s+/).filter(Boolean).slice(0, 3);
   value = tokens.join(" ").trim();
   value = value.replace(/[.,;:!?]+$/u, "").trim();
@@ -134,6 +181,11 @@ function cleanCandidate(raw: string): string | null {
   if (!/\p{L}/u.test(normalized)) {
     return null;
   }
+  // Reject captures that still contain trigger words or connectors — these are
+  // a signal that we swallowed two clauses ("Pablo soy Claudio", "Ana pero …").
+  if (INTERNAL_TRIGGER_OR_CONNECTOR.test(normalized)) {
+    return null;
+  }
   return normalized.slice(0, VISITOR_NAME_MAX_LENGTH);
 }
 
@@ -142,6 +194,10 @@ function cleanCandidate(raw: string): string | null {
  * otherwise `null`. The check is locale-aware but falls back to the other
  * locale's patterns when the primary one does not match, because users often
  * mix languages in the chat.
+ *
+ * When multiple triggers appear in the same message (e.g. "No soy Pablo, soy
+ * Claudio"), the LAST valid match wins — users typically use a second clause
+ * to correct a first one ("no X, Y").
  */
 export function detectRename(text: string, locale: "es" | "en"): string | null {
   if (typeof text !== "string" || text.trim().length === 0) {
@@ -149,12 +205,24 @@ export function detectRename(text: string, locale: "es" | "en"): string | null {
   }
   const order: ReadonlyArray<"es" | "en"> = locale === "es" ? ["es", "en"] : ["en", "es"];
   for (const lang of order) {
-    const match = TRIGGERS[lang].exec(text);
-    if (match && match[1]) {
-      const candidate = cleanCandidate(match[1]);
-      if (candidate) {
-        return candidate;
+    /* Clone the regex to avoid cross-call `lastIndex` state bleed. */
+    const pattern = new RegExp(TRIGGERS[lang].source, TRIGGERS[lang].flags);
+    let lastCandidate: string | null = null;
+    let match: RegExpExecArray | null;
+    while ((match = pattern.exec(text)) !== null) {
+      if (match[1]) {
+        const candidate = cleanCandidate(match[1]);
+        if (candidate) {
+          lastCandidate = candidate;
+        }
       }
+      /* Safety net: guarantee forward progress on zero-width matches. */
+      if (match.index === pattern.lastIndex) {
+        pattern.lastIndex += 1;
+      }
+    }
+    if (lastCandidate) {
+      return lastCandidate;
     }
   }
   return null;

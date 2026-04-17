@@ -207,6 +207,44 @@ test("detectRename: clamps to max length", async () => {
   assert.ok(result.length <= 40);
 });
 
+test("detectRename: correction phrase uses the last trigger (ES)", async () => {
+  const mod = await loadModule("renameDetection.ts");
+  assert.equal(mod.detectRename("No soy Pablo, soy Claudio", "es"), "Claudio");
+  assert.equal(mod.detectRename("no soy pablo, soy claudio", "es"), "claudio");
+  assert.equal(mod.detectRename("mi nombre es Pablo, no, mejor llamame Claudio", "es"), "Claudio");
+});
+
+test("detectRename: correction phrase uses the last trigger (EN)", async () => {
+  const mod = await loadModule("renameDetection.ts");
+  assert.equal(mod.detectRename("I'm not Pablo, call me Claudio", "en"), "Claudio");
+  assert.equal(mod.detectRename("my name is Pablo, actually call me Claudio", "en"), "Claudio");
+});
+
+test("detectRename: negation alone yields no match", async () => {
+  const mod = await loadModule("renameDetection.ts");
+  assert.equal(mod.detectRename("No soy Pablo", "es"), null);
+  assert.equal(mod.detectRename("I am not Pablo", "en"), null);
+});
+
+test("detectRename: stops at connectives (' y ', ' pero ', ' and ', ' but ')", async () => {
+  const mod = await loadModule("renameDetection.ts");
+  assert.equal(mod.detectRename("soy Claudio y tengo dudas", "es"), "Claudio");
+  assert.equal(mod.detectRename("llamame Sam pero después hablamos", "es"), "Sam");
+  assert.equal(mod.detectRename("call me Sam and tell me about your projects", "en"), "Sam");
+  assert.equal(mod.detectRename("my name is Sam but I go by S", "en"), "Sam");
+});
+
+test("detectRename: rejects captures that still contain triggers/connectors", async () => {
+  const mod = await loadModule("renameDetection.ts");
+  /* Realistic multi-trigger phrases (with a comma separator the way users
+     actually type corrections) must resolve to the LAST name. */
+  assert.equal(mod.detectRename("soy Pablo, soy Claudio", "es"), "Claudio");
+  assert.equal(mod.detectRename("call me Pablo, my name is Claudio", "en"), "Claudio");
+  /* If the capture accidentally swallowed a trigger word (no separator), the
+     defensive guard must reject it rather than store nonsense. */
+  assert.equal(mod.detectRename("soy Pablo soy Claudio", "es"), null);
+});
+
 test("detectOptOut: Spanish phrases", async () => {
   const mod = await loadModule("renameDetection.ts");
   assert.equal(mod.detectOptOut("prefiero no decirlo", "es"), true);
