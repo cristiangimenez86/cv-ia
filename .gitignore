@@ -4,6 +4,7 @@ dist/
 coverage/
 bin/
 obj/
+frontend/tests/.tmp-*/
 .vs/
 .vscode/
 .idea/

@@ -62,9 +62,29 @@ export async function generateMetadata({
     ? `${title} — ${headline}`
     : `${title} | CV`;
 
+  /* hreflang + canonical help search engines index each locale variant
+     separately and pick the right one per visitor. `x-default` points to
+     the configured defaultLocale so users with unsupported browser
+     languages land on a predictable page. */
+  const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  const siteUrl =
+    rawSiteUrl && rawSiteUrl.length > 0
+      ? rawSiteUrl.replace(/\/$/, "")
+      : "http://localhost:3000";
+  const languages: Record<string, string> = {};
+  for (const lang of VALID_LOCALES) {
+    languages[lang] = `${siteUrl}/${lang}`;
+  }
+  languages["x-default"] = `${siteUrl}/${config.defaultLocale}`;
+
   return {
+    metadataBase: new URL(siteUrl),
     title,
     description,
+    alternates: {
+      canonical: `${siteUrl}/${locale}`,
+      languages,
+    },
   };
 }
 

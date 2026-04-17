@@ -12,6 +12,7 @@ This repo is meant to be a **public, reviewable “living CV”**: not just a PD
 - **Run locally**: start here → `docs/local-integration.md`
 - **Frontend env**: `frontend/.env.example`
 - **Backend config**: `backend/src/CvIa.Api/appsettings.json`
+- **Heads-up for `/`**: the root path now auto-detects the best locale from `Accept-Language` and the `NEXT_LOCALE` cookie, then 307-redirects to `/es` or `/en` (see `docs/architecture/locale-autodetect.md`).
 
 ## What you can do here ✨
 
