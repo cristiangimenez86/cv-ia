@@ -1,5 +1,6 @@
 import Image from "next/image";
 import type { SectionContent, ExperienceCompany } from "@/lib/content/types";
+import { SectionHeading } from "@/components/sectionIcons";
 
 type ExperienceSectionProps = {
   section: SectionContent;
@@ -203,9 +204,7 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-3">
-        {section.title}
-      </h2>
+      <SectionHeading id={section.id} title={section.title} />
 
       <div className="relative flex gap-4">
         {/* Timeline column: vertical line centered (behind dots) */}
@@ -255,7 +254,7 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                         href={group.logoConfig.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="profile-card-btn shrink-0 w-14 h-14 rounded-lg border border-border bg-white flex items-center justify-center overflow-hidden"
+                        className="profile-card-btn shrink-0 w-14 h-14 rounded-lg border border-border bg-slate-100 dark:bg-slate-100 dark:border-slate-200/40 flex items-center justify-center overflow-hidden"
                         aria-label={`${group.company} website`}
                       >
                         <Image
@@ -352,10 +351,7 @@ export function ExperienceSection({ section, companies = [] }: ExperienceSection
                     {proj.technologies.length > 0 && (
                       <div className="flex flex-wrap gap-2">
                         {proj.technologies.map((tech) => (
-                          <span
-                            key={tech}
-                            className="inline-block px-2.5 py-1 text-xs font-medium rounded-md bg-primary/15 text-primary border border-primary/25 shadow-sm"
-                          >
+                          <span key={tech} className="chip-neutral">
                             {tech}
                           </span>
                         ))}

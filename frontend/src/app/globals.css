@@ -79,12 +79,17 @@
   --sidebar-left: max(1.5rem, calc((100vw - var(--max-content-width)) / 2 + 1.5rem));
 }
 
-/* Smooth theme transition on toggle */
-*,
-*::before,
-*::after {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease,
-    box-shadow 0.3s ease;
+/* Theme transition: scoped opt-in.
+   Only animates colors when ThemeToggle adds `theme-transition` to <html>
+   for ~350ms, so hover/focus/scroll-spy interactions stay instant. */
+html.theme-transition,
+html.theme-transition *,
+html.theme-transition *::before,
+html.theme-transition *::after {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease, fill 0.3s ease, stroke 0.3s ease,
+    box-shadow 0.3s ease !important;
+  transition-delay: 0ms !important;
 }
 
 /* Use min-height so document grows with content; scroll stays on viewport and sticky header works. */
@@ -218,4 +223,19 @@ body {
 .profile-photo-circle img {
   object-fit: cover !important;
   object-position: 47% 55% !important;
+}
+
+/* Neutral chip — design-token backed pill used for skills / technologies.
+   Keeps the page calm vs the previous primary-tinted variant. */
+.chip-neutral {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  font-weight: 500;
+  background-color: hsl(var(--surface-2));
+  color: hsl(var(--text));
+  border: 1px solid hsl(var(--border));
+  white-space: nowrap;
 }

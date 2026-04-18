@@ -55,8 +55,15 @@ export interface SiteConfig {
   experienceCompanies?: ExperienceCompany[];
 }
 
+export interface SectionKpi {
+  value: string;
+  caption: string;
+}
+
 export interface SectionContent {
   id: string;
   title: string;
   body: string;
+  /** Optional structured highlights authored in the section frontmatter. */
+  kpis?: SectionKpi[];
 }

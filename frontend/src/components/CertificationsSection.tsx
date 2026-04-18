@@ -1,4 +1,5 @@
 import type { SectionContent } from "@/lib/content/types";
+import { SectionHeading } from "@/components/sectionIcons";
 
 type CertificationsSectionProps = {
   section: SectionContent;
@@ -43,9 +44,7 @@ export function CertificationsSection({ section }: CertificationsSectionProps) {
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-3">
-        {section.title}
-      </h2>
+      <SectionHeading id={section.id} title={section.title} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {certs.map((cert, i) => (
           <div key={i} className={CARD_CLASS}>

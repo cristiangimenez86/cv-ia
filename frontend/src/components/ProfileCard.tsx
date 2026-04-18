@@ -123,7 +123,7 @@ export function ProfileCard({
           )}
         </div>
 
-        {/* Social buttons: LinkedIn, GitHub, WhatsApp */}
+        {/* Social buttons: LinkedIn, GitHub, WhatsApp — equal-weight primary squares */}
         <div className="flex gap-2 justify-center border-t border-divider pt-3">
           {profile.links
             ?.filter((l) => l.label === "LinkedIn" || l.label === "GitHub")

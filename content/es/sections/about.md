@@ -1,1 +1,14 @@
-Ingeniero de Software Senior con más de 14 años de experiencia diseñando e implementando aplicaciones escalables y de alto rendimiento. Entregué proyectos que mejoraron la eficiencia del sistema (+25%), redujeron costos de mantenimiento (-30%) y aumentaron la satisfacción de usuarios (+20%). Fuerte en .NET, Azure, React y arquitecturas cloud-native, resolviendo desafíos complejos de producto e integraciones. Experiencia reciente integrando IA generativa en entornos productivos: servicios backend que consumen modelos de lenguaje, integración operativa con APIs de proveedores y adopción de herramientas de ingeniería asistida, con foco en calidad, observabilidad y criterios de seguridad en el ciclo de entrega.
+---
+kpis:
+  - value: "14+"
+    caption: "Años de experiencia"
+  - value: "+25%"
+    caption: "Eficiencia del sistema"
+  - value: "-30%"
+    caption: "Costos de mantenimiento"
+  - value: "+20%"
+    caption: "Satisfacción de usuarios"
+---
+Ingeniero de Software Senior con más de 14 años de experiencia diseñando e implementando aplicaciones escalables y de alto rendimiento. Entregué proyectos que mejoraron la eficiencia del sistema (+25%), redujeron costos de mantenimiento (-30%) y aumentaron la satisfacción de usuarios (+20%).
+
+Fuerte en .NET, Azure, React y arquitecturas cloud-native, resolviendo desafíos complejos de producto e integraciones. Experiencia reciente integrando IA generativa en entornos productivos: servicios backend que consumen modelos de lenguaje, integración operativa con APIs de proveedores y adopción de herramientas de ingeniería asistida, con foco en calidad, observabilidad y criterios de seguridad en el ciclo de entrega.

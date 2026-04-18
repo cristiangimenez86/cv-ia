@@ -1,4 +1,5 @@
 import type { SectionContent, Profile } from "@/lib/content/types";
+import { SectionHeading } from "@/components/sectionIcons";
 
 type ContactSectionProps = {
   section: SectionContent;
@@ -58,9 +59,7 @@ export function ContactSection({ section, profile, locale }: ContactSectionProps
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-3">
-        {section.title}
-      </h2>
+      <SectionHeading id={section.id} title={section.title} />
       <div className={CARD_CLASS}>
         <div className="space-y-3">
           {fields.map((field, i) => (

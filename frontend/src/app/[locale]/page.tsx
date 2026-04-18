@@ -6,6 +6,7 @@ import type { Locale } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
 import { Header } from "@/components/Header";
 import { Section } from "@/components/Section";
+import { AboutSection } from "@/components/AboutSection";
 import { ExperienceSection } from "@/components/ExperienceSection";
 import { CertificationsSection } from "@/components/CertificationsSection";
 import { CoreSkillsSection } from "@/components/CoreSkillsSection";
@@ -116,6 +117,9 @@ export default async function LocalePage({ params }: PageProps) {
 
     let block: ReactNode;
     switch (section.id) {
+      case "about":
+        block = <AboutSection section={section} />;
+        break;
       case "experience":
         block = (
           <ExperienceSection

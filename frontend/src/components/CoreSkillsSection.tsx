@@ -1,4 +1,5 @@
 import type { SectionContent } from "@/lib/content/types";
+import { SectionHeading } from "@/components/sectionIcons";
 
 type CoreSkillsSectionProps = {
   section: SectionContent;
@@ -94,24 +95,19 @@ export function CoreSkillsSection({ section }: CoreSkillsSectionProps) {
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-3">
-        {section.title}
-      </h2>
+      <SectionHeading id={section.id} title={section.title} />
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-stretch">
         {groups.map((group, i) => (
           <div
             key={i}
-            className="rounded-xl border border-slate-200 bg-surface p-4 flex h-full min-h-0 flex-col gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md dark:border-border"
+            className="rounded-xl border border-border bg-surface p-4 flex h-full min-h-0 flex-col gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
           >
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted shrink-0">
               {group.title}
             </h3>
             <div className="flex min-h-0 min-w-0 flex-1 flex-wrap content-start gap-2 overflow-x-auto">
               {group.skills.map((skill, j) => (
-                <span
-                  key={j}
-                  className="inline-block shrink-0 whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md bg-primary/15 text-primary border border-primary/25 shadow-sm"
-                >
+                <span key={j} className="chip-neutral shrink-0">
                   {skill}
                 </span>
               ))}

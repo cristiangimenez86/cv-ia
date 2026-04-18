@@ -1,5 +1,6 @@
 import { Check } from "lucide-react";
 import type { SectionContent } from "@/lib/content/types";
+import { SectionHeading } from "@/components/sectionIcons";
 
 type KeyAchievementsSectionProps = {
   section: SectionContent;
@@ -25,9 +26,7 @@ export function KeyAchievementsSection({ section }: KeyAchievementsSectionProps)
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-3">
-        {section.title}
-      </h2>
+      <SectionHeading id={section.id} title={section.title} />
       <ul className="space-y-3 list-none pl-0">
         {achievements.map((item, i) => (
           <li key={i} className="flex items-start gap-3">

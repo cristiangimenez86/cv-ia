@@ -1,4 +1,5 @@
 import type { SectionContent } from "@/lib/content/types";
+import { SectionHeading } from "@/components/sectionIcons";
 
 type EducationSectionProps = {
   section: SectionContent;
@@ -60,9 +61,7 @@ export function EducationSection({ section }: EducationSectionProps) {
 
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
-      <h2 className="text-xl font-semibold text-foreground mb-3">
-        {section.title}
-      </h2>
+      <SectionHeading id={section.id} title={section.title} />
       <div className="space-y-4">
         {blocks.map((block, i) => (
           <div key={i} className={CARD_CLASS}>
