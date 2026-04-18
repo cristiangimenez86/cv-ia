@@ -214,7 +214,10 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
     } else if (visitor.status === "has-name" && visitor.name) {
       content = formatWithName(visitorStrings.greeting.returning, visitor.name);
     } else {
-      content = visitorStrings.greeting.anonymous;
+      /* Opted-out, fresh session: there is no prior user message to "ack", so
+         use the neutral hello. The conversational "¡Dale!" variant is only used
+         right after the user opts out in the current session (see sendMessage). */
+      content = visitorStrings.greeting.anonymousReturning;
     }
 
     setMessages((prev) => {
@@ -275,14 +278,32 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
       const renameLocale: "es" | "en" = locale === "es" ? "es" : "en";
 
       /* First-message flow (visitor was just asked for their name).
-         - Explicit rename phrase or bare-text name → store + personalized ack; do NOT forward.
          - Explicit opt-out phrase → opt out + neutral welcome; do NOT forward.
+         - Explicit rename phrase or bare-text name → store + personalized ack; do NOT forward.
          - Anything else (e.g. a CV question, "hola", or any text we cannot confidently classify):
            do NOT touch localStorage and forward the message to the backend normally. The name
            question stays unresolved, so it will be re-seeded on the next panel session — that
            is intentional: silently opting the visitor out for an unrecognized reply turned out
-           to be too aggressive (a friendly "hola" would lose personalization forever). */
+           to be too aggressive (a friendly "hola" would lose personalization forever).
+
+         Order matters: opt-out is checked FIRST so phrases like "prefiero no decirlo" or
+         "prefer not to say" are not misclassified as a bare name by `extractBareName`
+         (which happily accepts any 2-3 word alphabetic string). */
       if (visitor.status === "needs-prompt") {
+        if (detectOptOut(trimmed, renameLocale)) {
+          visitor.optOut();
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: generateId(),
+              role: "assistant",
+              content: visitorStrings.greeting.anonymous,
+              createdAt: new Date(),
+            },
+          ]);
+          return;
+        }
+
         const renameFirst = visitor.detectRename(trimmed, renameLocale);
         const bareName = renameFirst ? null : extractBareName(trimmed);
         const capturedName = renameFirst ?? bareName;
@@ -296,20 +317,6 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
               id: generateId(),
               role: "assistant",
               content,
-              createdAt: new Date(),
-            },
-          ]);
-          return;
-        }
-
-        if (detectOptOut(trimmed, renameLocale)) {
-          visitor.optOut();
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: generateId(),
-              role: "assistant",
-              content: visitorStrings.greeting.anonymous,
               createdAt: new Date(),
             },
           ]);

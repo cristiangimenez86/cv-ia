@@ -292,6 +292,21 @@ test("extractBareName: rejects fillers and greetings", async () => {
   assert.equal(mod.extractBareName("no"), null);
 });
 
+test("opt-out wins over bare-name on ambiguous phrases", async () => {
+  /* Regression: "prefiero no decirlo" / "prefer not to say" used to be captured
+     by `extractBareName` as a three-word name and greeted as such. Two defenses
+     are now in place:
+       1. UI order: `detectOptOut` runs before `extractBareName` in ChatPanel.
+       2. `extractBareName` itself rejects multi-word lowercase phrases.
+     Both must hold: `detectOptOut` must still flag these explicitly, AND
+     `extractBareName` must refuse to treat them as names. */
+  const mod = await loadModule("renameDetection.ts");
+  assert.equal(mod.detectOptOut("prefiero no decirlo", "es"), true);
+  assert.equal(mod.extractBareName("prefiero no decirlo"), null);
+  assert.equal(mod.detectOptOut("prefer not to say", "en"), true);
+  assert.equal(mod.extractBareName("prefer not"), null);
+});
+
 test("extractBareName: rejects questions, digits, too long, wrong charset", async () => {
   const mod = await loadModule("renameDetection.ts");
   assert.equal(mod.extractBareName("What is your experience?"), null);

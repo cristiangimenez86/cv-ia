@@ -10,8 +10,16 @@ type GreetingStrings = {
   firstTime: string;
   /** Returning-visitor greeting on a fresh chat where we already had a stored name. `{name}` placeholder. */
   returning: string;
-  /** Neutral welcome used when the visitor opted out or ignored the name question. */
+  /**
+   * Conversational ack used IN THE SAME SESSION right after the visitor types an opt-out phrase.
+   * It reads as a direct reply to what the user just said, so it starts with "¡Dale!" / "Sounds good!".
+   */
   anonymous: string;
+  /**
+   * Fresh-session greeting when we load the chat and find a stored opt-out preference. There is
+   * no prior user message in this conversation, so the copy must be a neutral hello, not an ack.
+   */
+  anonymousReturning: string;
 };
 
 type AskForNameStrings = {
@@ -49,6 +57,8 @@ const DICTIONARY: Record<VisitorNameLocale, VisitorNameStrings> = {
         "Hola **{name}**, ¿puedo seguir llamándote **{name}**? Si preferís otro nombre, decime *“mejor llamame …”*. ¿En qué te puedo ayudar hoy?",
       anonymous:
         "¡Dale! ¿En qué te puedo ayudar hoy? Podés preguntarme sobre mi experiencia, proyectos o tecnologías.",
+      anonymousReturning:
+        "¡Hola! ¿En qué te puedo ayudar hoy? Podés preguntarme sobre mi experiencia, proyectos o tecnologías.",
     },
     rename: {
       confirmation: "¡Listo! A partir de ahora te llamo **{name}**.",
@@ -70,6 +80,8 @@ const DICTIONARY: Record<VisitorNameLocale, VisitorNameStrings> = {
         "Hi **{name}**, should I keep calling you **{name}**? If you prefer a different name, just say *“call me …”*. What can I help you with today?",
       anonymous:
         "Sounds good! What can I help you with today? Feel free to ask about my experience, projects, or tech stack.",
+      anonymousReturning:
+        "Hi there! What can I help you with today? Feel free to ask about my experience, projects, or tech stack.",
     },
     rename: {
       confirmation: "Got it! I'll call you **{name}** from now on.",

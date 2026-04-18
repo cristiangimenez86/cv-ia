@@ -37,7 +37,8 @@ const TRIGGERS: Record<"es" | "en", RegExp> = {
  *   - "soy Claudio y tengo dudas" → "Claudio" (not "Claudio y tengo")
  *   - "call me Sam but later" → "Sam" (not "Sam but later")
  */
-const FOLLOW_UP_STOPWORD = /\s+(?:pero|y|e|o|u|que|porque|cuando|but|and|or|who|because|when|then|so)\s+/iu;
+const FOLLOW_UP_STOPWORD =
+  /\s+(?:pero|y|e|o|u|que|porque|cuando|desde|ahora|but|and|or|who|because|when|then|so|from|now)\s+/iu;
 
 /**
  * Words that should NEVER appear inside a captured name. Their presence is a
@@ -107,6 +108,11 @@ const COMMON_FILLERS = new Set([
   "sí",
   "yes",
   "no",
+  "nada",
+  "nope",
+  "nah",
+  "nothing",
+  "never",
   "gracias",
   "thanks",
   "thank you",
@@ -118,6 +124,13 @@ const COMMON_FILLERS = new Set([
  *
  * Rejects common greetings / fillers ("hola", "hi", "thanks") so those don't get
  * mistakenly stored as a visitor name when the user is just being polite.
+ *
+ * For multi-word replies (2–3 tokens) we additionally require Title Case on every
+ * token — this matches how people actually write compound names ("Ana María",
+ * "Jean-Luc") and filters out lowercase phrases that happen to be letters-only
+ * but are not names ("no gracias", "contame sobre azure", "qué tecnologías").
+ * Single-token replies stay case-insensitive because users frequently type their
+ * first name in lowercase ("ana").
  */
 export function extractBareName(text: string): string | null {
   if (typeof text !== "string") {
@@ -142,6 +155,12 @@ export function extractBareName(text: string): string | null {
   const tokens = trimmed.split(/\s+/).filter(Boolean);
   if (tokens.length > 3) {
     return null;
+  }
+  if (tokens.length >= 2) {
+    const allTitleCase = tokens.every((t) => /^[\p{Lu}'’\-]/u.test(t));
+    if (!allTitleCase) {
+      return null;
+    }
   }
   return trimmed;
 }
