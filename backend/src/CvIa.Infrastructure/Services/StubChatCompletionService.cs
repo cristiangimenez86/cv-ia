@@ -4,8 +4,19 @@ using CvIa.Application.Contracts;
 
 namespace CvIa.Infrastructure.Services;
 
-public sealed class StubChatCompletionService : IChatCompletionService
+public sealed partial class StubChatCompletionService : IChatCompletionService
 {
+    [GeneratedRegex(@"\bestas\b", RegexOptions.CultureInvariant)]
+    private static partial Regex SpanishEstasRegex();
+
+    private static readonly char[] SpanishOnlyChars =
+        ['ñ', 'Ñ', '¿', '¡', 'á', 'é', 'í', 'ó', 'ú', 'Á', 'É', 'Í', 'Ó', 'Ú'];
+
+    private static readonly string[] SpanishMarkerSubstrings =
+    [
+        "estás", " cómo ", " qué ", "cuál", "dónde", "hola", "gracias", "buenos días"
+    ];
+
     public Task<ChatResponseDto> CompleteAsync(ChatRequestDto request, CancellationToken cancellationToken)
     {
         var lastUserMessage = request.Messages.LastOrDefault(m => m.Role == "user")?.Content ?? string.Empty;
@@ -44,25 +55,21 @@ public sealed class StubChatCompletionService : IChatCompletionService
             return false;
         }
 
-        foreach (var c in text)
+        if (text.IndexOfAny(SpanishOnlyChars) >= 0)
         {
-            if (c is 'ñ' or 'Ñ' or '¿' or '¡' or 'á' or 'é' or 'í' or 'ó' or 'ú'
-                or 'Á' or 'É' or 'Í' or 'Ó' or 'Ú')
+            return true;
+        }
+
+        var lower = text.ToLowerInvariant();
+        foreach (var marker in SpanishMarkerSubstrings)
+        {
+            if (lower.Contains(marker, StringComparison.Ordinal))
             {
                 return true;
             }
         }
 
-        var lower = text.ToLowerInvariant();
-        return lower.Contains("estás", StringComparison.Ordinal)
-            || lower.Contains(" cómo ", StringComparison.Ordinal)
-            || lower.Contains(" qué ", StringComparison.Ordinal)
-            || lower.Contains("cuál", StringComparison.Ordinal)
-            || lower.Contains("dónde", StringComparison.Ordinal)
-            || lower.Contains("hola", StringComparison.Ordinal)
-            || lower.Contains("gracias", StringComparison.Ordinal)
-            || lower.Contains("buenos días", StringComparison.Ordinal)
-            || Regex.IsMatch(lower, @"\bestas\b");
+        return SpanishEstasRegex().IsMatch(lower);
     }
 }
 

@@ -4,10 +4,9 @@ using System.Text;
 using CvIa.Application.Configuration;
 using CvIa.Application.Contracts;
 using CvIa.Infrastructure.OpenAi;
-using CvIa.Application.Rag;
+using CvIa.Infrastructure.Rag.Services;
 using CvIa.Infrastructure.Services;
 using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
@@ -41,18 +40,14 @@ internal static class OpenAiChatCompletionServiceTestSupport
         options ??= CreateOptions();
         cvMarkdownStore ??= DefaultCvMarkdownStore();
         var promptBuilder = new OpenAiChatPromptBuilder(options, cvMarkdownStore, NullLogger<OpenAiChatPromptBuilder>.Instance);
-        var ragOptions = Options.Create(new RagOptions { Enabled = false });
-        var retrieval = new NoopRagRetrievalService();
-        var serviceProvider = new ServiceCollection().BuildServiceProvider();
         return new OpenAiChatCompletionService(
             client,
             options,
-            ragOptions,
             promptBuilder,
             new OpenAiHttpRequestHeadersApplier(),
             new OpenAiChatHttpResponseProcessor(options, NullLogger<OpenAiChatHttpResponseProcessor>.Instance),
-            retrieval,
-            serviceProvider,
+            new DisabledChatRagContextBuilder(),
+            new AllowlistChatOutputPolicy(),
             NullLogger<OpenAiChatCompletionService>.Instance);
     }
 

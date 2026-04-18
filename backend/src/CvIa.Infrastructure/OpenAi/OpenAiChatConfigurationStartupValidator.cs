@@ -9,46 +9,42 @@ namespace CvIa.Infrastructure.OpenAi;
 
 /// <summary>
 /// Validates OpenAI chat options once at startup when OpenAI is enabled (not stub / empty key).
+/// Fails fast with an <see cref="OpenAiChatException"/> when a project key is missing the required project id.
 /// </summary>
-public sealed class OpenAiChatConfigurationStartupValidator : IHostedService
+public sealed class OpenAiChatConfigurationStartupValidator(IOptions<OpenAiChatOptions> options) : IHostedService
 {
-    private readonly IOptions<OpenAiChatOptions> _options;
-
-    public OpenAiChatConfigurationStartupValidator(IOptions<OpenAiChatOptions> options)
-    {
-        _options = options;
-    }
+    private const string ProjectKeyPrefix = "sk-proj-";
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        var o = _options.Value;
-        if (o.UseStubChatService || string.IsNullOrWhiteSpace(o.ApiKey))
+        var snapshot = options.Value;
+        if (!ShouldValidate(snapshot))
         {
             return Task.CompletedTask;
         }
 
-        Validate(o);
+        EnsureProjectIdForProjectKey(snapshot);
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
-    private void Validate(OpenAiChatOptions options)
+    private static bool ShouldValidate(OpenAiChatOptions options) =>
+        !options.UseStubChatService && !string.IsNullOrWhiteSpace(options.ApiKey);
+
+    private static void EnsureProjectIdForProjectKey(OpenAiChatOptions options)
     {
         var key = options.ApiKey.Trim();
-        if (string.IsNullOrEmpty(key))
+        var isProjectKey = key.StartsWith(ProjectKeyPrefix, StringComparison.OrdinalIgnoreCase);
+        if (!isProjectKey || !string.IsNullOrWhiteSpace(options.OpenAiProjectId))
         {
             return;
         }
 
-        if (key.StartsWith("sk-proj-", StringComparison.OrdinalIgnoreCase) &&
-            string.IsNullOrWhiteSpace(options.OpenAiProjectId))
-        {
-            throw new OpenAiChatException(
-                StatusCodes.Status400BadRequest,
-                new ErrorResponse(
-                    "openai_project_required",
-                    "Project API keys (sk-proj-...) require OpenAiChat:OpenAiProjectId (proj_... from OpenAI → Projects)."));
-        }
+        throw new OpenAiChatException(
+            StatusCodes.Status400BadRequest,
+            new ErrorResponse(
+                "openai_project_required",
+                "Project API keys (sk-proj-...) require OpenAiChat:OpenAiProjectId (proj_... from OpenAI → Projects)."));
     }
 }

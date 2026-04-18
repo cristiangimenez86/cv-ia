@@ -8,29 +8,21 @@ namespace CvIa.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/chat/completions")]
-public sealed class ChatController(IChatCompletionService chatCompletionService, ILogger<ChatController> logger) : ControllerBase
+public sealed class ChatController(
+    IChatCompletionService chatCompletionService,
+    ILogger<ChatController> logger) : ControllerBase
 {
     [HttpPost]
-    [EnableRateLimiting("ChatCompletions")]
-    public async Task<ActionResult<ChatResponseDto>> Complete([FromBody] ChatRequestDto request, CancellationToken cancellationToken)
+    [EnableRateLimiting(ApiConstants.ChatRateLimitPolicy)]
+    public async Task<ActionResult<ChatResponseDto>> Complete([FromBody] ChatRequestDto? request, CancellationToken cancellationToken)
     {
-        if (request is null)
+        var validationError = ValidateRequest(request);
+        if (validationError is not null)
         {
-            return BadRequest(new ErrorResponse("invalid_request", "Request body is required."));
+            return BadRequest(validationError);
         }
 
-        if (request.Lang is not ("en" or "es"))
-        {
-            logger.LogWarning("Invalid lang value on POST /api/v1/chat/completions: {Lang}", request.Lang);
-            return BadRequest(new ErrorResponse("invalid_request", "The 'lang' field must be 'en' or 'es'."));
-        }
-
-        if (request.Messages is null || request.Messages.Count == 0)
-        {
-            return BadRequest(new ErrorResponse("invalid_request", "The 'messages' field must contain at least one message."));
-        }
-
-        logger.LogInformation("Processing chat completion request with {MessageCount} message(s)", request.Messages.Count);
+        logger.LogInformation("Processing chat completion request with {MessageCount} message(s)", request!.Messages.Count);
 
         try
         {
@@ -42,5 +34,25 @@ public sealed class ChatController(IChatCompletionService chatCompletionService,
             return StatusCode(ex.StatusCode, ex.Error);
         }
     }
-}
 
+    private ErrorResponse? ValidateRequest(ChatRequestDto? request)
+    {
+        if (request is null)
+        {
+            return new ErrorResponse("invalid_request", "Request body is required.");
+        }
+
+        if (SupportedLanguages.TryNormalize(request.Lang) is null)
+        {
+            logger.LogWarning("Invalid lang value on POST /api/v1/chat/completions: {Lang}", request.Lang);
+            return new ErrorResponse("invalid_request", "The 'lang' field must be 'en' or 'es'.");
+        }
+
+        if (request.Messages is null || request.Messages.Count == 0)
+        {
+            return new ErrorResponse("invalid_request", "The 'messages' field must contain at least one message.");
+        }
+
+        return null;
+    }
+}

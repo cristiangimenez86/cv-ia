@@ -6,12 +6,17 @@ namespace CvIa.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/cv")]
-public sealed class CvController(ICvQueryService cvQueryService, ILogger<CvController> logger) : ControllerBase
+public sealed class CvController(
+    ICvQueryService cvQueryService,
+    ILogger<CvController> logger) : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> DownloadPdf([FromQuery] string? lang, CancellationToken cancellationToken)
     {
-        var normalizedLang = NormalizeLang(lang);
+        var normalizedLang = string.IsNullOrWhiteSpace(lang)
+            ? SupportedLanguages.English
+            : SupportedLanguages.TryNormalize(lang);
+
         if (normalizedLang is null)
         {
             logger.LogWarning("Invalid lang value on GET /api/v1/cv: {Lang}", lang);
@@ -29,15 +34,5 @@ public sealed class CvController(ICvQueryService cvQueryService, ILogger<CvContr
             logger.LogError(ex, "CV PDF file not found for lang={Lang}", normalizedLang);
             return NotFound(new ErrorResponse("not_found", "CV PDF file was not found on server."));
         }
-    }
-
-    private static string? NormalizeLang(string? lang)
-    {
-        if (string.IsNullOrWhiteSpace(lang))
-        {
-            return "en";
-        }
-
-        return lang is "en" or "es" ? lang : null;
     }
 }

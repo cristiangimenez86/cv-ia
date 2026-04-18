@@ -4,8 +4,8 @@ using CvIa.Application.Configuration;
 using CvIa.Application.Rag;
 using CvIa.Domain.Rag;
 using CvIa.Infrastructure.OpenAi;
+using CvIa.Infrastructure.Rag.Services;
 using CvIa.Infrastructure.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using Xunit;
@@ -176,19 +176,20 @@ public sealed class PromptInjectionDefenseTests
                 Score: 0.99)
         ]);
 
-        var services = new ServiceCollection();
-        services.AddSingleton<IOpenAiEmbeddingsClient>(new FakeEmbeddingsClient());
-        var provider = services.BuildServiceProvider();
+        var ragContextBuilder = new RagChatContextBuilder(
+            ragOptions,
+            chatOptions,
+            retrieval,
+            new FakeEmbeddingsClient());
 
         var service = new OpenAiChatCompletionService(
             client,
             chatOptions,
-            ragOptions,
             promptBuilder,
             new CvIa.Infrastructure.OpenAi.OpenAiHttpRequestHeadersApplier(),
             new CvIa.Infrastructure.OpenAi.OpenAiChatHttpResponseProcessor(chatOptions, NullLogger<CvIa.Infrastructure.OpenAi.OpenAiChatHttpResponseProcessor>.Instance),
-            retrieval,
-            provider,
+            ragContextBuilder,
+            new AllowlistChatOutputPolicy(),
             NullLogger<CvIa.Infrastructure.Services.OpenAiChatCompletionService>.Instance);
 
         var request = new ChatRequestDto("en", [new ChatMessageDto("user", "Tell me about your experience")]);

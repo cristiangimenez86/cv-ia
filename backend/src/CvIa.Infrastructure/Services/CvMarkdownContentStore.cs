@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using CvIa.Application;
 
 namespace CvIa.Infrastructure.Services;
 
@@ -7,21 +8,21 @@ namespace CvIa.Infrastructure.Services;
 /// </summary>
 public sealed class CvMarkdownContentStore
 {
-    private IReadOnlyDictionary<string, string> _byLang =
+    private static readonly IReadOnlyDictionary<string, string> Empty =
         new ReadOnlyDictionary<string, string>(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
+
+    private IReadOnlyDictionary<string, string> _byLang = Empty;
 
     public void Set(IReadOnlyDictionary<string, string> byLang) =>
         _byLang = new ReadOnlyDictionary<string, string>(
             new Dictionary<string, string>(byLang, StringComparer.OrdinalIgnoreCase));
 
-    public void SetEmpty() =>
-        _byLang = new ReadOnlyDictionary<string, string>(
-            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase));
+    public void SetEmpty() => _byLang = Empty;
 
     /// <summary>Normalized to <c>en</c> or <c>es</c>; returns empty string if missing.</summary>
     public string Get(string lang)
     {
-        lang = lang is "en" or "es" ? lang : "en";
-        return _byLang.TryGetValue(lang, out var s) ? s : "";
+        var normalized = SupportedLanguages.NormalizeOrDefault(lang);
+        return _byLang.TryGetValue(normalized, out var content) ? content : string.Empty;
     }
 }
