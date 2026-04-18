@@ -219,6 +219,51 @@ body {
   background-color: hsl(var(--surface-2));
 }
 
+/* Generic content tile shared by Certifications, Languages, Education, Contact
+   and Experience project cards. Includes a subtle lift-on-hover. */
+/* Shared subtle "lift + shadow" hover used by every card-like tile (full
+   cards in sections and the dense KPI tiles in the About hero). Kept as its
+   own class so dense tiles can opt into the animation without inheriting the
+   full card padding / background of `.card-tile`. */
+.tile-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tile-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px hsl(var(--shadow) / 0.1),
+    0 2px 4px -2px hsl(var(--shadow) / 0.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tile-hover {
+    transition: none;
+  }
+  .tile-hover:hover {
+    transform: none;
+  }
+}
+
+.card-tile {
+  border-radius: 0.75rem;
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--surface));
+  padding: 1rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .card-tile {
+    padding: 1.25rem;
+  }
+}
+
+.card-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px hsl(var(--shadow) / 0.1),
+    0 2px 4px -2px hsl(var(--shadow) / 0.1);
+}
+
 /* Profile photo: center face in circle — shift image up and right slightly */
 .profile-photo-circle img {
   object-fit: cover !important;

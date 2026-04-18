@@ -2,8 +2,15 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { loadSiteConfig, loadSectionsForLocale } from "@/lib/content/loader";
-import type { Locale } from "@/lib/content/types";
+import type {
+  ExperienceCompany,
+  Locale,
+  Profile,
+  SectionContent,
+  SiteConfig,
+} from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
+import { PUBLIC_API_BASE_URL, publicApiBearer, publicApiUrl } from "@/lib/publicApi";
 import { Header } from "@/components/Header";
 import { Section } from "@/components/Section";
 import { AboutSection } from "@/components/AboutSection";
@@ -17,6 +24,42 @@ import { ContactSection } from "@/components/ContactSection";
 import { ProfileCard } from "@/components/ProfileCard";
 
 const VALID_LOCALES: Locale[] = ["es", "en"];
+
+type SectionRenderContext = {
+  locale: Locale;
+  companies?: ExperienceCompany[];
+  profile?: Profile;
+};
+
+type SectionRenderer = (
+  section: SectionContent,
+  ctx: SectionRenderContext,
+) => ReactNode;
+
+/**
+ * Maps a `section.id` from `content/site.json` to the component that renders
+ * it. Adding a new section type is a one-line entry here; sections without an
+ * entry fall back to the generic `<Section>` renderer below.
+ */
+const SECTION_RENDERERS: Record<string, SectionRenderer> = {
+  about: (section) => <AboutSection section={section} />,
+  experience: (section, { companies }) => (
+    <ExperienceSection section={section} companies={companies} />
+  ),
+  "core-skills": (section) => <CoreSkillsSection section={section} />,
+  "key-achievements": (section) => <KeyAchievementsSection section={section} />,
+  education: (section) => <EducationSection section={section} />,
+  certifications: (section) => <CertificationsSection section={section} />,
+  languages: (section) => <LanguagesSection section={section} />,
+  contact: (section, { profile, locale }) => (
+    <ContactSection section={section} profile={profile} locale={locale} />
+  ),
+};
+
+function renderSection(section: SectionContent, ctx: SectionRenderContext): ReactNode {
+  const renderer = SECTION_RENDERERS[section.id];
+  return renderer ? renderer(section, ctx) : <Section section={section} />;
+}
 
 function isValidLocale(value: string): value is Locale {
   return VALID_LOCALES.includes(value as Locale);
@@ -101,67 +144,23 @@ export default async function LocalePage({ params }: PageProps) {
     notFound();
   }
 
-  const config = loadSiteConfig();
+  const config: SiteConfig = loadSiteConfig();
   const sections = loadSectionsForLocale(config, localeParam);
-  const apiBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "").replace(/\/$/, "");
-  const cvPdfFetchUrl = apiBaseUrl
-    ? `${apiBaseUrl}/api/v1/cv?lang=${localeParam}`
-    : `/api/v1/cv?lang=${localeParam}`;
-  const cvPdfAccessToken = apiBaseUrl
-    ? (process.env.NEXT_PUBLIC_API_ACCESS_TOKEN ?? "").trim()
-    : undefined;
+  const cvPdfFetchUrl = publicApiUrl(`/api/v1/cv?lang=${localeParam}`);
+  const browserBearer = publicApiBearer();
+  const cvPdfAccessToken = PUBLIC_API_BASE_URL ? browserBearer : undefined;
 
-  const mainSections: ReactNode[] = [];
-  for (const section of sections) {
-    const showDivider = mainSections.length > 0;
+  const renderCtx: SectionRenderContext = {
+    locale: localeParam,
+    companies: config.experienceCompanies,
+    profile: config.profile,
+  };
 
-    let block: ReactNode;
-    switch (section.id) {
-      case "about":
-        block = <AboutSection section={section} />;
-        break;
-      case "experience":
-        block = (
-          <ExperienceSection
-            section={section}
-            companies={config.experienceCompanies}
-          />
-        );
-        break;
-      case "core-skills":
-        block = <CoreSkillsSection section={section} />;
-        break;
-      case "key-achievements":
-        block = <KeyAchievementsSection section={section} />;
-        break;
-      case "education":
-        block = <EducationSection section={section} />;
-        break;
-      case "certifications":
-        block = <CertificationsSection section={section} />;
-        break;
-      case "languages":
-        block = <LanguagesSection section={section} />;
-        break;
-      case "contact":
-        block = (
-          <ContactSection
-            section={section}
-            profile={config.profile}
-            locale={localeParam}
-          />
-        );
-        break;
-      default:
-        block = <Section section={section} />;
-    }
-
-    mainSections.push(
-      <SectionSpacing key={section.id} showDivider={showDivider}>
-        {block}
-      </SectionSpacing>
-    );
-  }
+  const mainSections = sections.map((section, index) => (
+    <SectionSpacing key={section.id} showDivider={index > 0}>
+      {renderSection(section, renderCtx)}
+    </SectionSpacing>
+  ));
 
   return (
     <>

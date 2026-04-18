@@ -1,4 +1,6 @@
 import type { SectionContent, Profile } from "@/lib/content/types";
+import { parseContactFields } from "@/lib/markdown/sections";
+import { getWhatsAppUrl } from "@/lib/profile";
 import { SectionHeading } from "@/components/sectionIcons";
 
 type ContactSectionProps = {
@@ -7,50 +9,17 @@ type ContactSectionProps = {
   locale: "es" | "en";
 };
 
-type ContactField = {
-  label: string;
-  value: string;
-};
+/* These contact channels are already covered by the action buttons below, so we
+   hide them in the field list to avoid duplication. */
+const REDUNDANT_FIELDS = new Set(["whatsapp", "linkedin", "github"]);
 
-/**
- * Parses contact markdown: - Label: value
- */
-function parseContactFields(body: string): ContactField[] {
-  if (!body?.trim()) return [];
-  return body
-    .split("\n")
-    .filter((l) => l.trim().startsWith("-"))
-    .map((l) => {
-      const content = l.replace(/^-\s*/, "").trim();
-      const colonIdx = content.indexOf(":");
-      if (colonIdx >= 0) {
-        return {
-          label: content.slice(0, colonIdx).trim(),
-          value: content.slice(colonIdx + 1).trim(),
-        };
-      }
-      return null;
-    })
-    .filter((f): f is ContactField => f !== null && !!f.value);
-}
+const SECONDARY_BUTTON_CLASS =
+  "profile-card-btn inline-flex h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border items-center justify-center";
 
-const CARD_CLASS =
-  "rounded-xl border border-border bg-surface p-4 md:p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md";
-
-/**
- * Renders Contact section with card layout.
- * Fields from markdown, buttons use profile links.
- */
-/** WhatsApp URL from phone: +34 685 890 502 -> https://wa.me/34685890502 */
-function getWhatsAppUrl(phone: string): string {
-  const digits = phone.replace(/\D/g, "");
-  return `https://wa.me/${digits}`;
-}
-
+/** Renders Contact info card + action buttons (email + social links). */
 export function ContactSection({ section, profile, locale }: ContactSectionProps) {
-  const hiddenFieldLabels = new Set(["whatsapp", "linkedin", "github"]);
   const fields = parseContactFields(section.body ?? "").filter(
-    (f) => !hiddenFieldLabels.has(f.label.trim().toLowerCase())
+    (f) => !REDUNDANT_FIELDS.has(f.label.trim().toLowerCase()),
   );
   const contactLabel = locale === "es" ? "Contactar" : "Contact me";
   const linkedIn = profile?.links?.find((l) => l.label === "LinkedIn");
@@ -60,7 +29,7 @@ export function ContactSection({ section, profile, locale }: ContactSectionProps
   return (
     <section id={section.id} className="scroll-mt-20 w-full min-w-0">
       <SectionHeading id={section.id} title={section.title} />
-      <div className={CARD_CLASS}>
+      <div className="card-tile">
         <div className="space-y-3">
           {fields.map((field, i) => (
             <div key={i}>
@@ -85,7 +54,7 @@ export function ContactSection({ section, profile, locale }: ContactSectionProps
               href={linkedIn.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="profile-card-btn inline-flex h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border items-center justify-center"
+              className={SECONDARY_BUTTON_CLASS}
             >
               LinkedIn
             </a>
@@ -95,7 +64,7 @@ export function ContactSection({ section, profile, locale }: ContactSectionProps
               href={github.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="profile-card-btn inline-flex h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border items-center justify-center"
+              className={SECONDARY_BUTTON_CLASS}
             >
               GitHub
             </a>
@@ -105,7 +74,7 @@ export function ContactSection({ section, profile, locale }: ContactSectionProps
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="profile-card-btn inline-flex h-9 px-4 text-sm font-semibold rounded-lg bg-surface-2 text-foreground border border-border items-center justify-center"
+              className={SECONDARY_BUTTON_CLASS}
             >
               WhatsApp
             </a>

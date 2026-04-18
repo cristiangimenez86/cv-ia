@@ -10,81 +10,89 @@ type NavLinksProps = {
 };
 
 /**
- * Nav links with scroll-spy: active link shows blue underline based on section in view.
- * Hash links (click) take priority when the target section is in view.
+ * Nav with scroll-spy.
+ *
+ * Two signals decide the active link:
+ *  1. **IntersectionObserver** — tracks which sections cross an "activation
+ *     line" near the top of the viewport (`rootMargin: "-120px 0px -55% 0px"`).
+ *     This avoids per-pixel scroll work and is far cheaper than a scroll
+ *     listener.
+ *  2. **`hashchange` / link clicks** — give the targeted hash priority for a
+ *     short window so the chosen link feels "sticky" while smooth-scrolling.
  */
 export function NavLinks({ navItems }: NavLinksProps) {
   const [activeId, setActiveId] = useState<string | null>(null);
   const hashPriorityUntil = useRef(0);
+  /** Last known intersection ratio per section, used to pick the most-visible one. */
+  const visibleSections = useRef(new Map<string, number>());
 
   useEffect(() => {
-    const activationLine = 120;
+    const elements = navItems
+      .map((item) => document.getElementById(item.id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (elements.length === 0) return;
 
-    function getActiveSection() {
+    function pickActive(): string | null {
       let bestId: string | null = null;
-      let bestTop = -Infinity;
-
-      for (const item of navItems) {
-        const el = document.getElementById(item.id);
-        if (!el) continue;
-        const top = el.getBoundingClientRect().top;
-        if (top <= activationLine && top > bestTop) {
-          bestTop = top;
-          bestId = item.id;
-        }
-      }
-      if (bestId === null) {
-        bestTop = Infinity;
-        for (const item of navItems) {
-          const el = document.getElementById(item.id);
-          if (!el) continue;
-          const rect = el.getBoundingClientRect();
-          const top = rect.top;
-          const bottom = rect.bottom;
-          const isVisible = top < window.innerHeight && bottom > 0;
-          if (isVisible && top < bestTop) {
-            bestTop = top;
-            bestId = item.id;
-          }
+      let bestRatio = 0;
+      for (const [id, ratio] of visibleSections.current) {
+        if (ratio > bestRatio) {
+          bestRatio = ratio;
+          bestId = id;
         }
       }
       return bestId;
     }
 
-    function updateActive() {
-      const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
-      const hashMatchesNav = hash && navItems.some((i) => i.id === hash);
-      const hashEl = hashMatchesNav ? document.getElementById(hash) : null;
-      const hashInView =
-        hashEl &&
-        (() => {
-          const r = hashEl.getBoundingClientRect();
-          return r.top < window.innerHeight && r.bottom > 0;
-        })();
-
-      if (hashMatchesNav && hashInView) {
+    function applyActive() {
+      const hash = window.location.hash.slice(1);
+      if (
+        hash &&
+        navItems.some((i) => i.id === hash) &&
+        Date.now() < hashPriorityUntil.current
+      ) {
         setActiveId(hash);
         return;
       }
-      if (hashMatchesNav && Date.now() < hashPriorityUntil.current) {
-        setActiveId(hash);
-        return;
-      }
-      const scrollId = getActiveSection();
-      if (scrollId) setActiveId(scrollId);
+      const next = pickActive();
+      if (next) setActiveId(next);
     }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          const id = entry.target.id;
+          if (entry.isIntersecting) {
+            visibleSections.current.set(id, entry.intersectionRatio);
+          } else {
+            visibleSections.current.delete(id);
+          }
+        }
+        applyActive();
+      },
+      {
+        /* Activation line ~120px from top, with the bottom 55% of the viewport
+         * ignored so a section is "active" once its top has scrolled into the
+         * upper portion of the screen. */
+        rootMargin: "-120px 0px -55% 0px",
+        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
+      },
+    );
+
+    for (const el of elements) observer.observe(el);
 
     function onHashChange() {
       hashPriorityUntil.current = Date.now() + 400;
-      updateActive();
+      applyActive();
     }
 
-    updateActive();
-    window.addEventListener("scroll", updateActive, { passive: true });
     window.addEventListener("hashchange", onHashChange);
+    applyActive();
+
     return () => {
-      window.removeEventListener("scroll", updateActive);
+      observer.disconnect();
       window.removeEventListener("hashchange", onHashChange);
+      visibleSections.current.clear();
     };
   }, [navItems]);
 
