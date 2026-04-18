@@ -1,8 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>f8ef2086-74d3-41bc-9078-0a36a699f289</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="CvIa.Tests" />
