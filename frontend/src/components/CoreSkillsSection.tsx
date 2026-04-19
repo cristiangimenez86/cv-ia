@@ -27,7 +27,7 @@ export function CoreSkillsSection({ section }: CoreSkillsSectionProps) {
             </h3>
             <div className="flex min-h-0 min-w-0 flex-1 flex-wrap content-start gap-2 overflow-x-auto">
               {group.skills.map((skill, j) => (
-                <span key={j} className="chip-neutral shrink-0">
+                <span key={j} className="chip-neutral shrink-0 whitespace-nowrap">
                   {skill}
                 </span>
               ))}

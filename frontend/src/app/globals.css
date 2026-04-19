@@ -106,6 +106,9 @@ html {
 body {
   background-color: var(--color-bg);
   color: hsl(var(--text));
+  /* Prevent any rogue child from causing horizontal scroll on mobile, which
+     would otherwise push the fixed chat FAB partially off-screen. */
+  overflow-x: clip;
 }
 
 /* Semantic component classes — avoid repeating "border border-border" in components */
@@ -282,5 +285,10 @@ body {
   background-color: hsl(var(--surface-2));
   color: hsl(var(--text));
   border: 1px solid hsl(var(--border));
-  white-space: nowrap;
+  /* Allow long chip text (e.g. "AWS (CloudFront, CloudWatch, ...)") to wrap
+     so it never overflows the parent and pushes the whole page width on
+     mobile. Sites that need single-line chips (e.g. horizontal-scroll skill
+     groups) opt into nowrap with the Tailwind `whitespace-nowrap` utility. */
+  max-width: 100%;
+  overflow-wrap: anywhere;
 }

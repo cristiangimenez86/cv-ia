@@ -84,8 +84,16 @@ export function ChatWidget() {
         <ChatNudge onOpenChat={openFromNudge} locale={locale} />
       )}
 
-      {/* FAB — fixed bottom-right; hidden on mobile when chat open to avoid overlapping send button */}
-      <div className={`fixed bottom-4 right-4 z-50 ${isOpen ? "sm:block hidden" : ""}`}>
+      {/* FAB — fixed bottom-right; hidden on mobile when chat open to avoid overlapping send button.
+          Uses env(safe-area-inset-*) so the button stays clear of notches / rounded corners on
+          devices that report them, with a 1rem fallback otherwise. */}
+      <div
+        className={`fixed z-50 ${isOpen ? "sm:block hidden" : ""}`}
+        style={{
+          right: "max(1rem, env(safe-area-inset-right))",
+          bottom: "max(1rem, env(safe-area-inset-bottom))",
+        }}
+      >
         <button
           onClick={toggle}
           aria-label={isOpen ? fabAria.close : fabAria.open}
