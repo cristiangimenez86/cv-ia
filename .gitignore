@@ -5,6 +5,7 @@ coverage/
 bin/
 obj/
 frontend/tests/.tmp-*/
+frontend/scripts/out/
 .vs/
 .vscode/
 .idea/
