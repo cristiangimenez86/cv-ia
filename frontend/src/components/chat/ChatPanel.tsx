@@ -246,10 +246,13 @@ type GreetingSeedDeps = {
 };
 
 /**
- * Seeds a single opening assistant message on the first render with a resolved
- * visitor state and an empty message list. Runs at most once per panel mount;
- * reopening the panel triggers a fresh mount so the seed happens again with
- * the latest visitor state.
+ * Keeps the opening assistant greeting in sync with the current visitor state
+ * and locale while no user interaction has happened yet:
+ *
+ * - Empty list → seed the greeting.
+ * - Only the assistant seed present → refresh its content in-place when the
+ *   locale or visitor state changes (nothing has been sent to the LLM yet).
+ * - Any user message present → freeze; we never rewrite past turns.
  */
 function useGreetingSeed({
   visitor,
@@ -257,22 +260,26 @@ function useGreetingSeed({
   messages,
   setMessages,
 }: GreetingSeedDeps) {
-  const seeded = useRef(false);
-
   useEffect(() => {
-    if (seeded.current) return;
     if (visitor.status === "loading") return;
-    if (messages.length > 0) {
-      seeded.current = true;
+
+    const nextContent = pickGreeting(visitor, visitorStrings);
+
+    if (messages.length === 0) {
+      setMessages((prev) =>
+        prev.length > 0 ? prev : [...prev, assistantMessage(nextContent)],
+      );
       return;
     }
 
-    const content = pickGreeting(visitor, visitorStrings);
-    setMessages((prev) => (prev.length > 0 ? prev : [...prev, assistantMessage(content)]));
-    seeded.current = true;
-    /* Locale-at-mount: we never replace the initial message mid-conversation, by design. */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visitor.status, visitor.name, messages.length, setMessages]);
+    if (messages.length !== 1 || messages[0].role !== "assistant") return;
+    if (messages[0].content === nextContent) return;
+
+    setMessages((prev) => {
+      if (prev.length !== 1 || prev[0].role !== "assistant") return prev;
+      return [{ ...prev[0], content: nextContent }];
+    });
+  }, [visitor, visitor.status, visitor.name, visitorStrings, messages, setMessages]);
 }
 
 function pickGreeting(
