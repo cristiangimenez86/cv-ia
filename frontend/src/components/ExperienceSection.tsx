@@ -116,7 +116,7 @@ function CompanyHeader({
             href={group.logoConfig.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="profile-card-btn shrink-0 w-14 h-14 rounded-lg border border-border bg-slate-100 dark:bg-slate-100 dark:border-slate-200/40 flex items-center justify-center overflow-hidden"
+            className="profile-card-btn shrink-0 w-14 h-14 rounded-lg border border-border bg-white dark:bg-white dark:border-slate-200/40 flex items-center justify-center overflow-hidden"
             aria-label={`${group.company} website`}
           >
             <Image
@@ -148,7 +148,7 @@ function ProjectCard({ project }: { project: ExperienceProject }) {
   const hasBody = Boolean(project.description) || project.achievements.length > 0;
 
   return (
-    <div className="experience-card rounded-xl border border-border p-4 md:p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+    <div className="experience-card rounded-xl border border-border p-4 md:p-5 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-md">
       {project.project && (
         <p className="text-base font-medium text-foreground mb-2">{project.project}</p>
       )}

@@ -20,7 +20,7 @@ export function CoreSkillsSection({ section }: CoreSkillsSectionProps) {
         {groups.map((group, i) => (
           <div
             key={i}
-            className="rounded-xl border border-border bg-surface p-4 flex h-full min-h-0 flex-col gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+            className="rounded-xl border border-border bg-surface p-4 flex h-full min-h-0 flex-col gap-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
           >
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted shrink-0">
               {group.title}

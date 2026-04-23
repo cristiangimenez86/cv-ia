@@ -31,7 +31,7 @@ export function AboutSection({ section }: AboutSectionProps) {
           {kpis.map((kpi, i) => (
             <div
               key={`${kpi.value}-${i}`}
-              className="tile-hover rounded-lg border border-border bg-surface-2 px-3 py-2"
+              className="rounded-lg border border-border bg-surface-2 px-3 py-2 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary hover:shadow-md"
             >
               <dt className="text-lg font-semibold text-foreground leading-tight">
                 {kpi.value}
@@ -46,12 +46,12 @@ export function AboutSection({ section }: AboutSectionProps) {
         </dl>
       )}
       {lead ? (
-        <p className="text-[17px] leading-relaxed text-foreground">{lead}</p>
+        <p className="text-base leading-relaxed text-foreground">{lead}</p>
       ) : (
         <p className="text-muted text-sm">—</p>
       )}
       {rest.map((p, i) => (
-        <p key={i} className="text-base leading-relaxed text-muted mt-3">
+        <p key={i} className="text-base leading-relaxed text-foreground mt-3">
           {p}
         </p>
       ))}

@@ -107,7 +107,7 @@ export function ChatWidget() {
 
           {/* "AI" badge — top-right corner of the FAB */}
           {!isOpen && (
-            <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-surface text-[10px] font-bold text-primary border border-border shadow-sm px-1">
+            <span className="chat-badge-pulse absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-surface text-[10px] font-bold text-primary border border-border shadow-sm px-1">
               AI
             </span>
           )}
