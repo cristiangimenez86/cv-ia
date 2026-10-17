@@ -58,7 +58,7 @@ export function ChatInput({
         onClick={onSend}
         disabled={disabled || !value.trim()}
         aria-label="Send"
-        className="profile-card-btn profile-card-btn-primary inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm disabled:opacity-40 disabled:cursor-not-allowed"
+        className="cv-chat-send inline-flex h-10 w-10 shrink-0 items-center justify-center disabled:cursor-not-allowed"
       >
         <Send className="h-4 w-4" />
       </button>

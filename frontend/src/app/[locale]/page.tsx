@@ -103,7 +103,7 @@ export default async function LocalePage({ params }: PageProps) {
                 : "I design and build scalable applications and product integrations. I work with .NET, Azure, and React, focusing on quality, observability, and security."}
             </p>
             <div className="cv-hero-actions">
-              <a className="cv-button cv-button-primary" href="#experience">{es ? "Ver experiencia" : "View experience"} <ArrowRight size={16} aria-hidden /></a>
+              <a className="cv-button" href="#experience">{es ? "Ver experiencia" : "View experience"} <ArrowRight size={16} aria-hidden /></a>
               <a className="cv-button" href={`mailto:${profile?.email ?? ""}`}>{es ? "Contactar" : "Get in touch"} <ArrowRight size={16} aria-hidden /></a>
               <CvPdfDownloadButton fetchUrl={cvPdfFetchUrl} locale={localeParam} accessToken={cvPdfAccessToken} variant="header" downloadLabel={es ? "Descargar PDF" : "Download PDF"} />
             </div>
@@ -116,7 +116,7 @@ export default async function LocalePage({ params }: PageProps) {
               </div>
             ))}
           </div>
-          <footer className="cv-footer"><span>{profile?.fullName} · Senior Software Engineer</span><span>{es ? "CV · Español" : "CV · English"}</span></footer>
+          <footer className="cv-footer"><span>{profile?.fullName} · Senior Software Engineer</span><span>{es ? "CV · Español · 10.2026" : "CV · English · 10.2026"}</span></footer>
         </div>
       </main>
     </div>

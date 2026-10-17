@@ -60,7 +60,7 @@ export function CvPdfDownloadButton({
       type="button"
       onClick={() => void onClick()}
       disabled={busy}
-      className="cv-button disabled:opacity-60"
+      className="cv-button cv-button-primary disabled:opacity-60"
       aria-label={downloadLabel}
     >
       <Download className="h-4 w-4 shrink-0" aria-hidden />

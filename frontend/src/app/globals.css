@@ -150,8 +150,8 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 .cv-skill { min-height: 163px; padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-hex); transition: border-color .18s, background .18s; }
 .cv-skill:hover { border-color: var(--accent-hex); background: var(--surface-raised); }
 .cv-skill-number { color: var(--accent-hex); font-size: 11px; font-weight: 700; letter-spacing: .08em; }
-.cv-skill h3 { margin: 29px 0 9px; font-size: 15px; font-weight: 650; letter-spacing: -.02em; }
-.cv-skill p { margin: 0; color: var(--muted-hex); font-size: 12px; line-height: 1.6; overflow-wrap: anywhere; }
+.cv-skill h3 { margin: 16px 0 9px; font-size: 15px; font-weight: 650; letter-spacing: -.02em; }
+.cv-skill p { margin: 0; color: var(--muted-hex); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
 
 .cv-jobs { border-top: 1px solid var(--line); }
 .cv-job { display: grid; grid-template-columns: 155px minmax(0, 1fr); gap: 28px; padding: 31px 0 35px; border-bottom: 1px solid var(--line); }
@@ -180,9 +180,9 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 .cv-section-wrap .prose a { color: var(--accent-hex); text-decoration: underline; }
 .cv-footer { display: flex; justify-content: space-between; gap: 20px; padding-top: 30px; border-top: 1px solid var(--line); color: var(--subtle-hex); font-size: 11px; }
 
-.cv-chat-trigger { position: fixed; right: max(28px, env(safe-area-inset-right)); bottom: max(27px, env(safe-area-inset-bottom)); z-index: 45; display: inline-flex; align-items: center; gap: 11px; min-height: 49px; padding: 0 17px 0 11px; border: 1px solid var(--accent-hex); border-radius: 999px; background: var(--accent-hex); color: var(--button-text); box-shadow: 0 14px 35px #0008; font-size: 13px; font-weight: 750; transition: transform .18s, box-shadow .18s; }
-.cv-chat-trigger:hover { transform: translateY(-3px); box-shadow: 0 18px 42px #000b; }
-.cv-chat-trigger .spark { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--accent-dark); color: var(--accent-soft); font-size: 17px; }
+.cv-chat-trigger { position: fixed; right: max(28px, env(safe-area-inset-right)); bottom: max(27px, env(safe-area-inset-bottom)); z-index: 45; display: inline-flex; align-items: center; gap: 9px; min-height: 46px; padding: 0 17px; border: 1px solid var(--accent-hex); border-radius: 999px; background: var(--accent-hex); color: var(--button-text); box-shadow: 0 10px 26px #0005; font-size: 13px; font-weight: 700; transition: transform .18s, border-color .18s, background .18s, box-shadow .18s; }
+.cv-chat-trigger:hover { transform: translateY(-2px); border-color: var(--accent-soft); background: var(--accent-soft); box-shadow: 0 14px 32px #0007; }
+.cv-chat-trigger .chat-icon { flex: 0 0 auto; color: currentColor; }
 .cv-chat-backdrop { background: color-mix(in srgb, var(--page) 55%, transparent); animation: cv-chat-backdrop-in .34s ease-out both; }
 .cv-chat-panel { width: min(100%, var(--cv-chat-width, 430px), calc(100vw - 64px)); border: 0; border-left: 1px solid var(--line); border-radius: 0; background: var(--rail); box-shadow: -20px 0 70px #0008; animation: cv-chat-panel-in .42s cubic-bezier(.16, 1, .3, 1) both; }
 .cv-chat-resize-handle { position: absolute; z-index: 2; top: 0; bottom: 0; left: 0; width: 12px; cursor: ew-resize; touch-action: none; }
@@ -191,6 +191,9 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; user-select: none !important; }
 .cv-chat-panel .card { background: var(--surface-hex); }
 .cv-chat-textarea { min-height: 104px; max-height: 216px; overflow-y: hidden; }
+.cv-chat-send { align-self: flex-end; margin-bottom: 2px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-raised); color: var(--subtle-hex); transition: transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease; }
+.cv-chat-send:not(:disabled) { border-color: var(--accent-hex); background: var(--accent-hex); color: var(--button-text); }
+.cv-chat-send:not(:disabled):hover { transform: translateY(-2px); border-color: var(--accent-soft); background: var(--accent-soft); }
 @keyframes cv-chat-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes cv-chat-panel-in { from { opacity: .78; transform: translateX(48px); } to { opacity: 1; transform: translateX(0); } }
 
@@ -232,4 +235,113 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
+
+@page {
+  size: A4;
+  margin: 14mm 16mm 17mm;
+  @bottom-right {
+    content: counter(page);
+    color: #946436;
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 8pt;
+  }
+}
+
+@media print {
+  html, html.dark, html.light {
+    color-scheme: light;
+    --page: #fffdf9;
+    --rail: #f7f5f0;
+    --surface-hex: #fffdf9;
+    --surface-raised: #f3eee6;
+    --line: #d9d7ce;
+    --line-soft: #e1ded5;
+    --text-hex: #252923;
+    --muted-hex: #4c574f;
+    --subtle-hex: #687269;
+    --accent-hex: #946436;
+    --accent-dark: #eadbc8;
+    --accent-soft: #694827;
+    --button-text: #fffdf9;
+    --bg: 40 30% 95%;
+    --surface: 40 100% 99%;
+    --surface-2: 37 34% 93%;
+    --border: 47 13% 83%;
+    --divider: 47 13% 83%;
+    --text: 105 8% 15%;
+    --muted: 136 7% 32%;
+    --subtle: 129 5% 43%;
+    --primary: 29 47% 40%;
+    --primary-contrast: 40 100% 99%;
+    --ring: 29 47% 40%;
+    --shadow: 0 0% 0%;
+    background: var(--page) !important;
+    color: var(--text-hex) !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  body { min-width: 0; background: var(--page) !important; color: var(--text-hex) !important; font-size: 10pt; }
+  .cv-sidebar, .cv-mobile-bar, .cv-topline-controls, .cv-hero-actions, .cv-chat-trigger, .cv-chat-panel, .cv-chat-backdrop, .backend-health-indicator { display: none !important; }
+  .cv-shell { display: block; min-height: 0; }
+  .cv-main, .cv-content { width: 100%; max-width: none; margin: 0; padding: 0; }
+  .cv-topline { min-height: 0; padding: 0 0 8px; margin-bottom: 18px; border-bottom: 1px solid var(--line); color: var(--subtle-hex); font-size: 8pt; }
+  .cv-hero { padding: 0 0 10px; }
+  .cv-hero .cv-eyebrow { margin-bottom: 7px; font-size: 7.5pt; }
+  .cv-hero h1 { max-width: none; font-size: 30pt; line-height: 1.02; }
+  .cv-hero-copy { display: none; }
+  .cv-hero-note { margin-top: 10px; font-size: 8.5pt; }
+  .cv-sections { display: block; }
+  .cv-section-wrap { padding: 12px 0 14px; border-top: 1px solid var(--line); break-inside: auto; }
+  .cv-section-wrap[data-section="experience"] { padding-bottom: 0; break-before: page; }
+  .cv-section-wrap[data-section="experience"] + .cv-section-wrap { border-top: 1px solid var(--line); }
+  .cv-section-heading { margin-bottom: 12px; }
+  .cv-section-heading .cv-eyebrow { margin-bottom: 4px; font-size: 7pt; }
+  .cv-section-heading h2 { font-size: 18pt; line-height: 1.1; }
+  .cv-about-grid { grid-template-columns: minmax(0, 1.35fr) minmax(190px, .65fr); gap: 18px; }
+  .cv-about-copy p { margin-bottom: 8px; font-size: 9pt; line-height: 1.48; }
+  .cv-focus { padding: 12px; border-radius: 8px; }
+  .cv-focus .cv-eyebrow { font-size: 7pt; }
+  .cv-focus ul { gap: 6px; margin-top: 9px; font-size: 8.5pt; }
+  .cv-skills { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; }
+  .cv-skill { min-height: 0; padding: 10px; border-radius: 8px; break-inside: avoid; }
+  .cv-skill-number { font-size: 7pt; }
+  .cv-skill h3 { margin: 10px 0 5px; font-size: 9pt; }
+  .cv-skill p { font-size: 7.5pt; line-height: 1.4; }
+  .cv-jobs { border-top: 1px solid var(--line); }
+  .cv-job { grid-template-columns: 27mm minmax(0, 1fr); gap: 5mm; padding: 12px 0; break-inside: avoid; }
+  .cv-job-date { gap: 3px; padding-top: 1px; font-size: 7.5pt; line-height: 1.35; }
+  .cv-job-heading { gap: 3px 8px; }
+  .cv-job-heading h3 { font-size: 11pt; }
+  .cv-job-heading span { font-size: 9pt; }
+  .cv-job-description { margin-top: 5px; font-size: 8.5pt; line-height: 1.42; }
+  .cv-job-description p { margin-bottom: 4px; }
+  .cv-job-achievements { gap: 3px; margin: 6px 0 0; padding-left: 14px; font-size: 8pt; line-height: 1.4; }
+  .cv-project + .cv-project { margin-top: 9px; padding-top: 8px; }
+  .cv-project h4 { margin: 4px 0 6px; font-size: 8pt; }
+  .cv-tags { gap: 4px; margin-top: 8px; }
+  .cv-tags span, .chip-neutral { padding: 3px 6px; border-radius: 4px; font-size: 7pt; }
+  .cv-section-wrap .space-y-3 li, .cv-section-wrap .card-tile p, .cv-section-wrap .prose { line-height: 1.45; }
+  .cv-section-wrap .prose p { margin-bottom: 7px; }
+  .cv-section-wrap .prose ul { padding-left: 15px; }
+  .cv-section-wrap[data-section="key-achievements"] { break-inside: avoid; }
+  .cv-section-wrap[data-section="certifications"] { break-inside: avoid; }
+  .cv-section-wrap[data-section="key-achievements"] ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 14px; }
+  .cv-section-wrap[data-section="key-achievements"] li { gap: 6px; font-size: 8pt; line-height: 1.35; }
+  .cv-section-wrap[data-section="key-achievements"] li svg { width: 12px; height: 12px; }
+  .cv-section-wrap .card-tile { padding: 10px; border-radius: 8px; box-shadow: none; break-inside: avoid; }
+  .cv-section-wrap[data-section="education"] .space-y-4 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .cv-section-wrap[data-section="education"] .card-tile p,
+  .cv-section-wrap[data-section="certifications"] .card-tile p,
+  .cv-section-wrap[data-section="languages"] .card-tile p,
+  .cv-section-wrap[data-section="contact"] .card-tile p { margin-top: 3px; font-size: 8pt; line-height: 1.35; }
+  .cv-section-wrap[data-section="education"] ul { margin-top: 6px; font-size: 8pt; }
+  .cv-section-wrap[data-section="contact"] .card-tile { padding: 10px; }
+  .cv-section-wrap[data-section="contact"] .card-tile { break-inside: auto; }
+  .cv-section-wrap[data-section="contact"] .card-tile > div:first-child { display: grid; gap: 4px; }
+  .cv-section-wrap[data-section="contact"] .card-tile > div:nth-child(2) { gap: 5px; margin-top: 8px; padding-top: 8px; }
+  .cv-footer { padding-top: 12px; font-size: 8pt; break-inside: avoid; }
+  .cv-button, .header-btn-primary, .header-btn-secondary, .tile-hover, .cv-skill, .cv-job, .cv-project { box-shadow: none !important; }
+  a { color: inherit; text-decoration: none; }
 }

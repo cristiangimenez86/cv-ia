@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { Sparkles } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { ChatPanel } from "./ChatPanel";
 import { CV_IA_CLOSE_CHAT_EVENT } from "./chatCloseEvents";
 import type { ChatMessage } from "./types";
@@ -76,7 +76,7 @@ export function ChatWidget() {
           aria-controls="cv-chat-panel"
           className="cv-chat-trigger"
         >
-          <span className="spark"><Sparkles size={17} aria-hidden /></span>
+          <MessageCircle className="chat-icon" size={19} strokeWidth={1.8} aria-hidden />
           {locale === "es" ? "Preguntá sobre mi perfil" : "Ask about my profile"}
         </button>
       )}
