@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { MessageCircle, UserX, X } from "lucide-react";
 import { ChatMessageList } from "./ChatMessageList";
 import { ChatInput } from "./ChatInput";
@@ -20,6 +20,19 @@ type ChatPanelProps = {
   messages: ChatMessage[];
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
 };
+
+const CHAT_WIDTH_STORAGE_KEY = "cv-ia-chat-width";
+const DEFAULT_CHAT_WIDTH = 430;
+const MIN_CHAT_WIDTH = 340;
+const MAX_CHAT_WIDTH = 960;
+
+function maxChatWidth() {
+  return Math.min(MAX_CHAT_WIDTH, Math.max(MIN_CHAT_WIDTH, window.innerWidth - 64));
+}
+
+function clampChatWidth(width: number) {
+  return Math.max(MIN_CHAT_WIDTH, Math.min(width, maxChatWidth()));
+}
 
 /** Shape of `assistantMessage()` output — the boilerplate for an assistant bubble. */
 function assistantMessage(content: string): ChatMessage {
@@ -48,7 +61,11 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
   const mobileVv = useChatMobileVisualViewport();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [panelWidth, setPanelWidth] = useState(DEFAULT_CHAT_WIDTH);
+  const [availableWidth, setAvailableWidth] = useState(MAX_CHAT_WIDTH);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const resizeRef = useRef<{ pointerId: number; startX: number; startWidth: number; width: number } | null>(null);
 
   const visitor = useVisitorName();
   const visitorStrings = getVisitorNameStrings(locale);
@@ -63,6 +80,83 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
   useFocusAfterReply(inputRef, isLoading);
   useGreetingSeed({ visitor, visitorStrings, messages, setMessages });
   useEscapeToClose(onClose);
+
+  useLayoutEffect(() => {
+    const syncWidth = () => {
+      setAvailableWidth(maxChatWidth());
+      setPanelWidth((width) => clampChatWidth(width));
+    };
+
+    try {
+      const savedWidth = Number(window.localStorage.getItem(CHAT_WIDTH_STORAGE_KEY));
+      if (Number.isFinite(savedWidth) && savedWidth >= MIN_CHAT_WIDTH) {
+        setPanelWidth(clampChatWidth(savedWidth));
+      }
+    } catch {
+      // Resizing still works when browser storage is unavailable.
+    }
+
+    syncWidth();
+    window.addEventListener("resize", syncWidth);
+    return () => {
+      window.removeEventListener("resize", syncWidth);
+      document.documentElement.classList.remove("cv-chat-resizing");
+    };
+  }, []);
+
+  function saveWidth(width: number) {
+    const nextWidth = clampChatWidth(width);
+    setPanelWidth(nextWidth);
+    try {
+      window.localStorage.setItem(CHAT_WIDTH_STORAGE_KEY, String(nextWidth));
+    } catch {
+      // Keep the current session usable when browser storage is unavailable.
+    }
+  }
+
+  function startResize(event: React.PointerEvent<HTMLDivElement>) {
+    if (event.button !== 0 || window.matchMedia("(max-width: 760px)").matches) return;
+    event.preventDefault();
+    const startWidth = panelRef.current?.getBoundingClientRect().width ?? panelWidth;
+    resizeRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startWidth,
+      width: startWidth,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+    document.documentElement.classList.add("cv-chat-resizing");
+  }
+
+  function moveResize(event: React.PointerEvent<HTMLDivElement>) {
+    const drag = resizeRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    drag.width = clampChatWidth(drag.startWidth + drag.startX - event.clientX);
+    setPanelWidth(drag.width);
+  }
+
+  function finishResize(event: React.PointerEvent<HTMLDivElement>) {
+    const drag = resizeRef.current;
+    if (drag?.pointerId !== event.pointerId) return;
+    resizeRef.current = null;
+    document.documentElement.classList.remove("cv-chat-resizing");
+    saveWidth(drag.width);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+  }
+
+  function resizeWithKeyboard(event: React.KeyboardEvent<HTMLDivElement>) {
+    const step = event.shiftKey ? 40 : 16;
+    const nextWidth = event.key === "ArrowLeft" ? panelWidth + step
+      : event.key === "ArrowRight" ? panelWidth - step
+      : event.key === "Home" ? MIN_CHAT_WIDTH
+      : event.key === "End" ? maxChatWidth()
+      : null;
+    if (nextWidth === null) return;
+    event.preventDefault();
+    saveWidth(nextWidth);
+  }
 
   const sendMessage = useCallback(
     async (text: string) => {
@@ -105,17 +199,34 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
 
   return (
     <div
-      className={`card flex flex-col overflow-hidden fixed z-50
-        ${useVvLayout ? "left-3 right-3 max-w-none" : "inset-3 max-h-[calc(100dvh-1.5rem)]"}
-        sm:inset-auto sm:bottom-20 sm:right-4
-        sm:w-[min(600px,calc(100vw-2rem))] sm:h-[min(700px,calc(100dvh-5rem))] sm:max-h-none
-        md:w-[600px] md:h-[min(700px,calc(100dvh-5rem))]`}
-      style={
-        useVvLayout
-          ? { top: mobileVv.top, height: mobileVv.height, maxHeight: mobileVv.height }
-          : undefined
-      }
+      id="cv-chat-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-label={ui.headerTitle}
+      ref={panelRef}
+      className="cv-chat-panel fixed right-0 top-0 bottom-0 z-50 flex flex-col overflow-hidden"
+      style={{
+        "--cv-chat-width": `${panelWidth}px`,
+        ...(useVvLayout ? { top: mobileVv.top, height: mobileVv.height, maxHeight: mobileVv.height } : {}),
+      } as React.CSSProperties}
     >
+      <div
+        className="cv-chat-resize-handle"
+        role="separator"
+        tabIndex={0}
+        aria-orientation="vertical"
+        aria-label={locale === "es" ? "Ajustar ancho del chat" : "Resize chat width"}
+        aria-valuemin={MIN_CHAT_WIDTH}
+        aria-valuemax={availableWidth}
+        aria-valuenow={panelWidth}
+        title={locale === "es" ? "Arrastrá para ajustar el ancho" : "Drag to resize width"}
+        onPointerDown={startResize}
+        onPointerMove={moveResize}
+        onPointerUp={finishResize}
+        onPointerCancel={finishResize}
+        onLostPointerCapture={finishResize}
+        onKeyDown={resizeWithKeyboard}
+      />
       <ChatPanelHeader
         title={ui.headerTitle}
         closeAria={ui.closeAria}

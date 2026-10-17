@@ -39,17 +39,22 @@ type SectionHeadingProps = {
  * SECTION_ICONS, only the h2 is rendered (backwards compatible).
  */
 export function SectionHeading({ id, title, className = "" }: SectionHeadingProps) {
-  const Icon = SECTION_ICONS[id];
+  const labels: Record<string, [string, string]> = {
+    about: ["01 / Perfil", "01 / Profile"],
+    "core-skills": ["02 / Herramientas", "02 / Tools"],
+    experience: ["03 / Trayectoria", "03 / Career"],
+    "key-achievements": ["04 / Logros", "04 / Highlights"],
+    education: ["05 / Formación", "05 / Education"],
+    certifications: ["06 / Certificaciones", "06 / Credentials"],
+    languages: ["07 / Idiomas", "07 / Languages"],
+    contact: ["08 / Contacto", "08 / Contact"],
+  };
+  const spanishTitles = new Set(["Sobre mí", "Habilidades", "Logros", "Experiencia", "Educación", "Certificaciones", "Idiomas", "Contacto"]);
+  const label = labels[id]?.[spanishTitles.has(title) ? 0 : 1] ?? "CV";
   return (
-    <div className={`flex items-center gap-2 mb-3 ${className}`}>
-      {Icon ? (
-        <Icon
-          size={20}
-          className="text-primary shrink-0"
-          aria-hidden
-        />
-      ) : null}
-      <h2 className="text-xl font-semibold text-foreground">{title}</h2>
+    <div className={`cv-section-heading ${className}`}>
+      <span className="cv-eyebrow" aria-hidden="true">{label}</span>
+      <h2>{title}</h2>
     </div>
   );
 }

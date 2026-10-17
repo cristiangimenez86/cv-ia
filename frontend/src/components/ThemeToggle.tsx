@@ -2,83 +2,43 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import type { Locale } from "@/lib/content/types";
 
-type ThemeToggleProps = {
-  className?: string;
-};
+type Props = { locale: Locale };
 
-/** ms during which the global theme transition rule is active. Slightly above
- *  the 0.3s transition duration so the animation has time to complete. */
-const THEME_TRANSITION_DURATION_MS = 350;
-
-/**
- * Renders nothing until mounted to avoid server/client markup mismatch (e.g. theme-dependent output).
- * Shows Moon (dark mode) / Sun (light mode) icon in a bordered button.
- */
-export function ThemeToggle({ className = "" }: ThemeToggleProps) {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+export function ThemeToggle({ locale }: Props) {
+  const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const themeTransitionTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => setMounted(true), 0);
-    return () => clearTimeout(t);
-  }, []);
-
-  useEffect(() => {
+    const mountTimer = setTimeout(() => setMounted(true), 0);
     return () => {
-      if (themeTransitionTimer.current) {
-        clearTimeout(themeTransitionTimer.current);
-      }
+      clearTimeout(mountTimer);
+      if (timer.current) clearTimeout(timer.current);
     };
   }, []);
 
-  const current = theme === "system" ? resolvedTheme : theme;
-  const isDark = current === "dark";
-
-  if (!mounted) {
-    return (
-      <span
-        className={`header-btn-secondary ${className}`}
-        aria-hidden
-        style={{ visibility: "hidden" }}
-      >
-        <Sun className="h-4 w-4" />
-      </span>
-    );
-  }
-
-  function toggle() {
-    /* Scope the cross-theme color transition: add `.theme-transition` to <html>
-       only for the duration of the toggle so hover/scroll interactions are
-       not animated by it. See globals.css `html.theme-transition`. */
-    if (typeof document !== "undefined") {
-      const root = document.documentElement;
-      root.classList.add("theme-transition");
-      if (themeTransitionTimer.current) {
-        clearTimeout(themeTransitionTimer.current);
-      }
-      themeTransitionTimer.current = setTimeout(() => {
-        root.classList.remove("theme-transition");
-        themeTransitionTimer.current = null;
-      }, THEME_TRANSITION_DURATION_MS);
-    }
-    setTheme(isDark ? "light" : "dark");
+  function chooseTheme(choice: "dark" | "light") {
+    document.documentElement.classList.add("theme-transition");
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => document.documentElement.classList.remove("theme-transition"), 350);
+    setTheme(choice);
   }
 
   return (
-    <button
-      type="button"
-      onClick={toggle}
-      className={`header-btn-secondary ${className}`}
-      aria-label={`Switch to ${isDark ? "light" : "dark"} theme`}
-    >
-      {isDark ? (
-        <Moon className="h-4 w-4 text-foreground" />
-      ) : (
-        <Sun className="h-4 w-4 text-foreground" />
-      )}
-    </button>
+    <div className="cv-theme-switch" role="group" aria-label={locale === "es" ? "Tema de color" : "Color theme"}>
+      {(["dark", "light"] as const).map((choice) => (
+        <button
+          key={choice}
+          type="button"
+          onClick={() => chooseTheme(choice)}
+          aria-pressed={mounted ? resolvedTheme === choice : undefined}
+          className={mounted && resolvedTheme === choice ? "is-active" : ""}
+        >
+          {locale === "es" ? (choice === "dark" ? "Oscuro" : "Claro") : (choice === "dark" ? "Dark" : "Light")}
+        </button>
+      ))}
+    </div>
   );
 }

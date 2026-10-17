@@ -46,7 +46,7 @@ export function CvPdfDownloadButton({
         type="button"
         onClick={() => void onClick()}
         disabled={busy}
-        className="profile-card-btn profile-card-btn-primary w-full h-9 px-4 text-sm font-semibold rounded-lg bg-primary text-primary-foreground shadow-sm flex items-center justify-center disabled:opacity-60"
+        className="cv-button cv-button-primary disabled:opacity-60"
         aria-label={downloadLabel}
       >
         {downloadLabel}
@@ -60,11 +60,11 @@ export function CvPdfDownloadButton({
       type="button"
       onClick={() => void onClick()}
       disabled={busy}
-      className="header-btn-primary inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary px-0 text-sm font-semibold text-primary-foreground shadow-sm lg:w-auto lg:px-4 disabled:opacity-60"
+      className="cv-button disabled:opacity-60"
       aria-label={downloadLabel}
     >
-      <Download className="h-5 w-5 shrink-0 lg:hidden" aria-hidden />
-      <span className="hidden lg:inline">{downloadLabel}</span>
+      <Download className="h-4 w-4 shrink-0" aria-hidden />
+      <span>{downloadLabel}</span>
     </button>
   );
 }

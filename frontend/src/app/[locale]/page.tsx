@@ -1,14 +1,8 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import { ArrowRight, MapPin } from "lucide-react";
 import { notFound } from "next/navigation";
 import { loadSiteConfig, loadSectionsForLocale } from "@/lib/content/loader";
-import type {
-  ExperienceCompany,
-  Locale,
-  Profile,
-  SectionContent,
-  SiteConfig,
-} from "@/lib/content/types";
+import type { ExperienceCompany, Locale, Profile, SectionContent, SiteConfig } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
 import { PUBLIC_API_BASE_URL, publicApiBearer, publicApiUrl } from "@/lib/publicApi";
 import { Header } from "@/components/Header";
@@ -21,192 +15,111 @@ import { EducationSection } from "@/components/EducationSection";
 import { KeyAchievementsSection } from "@/components/KeyAchievementsSection";
 import { LanguagesSection } from "@/components/LanguagesSection";
 import { ContactSection } from "@/components/ContactSection";
-import { ProfileCard } from "@/components/ProfileCard";
+import { CvPdfDownloadButton } from "@/components/CvPdfDownloadButton";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { LocaleToggle } from "@/components/LocaleToggle";
 
 const VALID_LOCALES: Locale[] = ["es", "en"];
-
-type SectionRenderContext = {
-  locale: Locale;
-  companies?: ExperienceCompany[];
-  profile?: Profile;
-};
-
-type SectionRenderer = (
-  section: SectionContent,
-  ctx: SectionRenderContext,
-) => ReactNode;
-
-/**
- * Maps a `section.id` from `content/site.json` to the component that renders
- * it. Adding a new section type is a one-line entry here; sections without an
- * entry fall back to the generic `<Section>` renderer below.
- */
-const SECTION_RENDERERS: Record<string, SectionRenderer> = {
-  about: (section) => <AboutSection section={section} />,
-  experience: (section, { companies }) => (
-    <ExperienceSection section={section} companies={companies} />
-  ),
-  "core-skills": (section) => <CoreSkillsSection section={section} />,
-  "key-achievements": (section) => <KeyAchievementsSection section={section} />,
-  education: (section) => <EducationSection section={section} />,
-  certifications: (section) => <CertificationsSection section={section} />,
-  languages: (section) => <LanguagesSection section={section} />,
-  contact: (section, { profile, locale }) => (
-    <ContactSection section={section} profile={profile} locale={locale} />
-  ),
-};
-
-function renderSection(section: SectionContent, ctx: SectionRenderContext): ReactNode {
-  const renderer = SECTION_RENDERERS[section.id];
-  return renderer ? renderer(section, ctx) : <Section section={section} />;
-}
+type PageProps = { params: Promise<{ locale: string }> };
 
 function isValidLocale(value: string): value is Locale {
   return VALID_LOCALES.includes(value as Locale);
 }
 
-/** Vertical rhythm + divider between stacked main sections (not first). */
-function SectionSpacing({
-  showDivider,
-  children,
-}: {
-  showDivider: boolean;
-  children: ReactNode;
-}) {
-  return (
-    <div
-      className={
-        showDivider
-          ? "min-w-0 mt-12 border-t border-border pt-12"
-          : "min-w-0"
-      }
-    >
-      {children}
-    </div>
-  );
-}
-
-type PageProps = {
-  params: Promise<{ locale: string }>;
-};
-
-export async function generateMetadata({
-  params,
-}: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  if (!isValidLocale(locale)) {
-    return { title: "CV" };
-  }
+  if (!isValidLocale(locale)) return { title: "CV" };
   const config = loadSiteConfig();
-  const headline = config.profile
-    ? getLocalized(config.profile.headline, locale)
-    : null;
   const title = config.profile?.fullName ?? config.projectName;
-  const description = headline
-    ? `${title} — ${headline}`
-    : `${title} | CV`;
-
-  /* hreflang + canonical help search engines index each locale variant
-     separately and pick the right one per visitor. `x-default` points to
-     the configured defaultLocale so users with unsupported browser
-     languages land on a predictable page. */
+  const headline = config.profile ? getLocalized(config.profile.headline, locale) : null;
   const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  const siteUrl =
-    rawSiteUrl && rawSiteUrl.length > 0
-      ? rawSiteUrl.replace(/\/$/, "")
-      : "http://localhost:3000";
-  const languages: Record<string, string> = {};
-  for (const lang of VALID_LOCALES) {
-    languages[lang] = `${siteUrl}/${lang}`;
-  }
-  languages["x-default"] = `${siteUrl}/${config.defaultLocale}`;
-
+  const siteUrl = rawSiteUrl ? rawSiteUrl.replace(/\/$/, "") : "http://localhost:3000";
   return {
     metadataBase: new URL(siteUrl),
     title,
-    description,
+    description: headline ? `${title} — ${headline}` : `${title} | CV`,
     alternates: {
       canonical: `${siteUrl}/${locale}`,
-      languages,
+      languages: {
+        es: `${siteUrl}/es`,
+        en: `${siteUrl}/en`,
+        "x-default": `${siteUrl}/${config.defaultLocale}`,
+      },
     },
   };
 }
 
-/**
- * CV page for a given locale. Renders all sections from content following sectionsOrder.
- * Header shows only navSections; content comes from /content (no hardcoded CV text).
- * Layout: full-width sticky header; below it a centered wide container (max 1440px) with 2 columns on lg+
- * (left sticky sidebar, right content). Mobile: single column stacked.
- */
+function renderSection(
+  section: SectionContent,
+  context: { locale: Locale; companies?: ExperienceCompany[]; profile?: Profile },
+) {
+  switch (section.id) {
+    case "about": return <AboutSection section={section} />;
+    case "experience": return <ExperienceSection section={section} companies={context.companies} />;
+    case "core-skills": return <CoreSkillsSection section={section} />;
+    case "key-achievements": return <KeyAchievementsSection section={section} />;
+    case "education": return <EducationSection section={section} />;
+    case "certifications": return <CertificationsSection section={section} />;
+    case "languages": return <LanguagesSection section={section} />;
+    case "contact": return <ContactSection section={section} profile={context.profile} locale={context.locale} />;
+    default: return <Section section={section} />;
+  }
+}
+
 export default async function LocalePage({ params }: PageProps) {
   const { locale: localeParam } = await params;
-  if (!isValidLocale(localeParam)) {
-    notFound();
-  }
+  if (!isValidLocale(localeParam)) notFound();
 
   const config: SiteConfig = loadSiteConfig();
   const sections = loadSectionsForLocale(config, localeParam);
+  const displaySections = [...sections].sort((a, b) => {
+    if (a.id === "experience" && b.id === "key-achievements") return -1;
+    if (a.id === "key-achievements" && b.id === "experience") return 1;
+    return 0;
+  });
   const cvPdfFetchUrl = publicApiUrl(`/api/v1/cv?lang=${localeParam}`);
-  const browserBearer = publicApiBearer();
-  const cvPdfAccessToken = PUBLIC_API_BASE_URL ? browserBearer : undefined;
-
-  const renderCtx: SectionRenderContext = {
-    locale: localeParam,
-    companies: config.experienceCompanies,
-    profile: config.profile,
-  };
-
-  const mainSections = sections.map((section, index) => (
-    <SectionSpacing key={section.id} showDivider={index > 0}>
-      {renderSection(section, renderCtx)}
-    </SectionSpacing>
-  ));
+  const cvPdfAccessToken = PUBLIC_API_BASE_URL ? publicApiBearer() : undefined;
+  const profile = config.profile;
+  const es = localeParam === "es";
 
   return (
-    <>
-      <Header
-        config={config}
-        locale={localeParam}
-        cvPdfFetchUrl={cvPdfFetchUrl}
-        cvPdfAccessToken={cvPdfAccessToken}
-      />
-      <main className="w-full pt-6 pb-8">
-        <div className="max-w-[var(--max-content-width)] mx-auto px-4 md:px-6 w-full">
-          <div className="w-full grid grid-cols-1 lg:grid-cols-[var(--sidebar-width)_minmax(0,1fr)] gap-6 lg:gap-8">
-            {config.profile && (
-              <div className="relative">
-                {/* Spacer: keeps grid flow; fixed card overlays on lg */}
-                <div className="hidden lg:block lg:w-[var(--sidebar-width)] lg:shrink-0" aria-hidden />
-                <div
-                  className={`hidden lg:block lg:fixed lg:left-[var(--sidebar-left)] lg:top-[var(--sidebar-offset)] lg:w-[var(--sidebar-width)] lg:z-10`}
-                >
-                  <ProfileCard
-                    profile={config.profile}
-                    locale={localeParam}
-                    cvPdfFetchUrl={cvPdfFetchUrl}
-                    cvPdfAccessToken={cvPdfAccessToken}
-                  />
-                </div>
-                {/* Mobile: inline card */}
-                <div className="lg:hidden">
-                  <ProfileCard
-                    profile={config.profile}
-                    locale={localeParam}
-                    cvPdfFetchUrl={cvPdfFetchUrl}
-                    cvPdfAccessToken={cvPdfAccessToken}
-                  />
-                </div>
-              </div>
-            )}
-            <div className="min-w-0 w-full">
-              <div className="card w-full p-6 md:p-8">
-                <div className="flex flex-col">{mainSections}</div>
-              </div>
+    <div className="cv-shell">
+      <Header config={config} locale={localeParam} />
+      <main id="inicio" className="cv-main">
+        <div className="cv-content">
+          <div className="cv-topline">
+            <span>{es ? "Perfil profesional" : "Professional profile"} <span aria-hidden="true">/</span> {profile?.fullName}</span>
+            <div className="cv-topline-controls">
+              <ThemeToggle locale={localeParam} />
+              <LocaleToggle currentLocale={localeParam} />
             </div>
           </div>
+          <header className="cv-hero">
+            <span className="cv-eyebrow">{es ? "Ingeniería de software · .NET · Cloud" : "Software engineering · .NET · Cloud"}</span>
+            <h1>Senior Software <span>Engineer.</span></h1>
+            <p className="cv-hero-copy">
+              {es
+                ? "Diseño e implemento aplicaciones escalables e integraciones de producto. Trabajo con .NET, Azure y React, con foco en calidad, observabilidad y seguridad."
+                : "I design and build scalable applications and product integrations. I work with .NET, Azure, and React, focusing on quality, observability, and security."}
+            </p>
+            <div className="cv-hero-actions">
+              <a className="cv-button cv-button-primary" href="#experience">{es ? "Ver experiencia" : "View experience"} <ArrowRight size={16} aria-hidden /></a>
+              <a className="cv-button" href={`mailto:${profile?.email ?? ""}`}>{es ? "Contactar" : "Get in touch"} <ArrowRight size={16} aria-hidden /></a>
+              <CvPdfDownloadButton fetchUrl={cvPdfFetchUrl} locale={localeParam} accessToken={cvPdfAccessToken} variant="header" downloadLabel={es ? "Descargar PDF" : "Download PDF"} />
+            </div>
+            {profile && <p className="cv-hero-note"><MapPin size={16} aria-hidden />{getLocalized(profile.location, localeParam)}</p>}
+          </header>
+          <div className="cv-sections">
+            {displaySections.map((section) => (
+              <div className="cv-section-wrap" data-section={section.id} key={section.id}>
+                {renderSection(section, { locale: localeParam, companies: config.experienceCompanies, profile })}
+              </div>
+            ))}
+          </div>
+          <footer className="cv-footer"><span>{profile?.fullName} · Senior Software Engineer</span><span>{es ? "CV · Español" : "CV · English"}</span></footer>
         </div>
       </main>
-    </>
+    </div>
   );
 }
 

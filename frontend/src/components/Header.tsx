@@ -1,83 +1,58 @@
-import { ThemeToggle } from "@/components/ThemeToggle";
-import { CvPdfDownloadButton } from "@/components/CvPdfDownloadButton";
-import { LocaleToggle } from "@/components/LocaleToggle";
+import { Mail, MapPin } from "lucide-react";
 import { NavLinks } from "@/components/NavLinks";
-import { HeaderInteractiveChrome } from "@/components/HeaderInteractiveChrome";
 import type { SiteConfig, Locale } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
-
-/** Tailwind class for sidebar sticky top offset (uses CSS var from globals.css). */
-export const SIDEBAR_STICKY_TOP = "top-[var(--sidebar-offset)]";
 
 type Props = {
   config: SiteConfig;
   locale: Locale;
-  cvPdfFetchUrl: string;
-  cvPdfAccessToken?: string;
 };
 
-/**
- * Sticky header per docs/product/header-design.md:
- * - Left: name + headline
- * - Right: nav (scroll-spy) + Download PDF + locale + theme
- */
-/** Short nav labels (section H2 may still use full title from site.json). */
-function navLinkTitle(
-  sectionId: string,
-  locale: Locale,
-  fallback: string | undefined
-): string {
-  if (sectionId === "core-skills") {
-    return locale === "es" ? "Habilidades" : "Skills";
-  }
+function navLinkTitle(sectionId: string, locale: Locale, fallback?: string) {
+  if (sectionId === "core-skills") return locale === "es" ? "Habilidades" : "Skills";
   return fallback ?? sectionId;
 }
 
-export function Header({ config, locale, cvPdfFetchUrl, cvPdfAccessToken }: Props) {
-  const navItems = config.navSections
-    .map((id) => {
-      const section = config.requiredSections?.find((s) => s.id === id);
-      const title = navLinkTitle(id, locale, section?.title?.[locale]);
-      return { id, title };
-    })
-    .filter((item) => item.title);
-
-  const headline = config.profile
-    ? getLocalized(config.profile.headline, locale)
-    : null;
-  const downloadLabel = locale === "es" ? "Descargar PDF" : "Download PDF";
+export function Header({ config, locale }: Props) {
+  const profile = config.profile;
+  const es = locale === "es";
+  const navItems = [
+    { id: "inicio", title: es ? "Inicio" : "Home" },
+    ...config.navSections.map((id) => {
+      const section = config.requiredSections.find((item) => item.id === id);
+      return { id, title: navLinkTitle(id, locale, section?.title?.[locale]) };
+    }),
+  ];
 
   return (
-    <HeaderInteractiveChrome className="header sticky top-0 z-50 w-full bg-surface card-header">
-      <div className="max-w-[var(--max-content-width)] mx-auto h-[var(--header-height-mobile)] md:h-[var(--header-height-desktop)] px-4 md:px-6 flex items-center gap-6">
-        {/* Left — pl-[7px] aligns with profile card content on mobile and desktop */}
-        <div className="min-w-0 flex flex-col justify-center leading-tight pl-[7px]">
-          <span className="text-xl font-bold dark:font-semibold text-foreground truncate">
-            {config.profile?.fullName ?? config.projectName}
-          </span>
-          {headline ? (
-            <span className="text-sm text-muted truncate">{headline}</span>
-          ) : null}
-        </div>
-
-        {/* Right: nav + actions */}
-        <div className="ml-auto flex items-center gap-4 min-w-0">
-          <NavLinks navItems={navItems} />
-
-          <div className="flex items-center gap-2 shrink-0">
-            <CvPdfDownloadButton
-              fetchUrl={cvPdfFetchUrl}
-              locale={locale}
-              accessToken={cvPdfAccessToken}
-              variant="header"
-              downloadLabel={downloadLabel}
-            />
-
-            <LocaleToggle currentLocale={locale} />
-            <ThemeToggle />
+    <>
+      <aside className="cv-sidebar" aria-label={es ? "Navegación del CV" : "CV navigation"}>
+        <a className="cv-identity" href="#inicio" aria-label={es ? "Ir al inicio" : "Go to top"}>
+          <span className="cv-monogram" aria-hidden="true">CG</span>
+          <span><strong>{profile?.fullName ?? config.projectName}</strong><small>Senior Software Engineer</small></span>
+        </a>
+        <div className="cv-rail-rule" />
+        <p className="cv-rail-label">{es ? "Explorar perfil" : "Explore profile"}</p>
+        <NavLinks navItems={navItems} />
+        <div className="cv-rail-bottom">
+          <div className="cv-rail-rule" />
+          <p className="cv-rail-label">{es ? "Contacto directo" : "Direct contact"}</p>
+          {profile && (
+            <div className="cv-rail-contact">
+              <a href={`mailto:${profile.email}`}><Mail size={15} aria-hidden /> <span>{profile.email}</span></a>
+              <a href="#contact"><MapPin size={15} aria-hidden /> <span>{getLocalized(profile.location, locale)}</span></a>
+            </div>
+          )}
+          <div className="cv-rail-socials">
+            {profile?.links.map((link) => <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer">{link.label} ↗</a>)}
           </div>
+          <span className="cv-rail-footer">{es ? "CV · Español" : "CV · English"}</span>
         </div>
+      </aside>
+      <div className="cv-mobile-bar">
+        <a href="#inicio" className="cv-mobile-brand"><span className="cv-monogram" aria-hidden="true">CG</span><strong>{profile?.fullName ?? config.projectName}</strong></a>
+        <div className="cv-mobile-actions"><a href="#experience">{es ? "Experiencia" : "Experience"} ↓</a></div>
       </div>
-    </HeaderInteractiveChrome>
+    </>
   );
 }

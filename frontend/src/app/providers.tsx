@@ -10,8 +10,8 @@ export function Providers({ children }: Props) {
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="system"
-      enableSystem
+      defaultTheme="dark"
+      enableSystem={false}
       storageKey="cv.theme"
     >
       {children}

@@ -7,6 +7,7 @@ const workspaceRoot = path.join(currentDir, "..");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  devIndicators: false,
   output: "standalone",
   outputFileTracingRoot: workspaceRoot,
   images: {

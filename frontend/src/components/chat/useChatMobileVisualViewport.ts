@@ -4,8 +4,8 @@ import { useLayoutEffect, useState } from "react";
 
 /** Tailwind `sm` is 640px — panel uses full-screen layout below this width. */
 const MAX_MOBILE_PANEL_PX = 639;
-/** Matches `inset-3` (0.75rem) on the chat panel. */
-const EDGE_PX = 12;
+/** The drawer fills the visual viewport, including when the keyboard opens. */
+const EDGE_PX = 0;
 /** Minimum height so header + a bit of scroll + input stay usable. */
 const MIN_PANEL_HEIGHT_PX = 200;
 

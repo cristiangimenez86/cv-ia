@@ -2,9 +2,8 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { usePathname } from "next/navigation";
-import { MessageCircle, X } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { ChatPanel } from "./ChatPanel";
-import { ChatNudge } from "./ChatNudge";
 import { CV_IA_CLOSE_CHAT_EVENT } from "./chatCloseEvents";
 import type { ChatMessage } from "./types";
 
@@ -16,18 +15,14 @@ const FAB_ARIA: Record<string, { open: string; close: string }> = {
 };
 
 /**
- * Global chat widget: FAB (bottom-right) that toggles a chat panel.
- * Render once in the root layout. Does not interfere with sticky header or grid.
+ * Global chat trigger that opens the chat drawer on request.
+ * Render once in the root layout.
  * Reads locale reactively from the URL so UI strings update on locale toggle.
  *
- * Features:
- * - "AI" badge on the FAB for discoverability.
- * - One-time nudge bubble after 4 s (session-scoped, desktop only).
- * - Click outside closes panel; messages persist when reopened.
+ * Click outside closes the drawer; messages persist when reopened.
  */
 export function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const [nudgeDismissed, setNudgeDismissed] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const pathname = usePathname();
 
@@ -38,7 +33,6 @@ export function ChatWidget() {
 
   const toggle = useCallback(() => {
     setIsOpen((prev) => !prev);
-    setNudgeDismissed(true);
   }, []);
 
   const close = useCallback(() => setIsOpen(false), []);
@@ -55,18 +49,13 @@ export function ChatWidget() {
     return () => window.removeEventListener(CV_IA_CLOSE_CHAT_EVENT, handler);
   }, [isOpen]);
 
-  const openFromNudge = useCallback(() => {
-    setIsOpen(true);
-    setNudgeDismissed(true);
-  }, []);
-
   return (
     <>
       {isOpen && (
         <>
-          {/* Backdrop: light dim + subtle blur (strong blur + heavy scrim strains the eyes; see prefers-reduced-motion) */}
+          {/* The backdrop fades in with the drawer and keeps outside clicks dismissible. */}
           <div
-            className="fixed inset-0 z-40 bg-background/65 backdrop-blur-sm motion-reduce:backdrop-blur-none transition-opacity"
+            className="cv-chat-backdrop fixed inset-0 z-40"
             onClick={close}
             aria-hidden
           />
@@ -79,40 +68,18 @@ export function ChatWidget() {
         </>
       )}
 
-      {/* Nudge bubble — once per session, desktop only, hidden when chat open */}
-      {!isOpen && !nudgeDismissed && (
-        <ChatNudge onOpenChat={openFromNudge} locale={locale} />
-      )}
-
-      {/* FAB — fixed bottom-right; hidden on mobile when chat open to avoid overlapping send button.
-          Uses env(safe-area-inset-*) so the button stays clear of notches / rounded corners on
-          devices that report them, with a 1rem fallback otherwise. */}
-      <div
-        className={`fixed z-50 ${isOpen ? "sm:block hidden" : ""}`}
-        style={{
-          right: "max(1rem, env(safe-area-inset-right))",
-          bottom: "max(1rem, env(safe-area-inset-bottom))",
-        }}
-      >
+      {!isOpen && (
         <button
           onClick={toggle}
-          aria-label={isOpen ? fabAria.close : fabAria.open}
-          className="profile-card-btn profile-card-btn-primary relative inline-flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg"
+          aria-label={fabAria.open}
+          aria-expanded={false}
+          aria-controls="cv-chat-panel"
+          className="cv-chat-trigger"
         >
-          {isOpen ? (
-            <X className="h-5 w-5" />
-          ) : (
-            <MessageCircle className="h-5 w-5" />
-          )}
-
-          {/* "AI" badge — top-right corner of the FAB */}
-          {!isOpen && (
-            <span className="chat-badge-pulse absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-surface text-[10px] font-bold text-primary border border-border shadow-sm px-1">
-              AI
-            </span>
-          )}
+          <span className="spark"><Sparkles size={17} aria-hidden /></span>
+          {locale === "es" ? "Preguntá sobre mi perfil" : "Ask about my profile"}
         </button>
-      </div>
+      )}
     </>
   );
 }

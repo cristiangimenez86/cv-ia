@@ -1,6 +1,6 @@
 "use client";
 
-import type { KeyboardEvent, RefObject } from "react";
+import { useLayoutEffect, useRef, type KeyboardEvent, type RefObject } from "react";
 import { Send } from "lucide-react";
 
 type ChatInputProps = {
@@ -24,6 +24,17 @@ export function ChatInput({
   placeholder,
   inputRef,
 }: ChatInputProps) {
+  const fallbackRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = inputRef ?? fallbackRef;
+
+  useLayoutEffect(() => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+    textarea.style.height = "auto";
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 216)}px`;
+    textarea.style.overflowY = textarea.scrollHeight > 216 ? "auto" : "hidden";
+  }, [value, textareaRef]);
+
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
@@ -34,14 +45,14 @@ export function ChatInput({
   return (
     <div className="flex items-end gap-2 px-3 py-3 border-t border-border">
       <textarea
-        ref={inputRef}
+        ref={textareaRef}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={disabled}
-        rows={1}
-        className="flex-1 resize-none rounded-lg border border-border bg-surface-2 px-3 py-2 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-ring/40 disabled:opacity-50"
+        rows={4}
+        className="cv-chat-textarea flex-1 resize-none rounded-lg border border-border bg-surface-2 px-3 py-2.5 text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-ring/40 disabled:opacity-50"
       />
       <button
         onClick={onSend}

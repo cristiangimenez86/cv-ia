@@ -1,122 +1,54 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Home } from "lucide-react";
+import { SECTION_ICONS } from "@/components/sectionIcons";
 
 type NavItem = { id: string; title: string };
 
-type NavLinksProps = {
-  navItems: NavItem[];
-};
-
-/**
- * Nav with scroll-spy.
- *
- * Two signals decide the active link:
- *  1. **IntersectionObserver** — tracks which sections cross an "activation
- *     line" near the top of the viewport (`rootMargin: "-120px 0px -55% 0px"`).
- *     This avoids per-pixel scroll work and is far cheaper than a scroll
- *     listener.
- *  2. **`hashchange` / link clicks** — give the targeted hash priority for a
- *     short window so the chosen link feels "sticky" while smooth-scrolling.
- */
-export function NavLinks({ navItems }: NavLinksProps) {
-  const [activeId, setActiveId] = useState<string | null>(null);
-  const hashPriorityUntil = useRef(0);
-  /** Last known intersection ratio per section, used to pick the most-visible one. */
-  const visibleSections = useRef(new Map<string, number>());
+export function NavLinks({ navItems }: { navItems: NavItem[] }) {
+  const [activeId, setActiveId] = useState(navItems[0]?.id ?? "inicio");
 
   useEffect(() => {
-    const elements = navItems
-      .map((item) => document.getElementById(item.id))
-      .filter((el): el is HTMLElement => el !== null);
-    if (elements.length === 0) return;
-
-    function pickActive(): string | null {
-      let bestId: string | null = null;
-      let bestRatio = 0;
-      for (const [id, ratio] of visibleSections.current) {
-        if (ratio > bestRatio) {
-          bestRatio = ratio;
-          bestId = id;
-        }
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      let next = navItems[0]?.id ?? "inicio";
+      for (const item of navItems) {
+        const element = document.getElementById(item.id);
+        if (element && element.getBoundingClientRect().top <= 180) next = item.id;
       }
-      return bestId;
-    }
-
-    function applyActive() {
-      const hash = window.location.hash.slice(1);
-      if (
-        hash &&
-        navItems.some((i) => i.id === hash) &&
-        Date.now() < hashPriorityUntil.current
-      ) {
-        setActiveId(hash);
-        return;
-      }
-      const next = pickActive();
-      if (next) setActiveId(next);
-    }
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const id = entry.target.id;
-          if (entry.isIntersecting) {
-            visibleSections.current.set(id, entry.intersectionRatio);
-          } else {
-            visibleSections.current.delete(id);
-          }
-        }
-        applyActive();
-      },
-      {
-        /* Activation line ~120px from top, with the bottom 55% of the viewport
-         * ignored so a section is "active" once its top has scrolled into the
-         * upper portion of the screen. */
-        rootMargin: "-120px 0px -55% 0px",
-        threshold: [0, 0.1, 0.25, 0.5, 0.75, 1],
-      },
-    );
-
-    for (const el of elements) observer.observe(el);
-
-    function onHashChange() {
-      hashPriorityUntil.current = Date.now() + 400;
-      applyActive();
-    }
-
-    window.addEventListener("hashchange", onHashChange);
-    applyActive();
-
+      setActiveId(next);
+    };
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    window.addEventListener("hashchange", schedule);
     return () => {
-      observer.disconnect();
-      window.removeEventListener("hashchange", onHashChange);
-      visibleSections.current.clear();
+      if (frame) cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      window.removeEventListener("hashchange", schedule);
     };
   }, [navItems]);
 
   return (
-    <nav
-      className="hidden md:flex items-center gap-6 whitespace-nowrap"
-      aria-label="CV sections"
-    >
+    <nav className="cv-nav" aria-label="CV sections">
       {navItems.map((item) => {
-        const isActive = activeId === item.id;
+        const Icon = item.id === "inicio" ? Home : SECTION_ICONS[item.id];
         return (
           <Link
             key={item.id}
             href={`#${item.id}`}
-            onClick={() => {
-              setActiveId(item.id);
-              hashPriorityUntil.current = Date.now() + 600;
-            }}
-            className={`nav-link text-sm font-semibold whitespace-nowrap transition-colors ${
-              isActive
-                ? "text-primary nav-link-active"
-                : "text-foreground hover:text-primary"
-            }`}
+            onClick={() => setActiveId(item.id)}
+            aria-current={activeId === item.id ? "location" : undefined}
+            className={`cv-nav-link ${activeId === item.id ? "is-active" : ""}`}
           >
+            {Icon && <Icon size={18} strokeWidth={1.6} aria-hidden />}
             {item.title}
           </Link>
         );
