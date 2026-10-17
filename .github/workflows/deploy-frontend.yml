@@ -6,6 +6,11 @@ on:
     types: [completed]
     branches: ["main"]
 
+concurrency:
+  group: portainer-stack-deploy
+  queue: max
+  cancel-in-progress: false
+
 jobs:
   deploy:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
@@ -100,11 +105,38 @@ jobs:
               fi
 
               LAST_HTTP_CODE="${status}"
+              LAST_AUTH_SCHEME="${scheme}"
               echo "Auth scheme '${scheme}' returned HTTP ${status}."
+              if [ "${status}" != "401" ] && [ "${status}" != "403" ]; then
+                return 1
+              fi
             done
 
             echo "All Portainer authentication schemes failed for ${method} ${url}."
             return 1
+          }
+
+          redeploy_with_retry() {
+            local method="$1"
+            local url="$2"
+            local output_file="$3"
+            local data="${4:-}"
+            local attempt
+
+            for attempt in {1..20}; do
+              if request_with_auth "${method}" "${url}" "${output_file}" "${data}"; then
+                return 0
+              fi
+
+              if [ "${LAST_HTTP_CODE}" != "409" ] ||
+                ! grep -q 'Stack deployment is already in progress' "${output_file}" ||
+                [ "${attempt}" -eq 20 ]; then
+                return 1
+              fi
+
+              echo "Stack deployment is in progress; retrying in 15 seconds (${attempt}/20)."
+              sleep 15
+            done
           }
 
           echo "Fetching Portainer stack metadata for stack ${STACK_ID}..."
@@ -125,7 +157,7 @@ jobs:
 
           if [ "${HAS_GIT_CONFIG}" = "true" ]; then
             echo "Detected Git-managed stack metadata. Trying git redeploy endpoint."
-            if request_with_auth "POST" "${BASE_URL}/api/stacks/${STACK_ID}/git/redeploy?endpointId=${ENDPOINT_ID}" "${RECREATE_OUTPUT_FILE}"; then
+            if redeploy_with_retry "POST" "${BASE_URL}/api/stacks/${STACK_ID}/git/redeploy?endpointId=${ENDPOINT_ID}" "${RECREATE_OUTPUT_FILE}"; then
               DEPLOY_SUCCESS="true"
               echo "Git redeploy succeeded (${LAST_HTTP_CODE}) using auth '${LAST_AUTH_SCHEME}'."
             else
@@ -147,7 +179,7 @@ jobs:
                   --argjson env "${STACK_ENV_JSON}" \
                   '{StackFileContent: $stackFileContent, Env: $env, Prune: true, PullImage: true}')"
 
-                if request_with_auth "PUT" "${BASE_URL}/api/stacks/${STACK_ID}?endpointId=${ENDPOINT_ID}" "${RECREATE_OUTPUT_FILE}" "${UPDATE_PAYLOAD}"; then
+                if redeploy_with_retry "PUT" "${BASE_URL}/api/stacks/${STACK_ID}?endpointId=${ENDPOINT_ID}" "${RECREATE_OUTPUT_FILE}" "${UPDATE_PAYLOAD}"; then
                   DEPLOY_SUCCESS="true"
                   echo "Stack update succeeded (${LAST_HTTP_CODE}) using auth '${LAST_AUTH_SCHEME}'."
                 else
