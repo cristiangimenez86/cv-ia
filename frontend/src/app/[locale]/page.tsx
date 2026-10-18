@@ -106,8 +106,8 @@ export default async function LocalePage({ params }: PageProps) {
             <h1>Senior Software <span>Engineer.</span></h1>
             <p className="cv-hero-copy">
               {es
-                ? "Diseño e implemento aplicaciones escalables e integraciones de producto. Trabajo con .NET, Azure y React, con foco en calidad, observabilidad y seguridad."
-                : "I design and build scalable applications and product integrations. I work with .NET, Azure, and React, focusing on quality, observability, and security."}
+                ? "Diseño e implemento aplicaciones escalables con .NET, Azure y React. En PayRetailers desarrollo con IA a partir de requisitos y diseño documentados, revisando el código en cada etapa."
+                : "I design and build scalable applications with .NET, Azure, and React. At PayRetailers, I develop with AI from documented requirements and designs, reviewing the code at every stage."}
             </p>
             <div className="cv-hero-actions">
               <a className="cv-button" href="#experience">{es ? "Ver experiencia" : "View experience"} <ArrowRight size={16} aria-hidden /></a>

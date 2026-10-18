@@ -15,4 +15,4 @@
 - Azure DevOps, Bitbucket Pipelines, GitHub Actions, Docker, Kubernetes, Terraform, OpenTelemetry, Grafana, Elastic Search
 
 ## Engineering Practices
-- DDD, TDD, CQRS, Event-Driven Architecture, Agile, Scrum, Kanban, Spec-Driven Development, Claude Code, Cursor
+- AI SDLC with OpenSpec, spec-driven development, review of AI-generated code, DDD, TDD, CQRS, Event-Driven Architecture, Agile, Scrum, Kanban, Claude Code, Cursor

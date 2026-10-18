@@ -17,9 +17,9 @@ type ChatPanelStrings = {
 
 const STRINGS: Record<Locale, ChatPanelStrings> = {
   es: {
-    greeting: "¡Hola! ¿Querés conocer mejor mi trabajo? Preguntame sobre mi experiencia, mis proyectos o las tecnologías que uso. Podés empezar con una de estas preguntas:",
+    greeting: "¡Hola! ¿Querés conocer mejor mi trabajo? Preguntame sobre mi experiencia, mis proyectos o cómo desarrollo con IA. Podés empezar con una de estas preguntas:",
     chips: [
-      { label: "¿Cuál es tu experiencia?", value: "¿Cuál es tu experiencia?" },
+      { label: "¿Cómo desarrollás con IA?", value: "¿Cómo desarrollás con IA?" },
       { label: "¿En qué proyectos trabajaste?", value: "¿En qué proyectos trabajaste?" },
     ],
     placeholder: "Escribí tu pregunta…",
@@ -27,9 +27,9 @@ const STRINGS: Record<Locale, ChatPanelStrings> = {
     closeAria: "Cerrar chat",
   },
   en: {
-    greeting: "Hi! Want to learn more about my work? Ask me about my experience, projects, or the technologies I use. You can start with one of these questions:",
+    greeting: "Hi! Want to learn more about my work? Ask me about my experience, projects, or how I develop with AI. You can start with one of these questions:",
     chips: [
-      { label: "What's your experience?", value: "What's your experience?" },
+      { label: "How do you develop with AI?", value: "How do you develop with AI?" },
       { label: "Which projects have you worked on?", value: "Which projects have you worked on?" },
     ],
     placeholder: "Type your question…",

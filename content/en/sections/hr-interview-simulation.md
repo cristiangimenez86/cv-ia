@@ -357,21 +357,22 @@ Each block follows this structure:
   - `How do you use AI day to day?`
   - `What role does AI play in your work?`
   - `What do you use tools like Cursor for?`
+  - `How does the AI SDLC you use at PayRetailers work?`
 - answer_base: |
-    I use it as a tool to work better, not as a replacement for technical judgment.
+    At PayRetailers, I develop with an internal AI SDLC framework based on OpenSpec. Before generating code, we validate functional requirements with Product and Finance, review technical design with Development and architecture, and coordinate deployment with Infrastructure.
 
-    It helps me explore options, organize ideas, prepare documentation, review approaches, identify blind spots, and speed up repetitive tasks. But I always validate things on my side.
+    The documentation guides an AI-assisted implementation divided into stages. I review code at every stage, test in DEV, and fix issues; QA runs AI-generated automated tests based on the requirements. Production deployment follows that validation.
 
-    For me, the difference is not in simply “using AI,” but in knowing how to give it proper context, how to review what it returns, and how to use it within a serious engineering process.
+    AI speeds up the work, while technical decisions, review, and validation remain with people.
 - answer_short: |
-    I use it to work better and faster, but always with my own technical judgment in the loop.
+    I use an internal OpenSpec-based AI SDLC: we document requirements and design, AI implements in stages, and I review and test the result before deployment.
 - answer_variants:
   - `I don’t see it as a replacement, but as an accelerator.`
   - `It helps a lot with analysis, documentation, specs, and exploring solutions.`
   - `The value is not in asking for code, but in giving good context and reviewing what comes back properly.`
 - follow_up_allowed: false
 - follow_up_examples: []
-- tags: [`ai`,`prompt_engineering`,`cursor`,`automation`,`documentation`,`specs`]
+- tags: [`ai`,`ai_sdlc`,`openspec`,`prompt_engineering`,`cursor`,`automation`,`documentation`,`specs`]
 - notes: `Do not imply total automation or human replacement.`
 
 ---

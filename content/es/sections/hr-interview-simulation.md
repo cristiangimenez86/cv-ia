@@ -357,21 +357,22 @@ Cada bloque sigue esta estructura:
   - `¿Cómo usás IA en el día a día?`
   - `¿Qué rol tiene la IA en tu trabajo?`
   - `¿Para qué usás herramientas como Cursor?`
+  - `¿Cómo funciona el AI SDLC que usás en PayRetailers?`
 - answer_base: |
-    La uso como una herramienta para laburar mejor, no como reemplazo del criterio técnico.
+    En PayRetailers desarrollo con un framework interno de AI SDLC basado en OpenSpec. Antes de generar código, validamos los requisitos funcionales con Producto y Finanzas, revisamos el diseño técnico con Desarrollo y arquitectura y coordinamos el despliegue con Infraestructura.
 
-    Me sirve para explorar opciones, ordenar ideas, preparar documentación, revisar enfoques, detectar puntos ciegos y acelerar tareas repetitivas. Pero siempre con validación de mi lado.
+    La documentación guía una implementación con IA dividida en etapas. Reviso el código en cada etapa, pruebo en DEV y corrijo problemas; QA ejecuta pruebas automatizadas generadas con IA a partir de los requisitos. Después se prepara el despliegue a producción.
 
-    Para mí la diferencia no está en “usar IA”, sino en saber darle buen contexto, saber revisar lo que devuelve y usarla dentro de un proceso serio.
+    La IA acelera el trabajo, pero las decisiones técnicas, la revisión y la validación siguen a cargo de las personas.
 - answer_short: |
-    La uso para trabajar mejor y más rápido, pero siempre con criterio técnico de mi lado.
+    Trabajo con un AI SDLC interno basado en OpenSpec: documentamos requisitos y diseño, la IA implementa por etapas y reviso y pruebo el resultado antes del despliegue.
 - answer_variants:
   - `No la veo como reemplazo, sino como acelerador.`
   - `Me sirve mucho para análisis, documentación, specs y exploración de soluciones.`
   - `El valor no está en pedirle código, sino en saber darle contexto y revisar bien lo que devuelve.`
 - follow_up_allowed: false
 - follow_up_examples: []
-- tags: [`ia`,`prompt_engineering`,`cursor`,`automatizacion`,`documentacion`,`specs`]
+- tags: [`ia`,`ai_sdlc`,`openspec`,`prompt_engineering`,`cursor`,`automatizacion`,`documentacion`,`specs`]
 - notes: `No prometer automatización total ni reemplazo humano.`
 
 ---

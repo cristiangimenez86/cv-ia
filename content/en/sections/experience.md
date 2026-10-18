@@ -5,11 +5,13 @@
 
 **Context:** Payment processing platform with business-critical integrations.
 
-**Responsibility:** Contributed to the development and maintenance of payment processing integrations and AI-enabled features, focusing on reliability, scalability, and secure transaction flows.
+**Responsibility:** I develop payment processing integrations and AI-enabled features. Within PayRetailers' internal OpenSpec-based AI SDLC, I take part in validating functional requirements with Product and Finance, reviewing technical design with Development and architecture, and preparing deployment with Infrastructure.
 
 **Achievements:**
 - Successfully migrated multiple services from Azure Functions to Service Bus–based worker architecture, enabling Kubernetes-native deployments.
-- Applied an SDD framework with OpenSpec to define and execute product changes with stronger traceability from proposal and design to implementation.
+- Applied the internal OpenSpec-based AI SDLC to document requirements and design before implementing with AI in stages, reviewing the generated code at each stage.
+- Delivered a payment integration end to end as the sole developer within this process.
+- Took part in provisioning infrastructure with Terraform and deploying to DEV and STG; I tested the solution in DEV and fixed issues. The QA team ran AI-generated automated tests based on the initial documents before production deployment.
 
 **Technologies:** .NET 8, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
 
