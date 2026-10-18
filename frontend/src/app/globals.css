@@ -116,7 +116,7 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 .cv-topline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; padding-bottom: 21px; border-bottom: 1px solid var(--line); color: var(--muted-hex); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
 .cv-topline-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex: 0 1 auto; max-width: 100%; }
 .cv-theme-switch, .cv-locale-switch { display: flex; align-items: center; gap: 3px; flex: 0 0 auto; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-hex); letter-spacing: 0; text-transform: none; }
-.cv-theme-switch button, .cv-locale-switch a { display: grid; place-items: center; min-width: 69px; padding: 7px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--muted-hex); font-size: 11px; font-weight: 620; text-decoration: none; }
+.cv-theme-switch button, .cv-locale-switch a { display: grid; place-items: center; min-width: 69px; min-height: 32px; padding: 7px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--muted-hex); font-size: 12px; font-weight: 620; text-decoration: none; }
 .cv-theme-switch button:hover, .cv-theme-switch button.is-active, .cv-locale-switch a:hover, .cv-locale-switch a.is-active { background: var(--surface-raised); color: var(--text-hex); }
 
 .cv-hero { padding: 73px 0 74px; }
@@ -132,6 +132,24 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 .cv-hero-note { display: flex; align-items: center; gap: 9px; margin-top: 30px; color: var(--subtle-hex); font-size: 12px; }
 .cv-hero-note svg { color: var(--accent-hex); }
 
+.cv-hero-layout { display: grid; grid-template-columns: minmax(0, 1fr) 250px; align-items: center; gap: 36px; }
+.cv-hero-intro { min-width: 0; }
+.cv-portrait-card { padding: 9px; border: 1px solid var(--line); border-radius: 16px; background: transparent; box-shadow: none; }
+.cv-portrait-image { position: relative; height: 229px; overflow: hidden; border-radius: 9px; background: var(--surface-raised); }
+.cv-portrait-image > img { object-fit: cover; object-position: center 44%; }
+.cv-portrait-caption { display: grid; gap: 7px; padding: 17px 8px; }
+.cv-portrait-caption strong { font-size: 15px; font-weight: 550; letter-spacing: -.03em; }
+.cv-portrait-caption > span { display: flex; align-items: center; gap: 6px; color: var(--subtle-hex); font-size: 10px; }
+.cv-portrait-detail { display: flex; align-items: center; gap: 7px; padding: 12px 8px 5px; border-top: 1px solid var(--line-soft); color: var(--subtle-hex); font-size: 9px; }
+.cv-portrait-detail strong { color: var(--muted-hex); font-weight: 500; }
+.cv-status-dot { display: inline-block; width: 5px; height: 5px; flex: 0 0 5px; border-radius: 50%; background: var(--accent-hex); }
+.cv-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding: 25px 0; border-top: 1px solid var(--line); }
+.cv-metric { display: flex; flex-direction: column-reverse; justify-content: end; gap: 8px; padding: 1px 24px; border-right: 1px solid var(--line-soft); }
+.cv-metric:first-child { padding-left: 0; }
+.cv-metric:last-child { padding-right: 0; border-right: 0; }
+.cv-metric dt { color: var(--subtle-hex); font-size: 12px; line-height: 1.5; }
+.cv-metric dd { margin: 0; color: var(--text-hex); font-size: 31px; font-weight: 500; letter-spacing: -.06em; line-height: 1.1; }
+
 .cv-section-wrap { padding: 43px 0 61px; border-top: 1px solid var(--line); }
 .cv-section-wrap[data-section="experience"] { padding-bottom: 0; }
 .cv-section-wrap[data-section="experience"] + .cv-section-wrap { border-top: 0; }
@@ -142,8 +160,9 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 .cv-about-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(220px, .65fr); gap: 36px; }
 .cv-about-copy p, .cv-achievement-copy, .cv-job-description, .cv-job-achievements { color: var(--muted-hex); font-size: 15px; line-height: 1.77; }
 .cv-about-copy p { max-width: 700px; margin: 0 0 17px; }
-.cv-focus { align-self: start; padding: 22px 23px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-hex); transition: border-color .18s, background .18s; }
-.cv-focus:hover { border-color: var(--accent-hex); background: var(--surface-raised); }
+.cv-focus { align-self: start; padding: 22px 23px; border: 1px solid var(--line); border-radius: 12px; background: transparent; transition: border-color .18s; }
+.cv-focus:hover { border-color: var(--accent-hex); }
+.light .cv-portrait-card, .light .cv-focus { background: var(--surface-hex); }
 .cv-focus .cv-eyebrow { display: block; margin-bottom: 17px; color: var(--subtle-hex); }
 .cv-focus ul { display: grid; gap: 13px; margin: 0; padding: 0; list-style: none; }
 .cv-focus li { display: flex; align-items: center; gap: 10px; color: var(--text-hex); font-size: 13px; }
@@ -151,6 +170,8 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 .cv-skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 13px; }
 .cv-skill { min-height: 163px; padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-hex); transition: border-color .18s, background .18s; }
 .cv-skill:hover { border-color: var(--accent-hex); background: var(--surface-raised); }
+.cv-skill-top { display: flex; align-items: center; justify-content: space-between; }
+.cv-skill-icon { display: grid; place-items: center; width: 37px; height: 37px; border: 1px solid var(--line); border-radius: 9px; background: color-mix(in srgb, var(--accent-hex) 9%, var(--surface-hex)); color: var(--accent-hex); }
 .cv-skill-number { color: var(--accent-hex); font-size: 11px; font-weight: 700; letter-spacing: .08em; }
 .cv-skill h3 { margin: 16px 0 9px; font-size: 15px; font-weight: 650; letter-spacing: -.02em; }
 .cv-skill p { margin: 0; color: var(--muted-hex); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
@@ -201,6 +222,10 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
 @keyframes cv-chat-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes cv-chat-panel-in { from { opacity: .78; transform: translateX(48px); } to { opacity: 1; transform: translateX(0); } }
 
+@media (max-width: 1200px) {
+  .cv-hero-layout { grid-template-columns: minmax(0, 1fr) 210px; gap: 28px; }
+  .cv-portrait-image { height: 190px; }
+}
 @media (max-width: 1080px) {
   .cv-shell { grid-template-columns: 230px minmax(0, 1fr); }
   .cv-sidebar { padding-inline: 16px; }
@@ -222,6 +247,14 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
   .cv-topline { flex-wrap: wrap; padding-top: 21px; }
   .cv-section-wrap section { scroll-margin-top: 84px; }
 }
+@media (max-width: 960px) {
+  .cv-hero-layout { grid-template-columns: 1fr; gap: 30px; }
+  .cv-portrait-card { display: grid; grid-template-columns: 76px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 15px; width: min(100%, 350px); padding: 8px; border-radius: 11px; }
+  .cv-portrait-image { grid-row: 1 / 3; width: 76px; height: 84px; border-radius: 6px; }
+  .cv-portrait-caption { align-content: center; gap: 5px; padding: 5px 0; }
+  .cv-portrait-caption strong { font-size: 14px; }
+  .cv-portrait-detail { gap: 6px; padding: 8px 0 3px; }
+}
 @media (max-width: 760px) {
   .cv-chat-panel { width: min(100%, 430px); }
   .cv-chat-resize-handle { display: none; }
@@ -232,6 +265,10 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
   .cv-chat-trigger { right: 18px; bottom: 18px; }
 }
 @media (max-width: 530px) {
+  .cv-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 23px; padding: 24px 0; }
+  .cv-metric { padding-inline: 20px; }
+  .cv-metric:nth-child(2n) { border-right: 0; }
+  .cv-metric:nth-child(odd) { padding-left: 0; }
   .cv-mobile-bar { padding-inline: 12px; }
   .cv-mobile-brand strong { max-width: 118px; font-size: 13px; }
   .cv-mobile-controls { gap: 4px; }
@@ -306,6 +343,13 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
 
   body { min-width: 0; background: var(--page) !important; color: var(--text-hex) !important; font-size: 10pt; }
   .cv-sidebar, .cv-mobile-bar, .cv-topline-controls, .cv-hero-actions, .cv-chat-trigger, .cv-chat-panel, .cv-chat-backdrop, .backend-health-indicator { display: none !important; }
+  .cv-portrait-card { display: none; }
+  .cv-hero-layout { display: block; }
+  .cv-metrics { padding-block: 12px; }
+  .cv-metric dd { font-size: 18pt; }
+  .cv-metric dt { font-size: 7pt; }
+  .cv-skill-icon { width: 24px; height: 24px; border-radius: 5px; }
+  .cv-skill-icon svg { width: 14px; height: 14px; }
   .cv-shell { display: block; min-height: 0; }
   .cv-main, .cv-content { width: 100%; max-width: none; margin: 0; padding: 0; }
   .cv-topline { min-height: 0; padding: 0 0 8px; margin-bottom: 18px; border-bottom: 1px solid var(--line); color: var(--subtle-hex); font-size: 8pt; }

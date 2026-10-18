@@ -1,4 +1,4 @@
-import { Mail, MapPin, MessageCircle } from "lucide-react";
+import { Code2, Mail, MapPin, MessageCircle } from "lucide-react";
 import { NavLinks } from "@/components/NavLinks";
 import type { SiteConfig, Locale } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
@@ -31,7 +31,7 @@ export function Header({ config, locale }: Props) {
     <>
       <aside className="cv-sidebar" aria-label={es ? "Navegación del CV" : "CV navigation"}>
         <a className="cv-identity" href="#inicio" aria-label={es ? "Ir al inicio" : "Go to top"}>
-          <span className="cv-monogram" aria-hidden="true">CG</span>
+          <span className="cv-monogram" aria-hidden="true"><Code2 size={23} strokeWidth={1.6} /></span>
           <span><strong>{profile?.fullName ?? config.projectName}</strong><small>Senior Software Engineer</small></span>
         </a>
         <div className="cv-rail-rule" />
@@ -54,7 +54,7 @@ export function Header({ config, locale }: Props) {
         </div>
       </aside>
       <div className="cv-mobile-bar">
-        <a href="#inicio" className="cv-mobile-brand"><span className="cv-monogram" aria-hidden="true">CG</span><strong>{profile?.fullName ?? config.projectName}</strong></a>
+        <a href="#inicio" className="cv-mobile-brand"><span className="cv-monogram" aria-hidden="true"><Code2 size={20} strokeWidth={1.6} /></span><strong>{profile?.fullName ?? config.projectName}</strong></a>
         <div className="cv-mobile-controls">
           <ThemeToggle locale={locale} />
           <LocaleToggle currentLocale={locale} />

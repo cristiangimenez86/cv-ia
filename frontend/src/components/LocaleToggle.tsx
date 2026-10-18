@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import type { Locale } from "@/lib/content/types";
 import {
@@ -34,6 +35,10 @@ export function LocaleToggle({ currentLocale, className }: Props) {
   const pathname = usePathname();
   const base = pathname?.replace(/^\/[^/]+/, "") || "";
 
+  useEffect(() => {
+    document.documentElement.lang = currentLocale;
+  }, [currentLocale]);
+
   return (
     <div className={`cv-locale-switch ${className ?? ""}`} role="group" aria-label={currentLocale === "es" ? "Idioma" : "Language"}>
       {(["es", "en"] as const).map((locale) => (
@@ -47,10 +52,10 @@ export function LocaleToggle({ currentLocale, className }: Props) {
           aria-current={currentLocale === locale ? "page" : undefined}
           hrefLang={locale}
           lang={locale}
+          aria-label={locale === "es" ? "Español" : "English"}
+          title={locale === "es" ? "Español" : "English"}
         >
-          {currentLocale === "es"
-            ? (locale === "es" ? "Español" : "Inglés")
-            : (locale === "es" ? "Spanish" : "English")}
+          {locale.toUpperCase()}
         </Link>
       ))}
     </div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
+import { Moon, Sun } from "lucide-react";
 import type { Locale } from "@/lib/content/types";
 
 type Props = { locale: Locale };
@@ -34,9 +35,11 @@ export function ThemeToggle({ locale }: Props) {
           type="button"
           onClick={() => chooseTheme(choice)}
           aria-pressed={mounted ? resolvedTheme === choice : undefined}
+          aria-label={locale === "es" ? (choice === "dark" ? "Tema oscuro" : "Tema claro") : (choice === "dark" ? "Dark theme" : "Light theme")}
+          title={locale === "es" ? (choice === "dark" ? "Tema oscuro" : "Tema claro") : (choice === "dark" ? "Dark theme" : "Light theme")}
           className={mounted && resolvedTheme === choice ? "is-active" : ""}
         >
-          {locale === "es" ? (choice === "dark" ? "Oscuro" : "Claro") : (choice === "dark" ? "Dark" : "Light")}
+          {choice === "dark" ? <Moon size={18} aria-hidden /> : <Sun size={18} aria-hidden />}
         </button>
       ))}
     </div>

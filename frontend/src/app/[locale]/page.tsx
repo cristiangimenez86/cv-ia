@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { ArrowRight, MapPin } from "lucide-react";
 import { notFound } from "next/navigation";
 import { loadSiteConfig, loadSectionsForLocale } from "@/lib/content/loader";
@@ -88,6 +89,7 @@ export default async function LocalePage({ params }: PageProps) {
   const cvPdfAccessToken = PUBLIC_API_BASE_URL ? publicApiBearer() : undefined;
   const profile = config.profile;
   const es = localeParam === "es";
+  const kpis = sections.find((section) => section.id === "about")?.kpis ?? [];
 
   return (
     <div className="cv-shell">
@@ -102,20 +104,38 @@ export default async function LocalePage({ params }: PageProps) {
             </div>
           </div>
           <header className="cv-hero">
-            <span className="cv-eyebrow">{es ? "Ingeniería de software · .NET · Cloud" : "Software engineering · .NET · Cloud"}</span>
-            <h1>Senior Software <span>Engineer.</span></h1>
-            <p className="cv-hero-copy">
-              {es
-                ? "Diseño e implemento aplicaciones escalables con .NET, Azure y React. En PayRetailers desarrollo con IA a partir de requisitos y diseño documentados, revisando el código en cada etapa."
-                : "I design and build scalable applications with .NET, Azure, and React. At PayRetailers, I develop with AI from documented requirements and designs, reviewing the code at every stage."}
-            </p>
-            <div className="cv-hero-actions">
-              <a className="cv-button" href="#experience">{es ? "Ver experiencia" : "View experience"} <ArrowRight size={16} aria-hidden /></a>
-              <a className="cv-button" href={`mailto:${profile?.email ?? ""}`}>{es ? "Contactar" : "Get in touch"} <ArrowRight size={16} aria-hidden /></a>
-              <CvPdfDownloadButton fetchUrl={cvPdfFetchUrl} locale={localeParam} accessToken={cvPdfAccessToken} variant="header" downloadLabel={es ? "Descargar PDF" : "Download PDF"} />
+            <div className="cv-hero-layout">
+              <div className="cv-hero-intro">
+                <span className="cv-eyebrow">{es ? "Ingeniería de software · .NET · Cloud" : "Software engineering · .NET · Cloud"}</span>
+                <h1>Senior Software <span>Engineer.</span></h1>
+                <p className="cv-hero-copy">
+                  {es
+                    ? "Diseño e implemento aplicaciones escalables con .NET, Azure y React. En PayRetailers desarrollo con IA a partir de requisitos y diseño documentados, revisando el código en cada etapa."
+                    : "I design and build scalable applications with .NET, Azure, and React. At PayRetailers, I develop with AI from documented requirements and designs, reviewing the code at every stage."}
+                </p>
+                <div className="cv-hero-actions">
+                  <a className="cv-button" href="#experience">{es ? "Ver experiencia" : "View experience"} <ArrowRight size={16} aria-hidden /></a>
+                  <a className="cv-button" href={`mailto:${profile?.email ?? ""}`}>{es ? "Contactar" : "Get in touch"} <ArrowRight size={16} aria-hidden /></a>
+                  <CvPdfDownloadButton fetchUrl={cvPdfFetchUrl} locale={localeParam} accessToken={cvPdfAccessToken} variant="header" downloadLabel={es ? "Descargar PDF" : "Download PDF"} />
+                </div>
+                {profile && <p className="cv-hero-note"><MapPin size={16} aria-hidden />{getLocalized(profile.location, localeParam)}</p>}
+              </div>
+              {profile && (
+                <div className="cv-portrait-card">
+                  <div className="cv-portrait-image">
+                    <Image src={profile.photoSrc} alt={profile.fullName} fill sizes="(max-width: 960px) 76px, (max-width: 1200px) 190px, 230px" quality={90} priority />
+                  </div>
+                  <div className="cv-portrait-caption"><strong>{profile.fullName}</strong><span><MapPin size={13} aria-hidden />{getLocalized(profile.location, localeParam)}</span></div>
+                  <div className="cv-portrait-detail"><span className="cv-status-dot" aria-hidden="true" />{es ? "Actualmente en" : "Currently at"} <strong>PayRetailers</strong></div>
+                </div>
+              )}
             </div>
-            {profile && <p className="cv-hero-note"><MapPin size={16} aria-hidden />{getLocalized(profile.location, localeParam)}</p>}
           </header>
+          {kpis.length > 0 && (
+            <dl className="cv-metrics" aria-label={es ? "Mi experiencia en números" : "My experience in numbers"}>
+              {kpis.map((kpi) => <div key={kpi.caption} className="cv-metric"><dt>{kpi.caption}</dt><dd>{kpi.value}</dd></div>)}
+            </dl>
+          )}
           <div className="cv-sections">
             {displaySections.map((section) => (
               <div className="cv-section-wrap" data-section={section.id} key={section.id}>
