@@ -242,6 +242,7 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
         chips={ui.chips}
         onChipClick={sendMessage}
         isLoading={isLoading}
+        mobileViewportHeight={mobileVv?.height}
         locale={locale}
         onClose={onClose}
       />

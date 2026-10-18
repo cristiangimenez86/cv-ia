@@ -77,6 +77,13 @@ export default async function LocalePage({ params }: PageProps) {
     if (a.id === "key-achievements" && b.id === "experience") return 1;
     return 0;
   });
+  const achievementsIndex = displaySections.findIndex((section) => section.id === "key-achievements");
+  const aboutIndex = displaySections.findIndex((section) => section.id === "about");
+  if (achievementsIndex >= 0 && aboutIndex >= 0) {
+    const [achievements] = displaySections.splice(achievementsIndex, 1);
+    const insertionIndex = displaySections.findIndex((section) => section.id === "about") + 1;
+    displaySections.splice(insertionIndex, 0, achievements);
+  }
   const cvPdfFetchUrl = publicApiUrl(`/api/v1/cv?lang=${localeParam}`);
   const cvPdfAccessToken = PUBLIC_API_BASE_URL ? publicApiBearer() : undefined;
   const profile = config.profile;

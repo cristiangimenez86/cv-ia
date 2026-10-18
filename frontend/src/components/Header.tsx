@@ -3,6 +3,8 @@ import { NavLinks } from "@/components/NavLinks";
 import type { SiteConfig, Locale } from "@/lib/content/types";
 import { getLocalized } from "@/lib/content/types";
 import { getWhatsAppUrl } from "@/lib/profile";
+import { LocaleToggle } from "@/components/LocaleToggle";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 type Props = {
   config: SiteConfig;
@@ -53,7 +55,10 @@ export function Header({ config, locale }: Props) {
       </aside>
       <div className="cv-mobile-bar">
         <a href="#inicio" className="cv-mobile-brand"><span className="cv-monogram" aria-hidden="true">CG</span><strong>{profile?.fullName ?? config.projectName}</strong></a>
-        <div className="cv-mobile-actions"><a href="#experience">{es ? "Experiencia" : "Experience"} ↓</a></div>
+        <div className="cv-mobile-controls">
+          <ThemeToggle locale={locale} />
+          <LocaleToggle currentLocale={locale} />
+        </div>
       </div>
     </>
   );

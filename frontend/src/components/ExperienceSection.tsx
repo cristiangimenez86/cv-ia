@@ -21,7 +21,7 @@ export function ExperienceSection({ section, companies = [] }: Props) {
               <div className="cv-job-content">
                 <div className="cv-job-heading"><h3>{group.role || companyName}</h3>{group.role && <span>{companyName}</span>}</div>
                 {isSimpleExperienceEntry(group)
-                  ? <p className="cv-job-description">{group.projects[0]?.description}</p>
+                  ? <Description text={group.projects[0]?.description ?? ""} />
                   : group.projects.map((project, index) => <Project key={index} project={project} />)}
               </div>
             </article>
@@ -36,9 +36,27 @@ function Project({ project }: { project: ExperienceProject }) {
   return (
     <div className="cv-project">
       {project.project && <h4>{project.project}</h4>}
-      {project.description && <div className="cv-job-description">{project.description.split("\n").filter(Boolean).map((line, i) => <p key={i}>{line.replace(/\*\*/g, "")}</p>)}</div>}
+      {project.description && <Description text={project.description} />}
       {project.achievements.length > 0 && <ul className="cv-job-achievements">{project.achievements.map((item, i) => <li key={i}>{item}</li>)}</ul>}
       {project.technologies.length > 0 && <div className="cv-tags">{project.technologies.map((tech) => <span key={tech}>{tech}</span>)}</div>}
+    </div>
+  );
+}
+
+function Description({ text }: { text: string }) {
+  const paragraphs = text.split("\n").filter(Boolean);
+  if (paragraphs.length === 0) return null;
+
+  return (
+    <div className="cv-job-description">
+      {paragraphs.map((line, i) => {
+        const label = line.match(/^\*\*(Contexto|Responsabilidad|Context|Responsibility):\*\*\s*(.*)$/i);
+        return (
+          <p key={i}>
+            {label ? <><strong>{label[1]}:</strong> {label[2]}</> : line.replace(/\*\*/g, "")}
+          </p>
+        );
+      })}
     </div>
   );
 }

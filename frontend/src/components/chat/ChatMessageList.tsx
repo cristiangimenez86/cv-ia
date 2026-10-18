@@ -9,6 +9,7 @@ type ChatMessageListProps = {
   chips?: ChatChip[];
   onChipClick?: (value: string) => void;
   isLoading?: boolean;
+  mobileViewportHeight?: number;
   locale: string;
   onClose: () => void;
 };
@@ -22,18 +23,29 @@ export function ChatMessageList({
   chips,
   onChipClick,
   isLoading,
+  mobileViewportHeight,
   locale,
   onClose,
 }: ChatMessageListProps) {
   const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   /* Auto-scroll to bottom on new messages or loading state change */
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length, isLoading]);
 
+  useEffect(() => {
+    if (mobileViewportHeight === undefined) return;
+    const frame = requestAnimationFrame(() => {
+      const list = listRef.current;
+      if (list) list.scrollTop = list.scrollHeight;
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [mobileViewportHeight]);
+
   return (
-    <div className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-3">
+    <div ref={listRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-3">
       {/* Suggestion chips — visible only before first message */}
       {messages.length === 0 && chips && chips.length > 0 && (
         <div className="flex flex-wrap gap-2 pt-2">

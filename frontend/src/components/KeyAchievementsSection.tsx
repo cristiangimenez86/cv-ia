@@ -20,7 +20,7 @@ export function KeyAchievementsSection({ section }: KeyAchievementsSectionProps)
             <span className="shrink-0 mt-0.5 text-primary" aria-hidden>
               <Check size={18} strokeWidth={2.5} />
             </span>
-            <span className="text-base text-foreground leading-relaxed">{item}</span>
+            <span className="cv-achievement-copy">{item}</span>
           </li>
         ))}
       </ul>
