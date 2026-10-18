@@ -259,7 +259,7 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
   .cv-portrait-detail { gap: 6px; padding: 8px 0 3px; }
 }
 @media (max-width: 960px) and (orientation: portrait) {
-  .cv-portrait-card { grid-template-columns: 104px minmax(0, 1fr); }
+  .cv-portrait-card { grid-template-columns: 104px minmax(0, 1fr); width: 100%; }
   .cv-portrait-image { width: 104px; height: 116px; border-radius: 8px; }
 }
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
@@ -269,6 +269,10 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
   .cv-portrait-caption { gap: 7px; padding: 17px 8px; }
   .cv-portrait-caption strong { font-size: 15px; }
   .cv-portrait-detail { gap: 7px; padding: 12px 8px 5px; }
+}
+@media screen and (max-width: 767px) and (orientation: portrait) {
+  .cv-detail-card { flex-direction: column; }
+  .cv-detail-content { width: 100%; }
 }
 @media (max-width: 760px) {
   .cv-chat-panel { width: min(100%, 430px); }

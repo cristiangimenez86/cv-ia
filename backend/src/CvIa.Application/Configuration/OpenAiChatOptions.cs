@@ -20,7 +20,7 @@ public sealed class OpenAiChatOptions
     /// <summary>Optional org id for <c>OpenAI-Organization</c> header (e.g. <c>org-...</c>).</summary>
     public string OpenAiOrganizationId { get; set; } = "";
 
-    public string Model { get; set; } = "gpt-4o-mini";
+    public string Model { get; set; } = "gpt-6-luna";
 
     /// <summary>Base URL including /v1, e.g. https://api.openai.com/v1</summary>
     public string BaseUrl { get; set; } = "https://api.openai.com/v1";
@@ -31,7 +31,7 @@ public sealed class OpenAiChatOptions
     /// <summary>Chat sampling temperature (OpenAI <c>temperature</c>). Set only in configuration. Default 0.5 for a slightly more natural tone; lower if answers drift.</summary>
     public double Temperature { get; set; } = 0.5;
 
-    /// <summary>Max completion tokens per response (OpenAI <c>max_tokens</c>). Set only in configuration.</summary>
+    /// <summary>Max completion tokens per response (OpenAI <c>max_completion_tokens</c>). Set only in configuration.</summary>
     public int MaxTokens { get; set; } = 512;
 
     /// <summary>Maximum chat messages (after system) to send to the provider.</summary>

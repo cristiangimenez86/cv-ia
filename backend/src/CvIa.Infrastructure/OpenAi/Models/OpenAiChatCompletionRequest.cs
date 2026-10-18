@@ -13,6 +13,9 @@ internal sealed class OpenAiChatCompletionRequest
     [JsonPropertyName("temperature")]
     public double Temperature { get; set; }
 
-    [JsonPropertyName("max_tokens")]
+    [JsonPropertyName("max_completion_tokens")]
     public int MaxTokens { get; set; }
+
+    [JsonPropertyName("reasoning_effort")]
+    public string? ReasoningEffort { get; set; }
 }

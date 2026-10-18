@@ -87,7 +87,9 @@ public sealed class OpenAiChatCompletionService : IChatCompletionService
         Model = _options.Model,
         Messages = payloads.Select(p => new OpenAiChatApiMessage { Role = p.Role, Content = p.Content }).ToList(),
         Temperature = _options.Temperature,
-        MaxTokens = _options.MaxTokens
+        MaxTokens = _options.MaxTokens,
+        // Preserve the previous chat's non-reasoning latency and output-token budget.
+        ReasoningEffort = string.Equals(_options.Model, "gpt-6-luna", StringComparison.OrdinalIgnoreCase) ? "none" : null
     };
 
     private async Task<HttpResponseMessage> SendWithRetryAsync(

@@ -5,7 +5,7 @@ info:
   description: >
     Public CV API + CV-scoped chat. This API is designed for a CV website (Next.js) with a backend in .NET.
     OpenAI keys must exist only in the backend service.
-    Recommended default model for chat completions (backend configuration): gpt-4o-mini (cost/quality balance; override per deployment).
+    Default model for chat completions (backend configuration): gpt-6-luna (reasoning disabled for low-latency CV chat; override per deployment).
 
     Implementation status: This spec is the current contract.
     Implemented endpoints: `/health`, `/api/v1/cv` (PDF download), and `/api/v1/chat/completions`.
@@ -82,7 +82,7 @@ paths:
       description: >
         Returns an assistant message constrained to the CV content.
         The backend must enforce guardrails (no unrelated knowledge, no secrets, no arbitrary browsing).
-        The upstream OpenAI model is a backend deployment setting; the documented default is gpt-4o-mini.
+        The upstream OpenAI model is a backend deployment setting; the documented default is gpt-6-luna.
       requestBody:
         required: true
         content:

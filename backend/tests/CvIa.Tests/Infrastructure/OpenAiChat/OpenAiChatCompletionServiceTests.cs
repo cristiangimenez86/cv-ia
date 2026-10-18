@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using CvIa.Application.Contracts;
 using CvIa.Application.Exceptions;
 using CvIa.Infrastructure.Services;
@@ -34,6 +35,52 @@ public sealed class OpenAiChatCompletionServiceTests
             Times.Once(),
             ItExpr.IsAny<HttpRequestMessage>(),
             ItExpr.IsAny<CancellationToken>());
+    }
+
+    [Theory]
+    [InlineData("gpt-6-luna", "none")]
+    [InlineData("gpt-4o-mini", null)]
+    public async Task CompleteAsync_sends_model_compatible_completion_parameters(string model, string? reasoningEffort)
+    {
+        string? capturedBody = null;
+        var handler = new Mock<HttpMessageHandler>();
+        handler.Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                "SendAsync",
+                ItExpr.IsAny<HttpRequestMessage>(),
+                ItExpr.IsAny<CancellationToken>())
+            .Returns<HttpRequestMessage, CancellationToken>(async (message, cancellationToken) =>
+            {
+                capturedBody = await message.Content!.ReadAsStringAsync(cancellationToken);
+                return JsonResponse(HttpStatusCode.OK, SuccessfulChatCompletion);
+            });
+
+        using var client = CreateHttpClient(handler.Object);
+        var options = CreateOptions(o =>
+        {
+            o.Model = model;
+            o.MaxTokens = 320;
+            o.Temperature = 0.4;
+        });
+        var service = CreateService(client, options);
+
+        await service.CompleteAsync(MinimalChatRequest(), CancellationToken.None);
+
+        using var body = JsonDocument.Parse(capturedBody ?? throw new InvalidOperationException("No provider request was sent."));
+        var root = body.RootElement;
+        Assert.Equal(model, root.GetProperty("model").GetString());
+        Assert.Equal(320, root.GetProperty("max_completion_tokens").GetInt32());
+        Assert.Equal(0.4, root.GetProperty("temperature").GetDouble());
+        Assert.False(root.TryGetProperty("max_tokens", out _));
+
+        if (reasoningEffort is null)
+        {
+            Assert.False(root.TryGetProperty("reasoning_effort", out _));
+        }
+        else
+        {
+            Assert.Equal(reasoningEffort, root.GetProperty("reasoning_effort").GetString());
+        }
     }
 
     [Fact]

@@ -37,7 +37,7 @@ That scope is **not** implied only by “Chat completions → Request” in the 
 **Fastest local fix**
 
 - Create a **new** secret key with **All** permissions (dev only), **or**
-- Edit the restricted key: enable **Chat completions** and ensure **model / Model capabilities** allows **Request** for the model you use in `OpenAiChat:Model` (e.g. `gpt-4o-mini`), then **Save**.
+- Edit the restricted key: enable **Chat completions** and ensure **model / Model capabilities** allows **Request** for the model you use in `OpenAiChat:Model` (e.g. `gpt-6-luna`), then **Save**.
 
 **After changing backend code**, restart `dotnet run` so the API returns updated error codes (`provider_forbidden` vs `provider_auth`).
 
