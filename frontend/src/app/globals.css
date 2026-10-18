@@ -144,11 +144,11 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 .cv-portrait-detail strong { color: var(--muted-hex); font-weight: 500; }
 .cv-status-dot { display: inline-block; width: 5px; height: 5px; flex: 0 0 5px; border-radius: 50%; background: var(--accent-hex); }
 .cv-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding: 25px 0; border-top: 1px solid var(--line); }
-.cv-metric { display: flex; flex-direction: column-reverse; justify-content: end; gap: 8px; padding: 1px 24px; border-right: 1px solid var(--line-soft); }
+.cv-metric { display: flex; flex-direction: column; justify-content: flex-start; gap: 8px; padding: 1px 24px; border-right: 1px solid var(--line-soft); }
 .cv-metric:first-child { padding-left: 0; }
 .cv-metric:last-child { padding-right: 0; border-right: 0; }
 .cv-metric dt { color: var(--subtle-hex); font-size: 12px; line-height: 1.5; }
-.cv-metric dd { margin: 0; color: var(--text-hex); font-size: 31px; font-weight: 500; letter-spacing: -.06em; line-height: 1.1; }
+.cv-metric dd { order: -1; margin: 0; color: var(--text-hex); font-size: 31px; font-weight: 500; letter-spacing: -.06em; line-height: 1.1; }
 
 .cv-section-wrap { padding: 43px 0 61px; border-top: 1px solid var(--line); }
 .cv-section-wrap[data-section="experience"] { padding-bottom: 0; }
@@ -244,7 +244,7 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
   .cv-mobile-brand strong { overflow: hidden; max-width: 140px; font-size: 14px; letter-spacing: -.025em; text-overflow: ellipsis; white-space: nowrap; }
   .cv-mobile-controls { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
   .cv-mobile-controls .cv-theme-switch, .cv-mobile-controls .cv-locale-switch { gap: 2px; padding: 2px; border-radius: 8px; }
-  .cv-mobile-controls .cv-theme-switch button, .cv-mobile-controls .cv-locale-switch a { min-width: 0; padding: 7px 8px; font-size: 10px; }
+  .cv-mobile-controls .cv-theme-switch button, .cv-mobile-controls .cv-locale-switch a { width: 38px; min-width: 38px; height: 32px; padding: 0; font-size: 11px; }
   .cv-topline-controls { display: none; }
   .cv-content { padding: 0 23px 90px; }
   .cv-topline { flex-wrap: wrap; padding-top: 21px; }
@@ -257,6 +257,18 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
   .cv-portrait-caption { align-content: center; gap: 5px; padding: 5px 0; }
   .cv-portrait-caption strong { font-size: 14px; }
   .cv-portrait-detail { gap: 6px; padding: 8px 0 3px; }
+}
+@media (max-width: 960px) and (orientation: portrait) {
+  .cv-portrait-card { grid-template-columns: 104px minmax(0, 1fr); }
+  .cv-portrait-image { width: 104px; height: 116px; border-radius: 8px; }
+}
+@media (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+  .cv-hero-layout { grid-template-columns: minmax(0, 1fr) clamp(220px, 26vw, 260px); gap: 32px; }
+  .cv-portrait-card { display: block; width: 100%; padding: 9px; border-radius: 16px; }
+  .cv-portrait-image { grid-row: auto; width: 100%; height: auto; aspect-ratio: 1; border-radius: 9px; }
+  .cv-portrait-caption { gap: 7px; padding: 17px 8px; }
+  .cv-portrait-caption strong { font-size: 15px; }
+  .cv-portrait-detail { gap: 7px; padding: 12px 8px 5px; }
 }
 @media (max-width: 760px) {
   .cv-chat-panel { width: min(100%, 430px); }
@@ -275,7 +287,6 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
   .cv-mobile-bar { padding-inline: 12px; }
   .cv-mobile-brand strong { max-width: 118px; font-size: 13px; }
   .cv-mobile-controls { gap: 4px; }
-  .cv-mobile-controls .cv-theme-switch button, .cv-mobile-controls .cv-locale-switch a { padding-inline: 6px; font-size: 9px; }
   .cv-skills { grid-template-columns: 1fr; }
   .cv-skill { min-height: auto; }
   .cv-skill h3 { margin-top: 15px; }
@@ -292,7 +303,20 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
   .cv-mobile-brand strong { max-width: 106px; font-size: 12px; }
   .cv-mobile-controls { gap: 3px; }
   .cv-mobile-controls .cv-theme-switch, .cv-mobile-controls .cv-locale-switch { gap: 1px; padding: 2px; }
-  .cv-mobile-controls .cv-theme-switch button, .cv-mobile-controls .cv-locale-switch a { padding-inline: 5px; font-size: 9px; }
+}
+@media (min-width: 560px) and (max-width: 1024px) and (max-height: 600px) and (orientation: landscape) {
+  .cv-hero { padding: 32px 0 36px; }
+  .cv-hero-layout { grid-template-columns: minmax(0, 1fr) clamp(180px, 24vw, 220px); align-items: start; gap: 28px; }
+  .cv-hero .cv-eyebrow { margin-bottom: 16px; }
+  .cv-hero h1 { font-size: clamp(36px, 5.4vw, 50px); }
+  .cv-hero-copy { margin-top: 20px; font-size: 15px; line-height: 1.7; }
+  .cv-hero-actions { gap: 10px; margin-top: 24px; }
+  .cv-hero-note { margin-top: 22px; }
+  .cv-portrait-card { display: block; width: 100%; padding: 8px; border-radius: 12px; }
+  .cv-portrait-image { grid-row: auto; width: 100%; height: auto; aspect-ratio: 1; border-radius: 8px; }
+  .cv-portrait-caption { padding: 13px 4px; }
+  .cv-portrait-detail { flex-wrap: wrap; padding: 10px 4px 3px; }
+  .cv-chat-trigger { width: 46px; padding: 0; gap: 0; justify-content: center; font-size: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

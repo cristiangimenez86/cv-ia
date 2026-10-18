@@ -123,7 +123,7 @@ export default async function LocalePage({ params }: PageProps) {
               {profile && (
                 <div className="cv-portrait-card">
                   <div className="cv-portrait-image">
-                    <Image src={profile.photoSrc} alt={profile.fullName} fill sizes="(max-width: 960px) 76px, (max-width: 1200px) 190px, 230px" quality={90} priority />
+                    <Image src={profile.photoSrc} alt={profile.fullName} fill sizes="(min-width: 560px) and (max-width: 1024px) and (max-height: 600px) and (orientation: landscape) 220px, (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) 260px, (max-width: 960px) and (orientation: portrait) 104px, (max-width: 960px) 76px, (max-width: 1200px) 190px, 230px" quality={90} priority />
                   </div>
                   <div className="cv-portrait-caption"><strong>{profile.fullName}</strong><span><MapPin size={13} aria-hidden />{getLocalized(profile.location, localeParam)}</span></div>
                   <div className="cv-portrait-detail"><span className="cv-status-dot" aria-hidden="true" />{es ? "Actualmente en" : "Currently at"} <strong>PayRetailers</strong></div>
