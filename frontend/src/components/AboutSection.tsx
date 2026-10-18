@@ -25,8 +25,8 @@ export function AboutSection({ section }: AboutSectionProps) {
           <span className="cv-eyebrow">{es ? "Áreas de trabajo" : "Focus areas"}</span>
           <ul>
             {(es
-              ? ["Backend y arquitectura .NET", "Cloud e integraciones", "Desarrollo full stack", "Desarrollo con IA y OpenSpec"]
-              : [".NET backend and architecture", "Cloud and integrations", "Full stack development", "AI-assisted development with OpenSpec"]
+              ? ["Desarrollo con IA y OpenSpec", "Backend y arquitectura .NET", "Cloud e integraciones", "Desarrollo full stack"]
+              : ["AI-assisted development with OpenSpec", ".NET backend and architecture", "Cloud and integrations", "Full stack development"]
             ).map((item) => <li key={item}>{item}</li>)}
           </ul>
         </aside>

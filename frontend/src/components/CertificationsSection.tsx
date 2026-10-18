@@ -1,6 +1,8 @@
 import type { SectionContent } from "@/lib/content/types";
 import { parseCertifications } from "@/lib/markdown/sections";
 import { SectionHeading } from "@/components/sectionIcons";
+import { BadgeCheck } from "lucide-react";
+import { CardIcon } from "@/components/CardIcon";
 
 type CertificationsSectionProps = {
   section: SectionContent;
@@ -15,12 +17,15 @@ export function CertificationsSection({ section }: CertificationsSectionProps) {
       <SectionHeading id={section.id} title={section.title} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {certs.map((cert, i) => (
-          <div key={i} className="card-tile">
-            <p className="text-base font-semibold text-foreground">{cert.name}</p>
-            <p className="text-base text-muted mt-1">{cert.date}</p>
-            {cert.id && (
-              <p className="text-base text-muted mt-0.5">ID: {cert.id}</p>
-            )}
+          <div key={i} className="card-tile cv-detail-card">
+            <CardIcon icon={BadgeCheck} />
+            <div className="cv-detail-content">
+              <p className="text-base font-semibold text-foreground">{cert.name}</p>
+              <p className="text-base text-muted mt-1">{cert.date}</p>
+              {cert.id && (
+                <p className="text-base text-muted mt-0.5">ID: {cert.id}</p>
+              )}
+            </div>
           </div>
         ))}
       </div>

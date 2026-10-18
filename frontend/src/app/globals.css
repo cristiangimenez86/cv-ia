@@ -116,7 +116,7 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 .cv-topline { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; padding-bottom: 21px; border-bottom: 1px solid var(--line); color: var(--muted-hex); font-size: 12px; font-weight: 500; letter-spacing: .06em; text-transform: uppercase; }
 .cv-topline-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; flex: 0 1 auto; max-width: 100%; }
 .cv-theme-switch, .cv-locale-switch { display: flex; align-items: center; gap: 3px; flex: 0 0 auto; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-hex); letter-spacing: 0; text-transform: none; }
-.cv-theme-switch button, .cv-locale-switch a { display: grid; place-items: center; min-width: 69px; min-height: 32px; padding: 7px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--muted-hex); font-size: 12px; font-weight: 620; text-decoration: none; }
+.cv-theme-switch button, .cv-locale-switch a { display: grid; place-items: center; min-width: 54px; min-height: 32px; padding: 7px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--muted-hex); font-size: 12px; font-weight: 620; text-decoration: none; }
 .cv-theme-switch button:hover, .cv-theme-switch button.is-active, .cv-locale-switch a:hover, .cv-locale-switch a.is-active { background: var(--surface-raised); color: var(--text-hex); }
 
 .cv-hero { padding: 73px 0 74px; }
@@ -171,7 +171,10 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 .cv-skill { min-height: 163px; padding: 22px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-hex); transition: border-color .18s, background .18s; }
 .cv-skill:hover { border-color: var(--accent-hex); background: var(--surface-raised); }
 .cv-skill-top { display: flex; align-items: center; justify-content: space-between; }
-.cv-skill-icon { display: grid; place-items: center; width: 37px; height: 37px; border: 1px solid var(--line); border-radius: 9px; background: color-mix(in srgb, var(--accent-hex) 9%, var(--surface-hex)); color: var(--accent-hex); }
+.cv-skill-icon, .cv-card-icon { display: grid; place-items: center; width: 37px; height: 37px; border: 1px solid var(--line); border-radius: 9px; background: color-mix(in srgb, var(--accent-hex) 9%, var(--surface-hex)); color: var(--accent-hex); }
+.cv-card-icon { flex: 0 0 37px; }
+.cv-detail-card { display: flex; align-items: flex-start; gap: 14px; }
+.cv-detail-content { flex: 1; min-width: 0; }
 .cv-skill-number { color: var(--accent-hex); font-size: 11px; font-weight: 700; letter-spacing: .08em; }
 .cv-skill h3 { margin: 16px 0 9px; font-size: 15px; font-weight: 650; letter-spacing: -.02em; }
 .cv-skill p { margin: 0; color: var(--muted-hex); font-size: 14px; line-height: 1.6; overflow-wrap: anywhere; }
@@ -348,8 +351,10 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
   .cv-metrics { padding-block: 12px; }
   .cv-metric dd { font-size: 18pt; }
   .cv-metric dt { font-size: 7pt; }
-  .cv-skill-icon { width: 24px; height: 24px; border-radius: 5px; }
-  .cv-skill-icon svg { width: 14px; height: 14px; }
+  .cv-skill-icon, .cv-card-icon { width: 24px; height: 24px; border-radius: 5px; }
+  .cv-card-icon { flex-basis: 24px; }
+  .cv-skill-icon svg, .cv-card-icon svg { width: 14px; height: 14px; }
+  .cv-detail-card { gap: 8px; }
   .cv-shell { display: block; min-height: 0; }
   .cv-main, .cv-content { width: 100%; max-width: none; margin: 0; padding: 0; }
   .cv-topline { min-height: 0; padding: 0 0 8px; margin-bottom: 18px; border-bottom: 1px solid var(--line); color: var(--subtle-hex); font-size: 8pt; }

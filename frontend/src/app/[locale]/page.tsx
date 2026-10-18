@@ -106,7 +106,7 @@ export default async function LocalePage({ params }: PageProps) {
           <header className="cv-hero">
             <div className="cv-hero-layout">
               <div className="cv-hero-intro">
-                <span className="cv-eyebrow">{es ? "Ingeniería de software · .NET · Cloud" : "Software engineering · .NET · Cloud"}</span>
+                <span className="cv-eyebrow">{es ? "IA · .NET · React · Cloud" : "AI · .NET · React · Cloud"}</span>
                 <h1>Senior Software <span>Engineer.</span></h1>
                 <p className="cv-hero-copy">
                   {es

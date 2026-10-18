@@ -12,7 +12,7 @@
 - Implementé una integración de pagos de punta a punta como único desarrollador, usando requisitos y diseño documentados con el AI SDLC interno basado en OpenSpec para guiar la implementación con IA y revisar el código en cada etapa.
 - Participé en la creación de infraestructura con Terraform y los despliegues a DEV y STG; probé la solución en DEV y corregí incidencias. El equipo de QA ejecutó pruebas automatizadas generadas con IA a partir de los documentos iniciales antes del despliegue a producción.
 
-**Tecnologías:** .NET 8, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
+**Tecnologías:** .NET 10, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
 
 
 ## Desarrollador Full Stack .NET Core — Travelport
