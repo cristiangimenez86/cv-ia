@@ -1,13 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { MessageCircle, UserX, X } from "lucide-react";
+import { MessageCircle, X } from "lucide-react";
 import { ChatMessageList } from "./ChatMessageList";
 import { ChatInput } from "./ChatInput";
 import { useChatMobileVisualViewport } from "./useChatMobileVisualViewport";
-import { useVisitorName, type UseVisitorNameResult } from "./useVisitorName";
-import { detectOptOut, extractBareName } from "./renameDetection";
-import { formatWithName, getVisitorNameStrings } from "./visitorNameStrings";
 import { getChatPanelStrings } from "./chatStrings";
 import { createMessageId } from "./messageId";
 import { formatChatError } from "./chatErrorMessage";
@@ -16,6 +13,7 @@ import type { ChatMessage } from "./types";
 
 type ChatPanelProps = {
   onClose: () => void;
+  onNavigate: () => void;
   locale: string;
   messages: ChatMessage[];
   setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
@@ -57,7 +55,7 @@ function userMessage(content: string): ChatMessage {
  * Chat panel: header, scrollable messages, input bar.
  * State is in-memory only (useState). Replies come from the backend API.
  */
-export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelProps) {
+export function ChatPanel({ onClose, onNavigate, locale, messages, setMessages }: ChatPanelProps) {
   const mobileVv = useChatMobileVisualViewport();
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -67,18 +65,11 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
   const panelRef = useRef<HTMLDivElement>(null);
   const resizeRef = useRef<{ pointerId: number; startX: number; startWidth: number; width: number } | null>(null);
 
-  const visitor = useVisitorName();
-  const visitorStrings = getVisitorNameStrings(locale);
   const ui = getChatPanelStrings(locale);
-
-  /* Never disable the input for the name prompt: the name flow is conversational,
-     so the visitor must always be able to reply (with a name, an opt-out phrase,
-     or any other message). */
-  const inputDisabled = isLoading;
 
   useFocusOnMount(inputRef);
   useFocusAfterReply(inputRef, isLoading);
-  useGreetingSeed({ visitor, visitorStrings, messages, setMessages });
+  useGreetingSeed(ui.greeting, setMessages);
   useEscapeToClose(onClose);
 
   useLayoutEffect(() => {
@@ -166,21 +157,6 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
       setMessages((prev) => [...prev, userMessage(trimmed)]);
       setInput("");
 
-      const renameLocale: "es" | "en" = locale === "es" ? "es" : "en";
-
-      const handled = handleNameFlow({
-        text: trimmed,
-        renameLocale,
-        visitor,
-        visitorStrings,
-        appendAssistant: (content) =>
-          setMessages((prev) => [...prev, assistantMessage(content)]),
-      });
-      if (handled === "consumed") {
-        /* The user message was about the name itself: nothing to forward. */
-        return;
-      }
-
       setIsLoading(true);
       try {
         const result = await requestChatCompletion(trimmed, locale);
@@ -190,7 +166,7 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
         setIsLoading(false);
       }
     },
-    [isLoading, locale, setMessages, visitor, visitorStrings],
+    [isLoading, locale, setMessages],
   );
 
   const handleSend = useCallback(() => sendMessage(input), [input, sendMessage]);
@@ -231,10 +207,6 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
         title={ui.headerTitle}
         closeAria={ui.closeAria}
         onClose={onClose}
-        showForget={visitor.status === "has-name" || visitor.status === "opted-out"}
-        onForget={visitor.forget}
-        forgetLabel={visitorStrings.forget.label}
-        forgetAria={visitorStrings.forget.ariaLabel}
       />
 
       <ChatMessageList
@@ -244,14 +216,14 @@ export function ChatPanel({ onClose, locale, messages, setMessages }: ChatPanelP
         isLoading={isLoading}
         mobileViewportHeight={mobileVv?.height}
         locale={locale}
-        onClose={onClose}
+        onNavigate={onNavigate}
       />
 
       <ChatInput
         value={input}
         onChange={setInput}
         onSend={handleSend}
-        disabled={inputDisabled}
+        disabled={isLoading}
         placeholder={ui.placeholder}
         inputRef={inputRef}
       />
@@ -265,20 +237,12 @@ type ChatPanelHeaderProps = {
   title: string;
   closeAria: string;
   onClose: () => void;
-  showForget: boolean;
-  onForget: () => void;
-  forgetLabel: string;
-  forgetAria: string;
 };
 
 function ChatPanelHeader({
   title,
   closeAria,
   onClose,
-  showForget,
-  onForget,
-  forgetLabel,
-  forgetAria,
 }: ChatPanelHeaderProps) {
   return (
     <div className="flex items-center justify-between px-4 py-3 border-b border-border shrink-0">
@@ -287,22 +251,13 @@ function ChatPanelHeader({
         <h3 className="text-sm font-semibold text-foreground">{title}</h3>
       </div>
       <div className="flex items-center gap-1">
-        {showForget && (
-          <button
-            onClick={onForget}
-            aria-label={forgetAria}
-            title={forgetLabel}
-            className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-foreground transition-colors"
-          >
-            <UserX className="h-4 w-4" />
-          </button>
-        )}
         <button
+          type="button"
           onClick={onClose}
           aria-label={closeAria}
-          className="inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted hover:bg-surface-2 hover:text-foreground transition-colors"
+          className="cv-chat-close inline-flex h-10 w-10 items-center justify-center"
         >
-          <X className="h-4 w-4" />
+          <X className="h-5 w-5" strokeWidth={2.25} />
         </button>
       </div>
     </div>
@@ -350,117 +305,18 @@ function useEscapeToClose(onClose: () => void) {
   }, [onClose]);
 }
 
-type GreetingSeedDeps = {
-  visitor: UseVisitorNameResult;
-  visitorStrings: ReturnType<typeof getVisitorNameStrings>;
-  messages: ChatMessage[];
-  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>;
-};
-
-/**
- * Keeps the opening assistant greeting in sync with the current visitor state
- * and locale while no user interaction has happened yet:
- *
- * - Empty list → seed the greeting.
- * - Only the assistant seed present → refresh its content in-place when the
- *   locale or visitor state changes (nothing has been sent to the LLM yet).
- * - Any user message present → freeze; we never rewrite past turns.
- */
-function useGreetingSeed({
-  visitor,
-  visitorStrings,
-  messages,
-  setMessages,
-}: GreetingSeedDeps) {
+/** Seed one neutral greeting and translate it while it is the only message. */
+function useGreetingSeed(
+  greeting: string,
+  setMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
+) {
   useEffect(() => {
-    if (visitor.status === "loading") return;
-
-    const nextContent = pickGreeting(visitor, visitorStrings);
-
-    if (messages.length === 0) {
-      setMessages((prev) =>
-        prev.length > 0 ? prev : [...prev, assistantMessage(nextContent)],
-      );
-      return;
-    }
-
-    if (messages.length !== 1 || messages[0].role !== "assistant") return;
-    if (messages[0].content === nextContent) return;
-
-    setMessages((prev) => {
-      if (prev.length !== 1 || prev[0].role !== "assistant") return prev;
-      return [{ ...prev[0], content: nextContent }];
+    setMessages((previous) => {
+      if (previous.length === 0) return [assistantMessage(greeting)];
+      if (previous.length === 1 && previous[0].role === "assistant" && previous[0].content !== greeting) {
+        return [{ ...previous[0], content: greeting }];
+      }
+      return previous;
     });
-  }, [visitor, visitor.status, visitor.name, visitorStrings, messages, setMessages]);
-}
-
-function pickGreeting(
-  visitor: UseVisitorNameResult,
-  strings: ReturnType<typeof getVisitorNameStrings>,
-): string {
-  if (visitor.status === "needs-prompt") return strings.askForName.message;
-  if (visitor.status === "has-name" && visitor.name) {
-    return formatWithName(strings.greeting.returning, visitor.name);
-  }
-  /* Opted-out, fresh session: there is no prior user message to "ack", so use
-     the neutral hello. The conversational "¡Dale!" variant is only used right
-     after the user opts out in the current session. */
-  return strings.greeting.anonymousReturning;
-}
-
-/* ── Name-flow handler ───────────────────────────────────────────────── */
-
-type NameFlowOutcome = "consumed" | "passthrough";
-
-type NameFlowDeps = {
-  text: string;
-  renameLocale: "es" | "en";
-  visitor: UseVisitorNameResult;
-  visitorStrings: ReturnType<typeof getVisitorNameStrings>;
-  appendAssistant: (content: string) => void;
-};
-
-/**
- * Handles the visitor-name conversational flow.
- *
- * - First message after the prompt: opt-out → store + neutral welcome (consumed);
- *   recognized name → store + personalized ack (consumed); anything else → passthrough
- *   (do NOT touch storage; the question will be re-seeded next session — this is
- *   intentional, see `tasks.md` for the rationale).
- * - Mid-chat: a rename phrase ("call me Ana") updates storage and synthesizes a
- *   confirmation, but the original user text is still passed to the backend.
- *
- * Order matters: opt-out runs FIRST so phrases like "prefer not to say" are not
- * misclassified as a bare name by `extractBareName`.
- */
-function handleNameFlow({
-  text,
-  renameLocale,
-  visitor,
-  visitorStrings,
-  appendAssistant,
-}: NameFlowDeps): NameFlowOutcome {
-  if (visitor.status === "needs-prompt") {
-    if (detectOptOut(text, renameLocale)) {
-      visitor.optOut();
-      appendAssistant(visitorStrings.greeting.anonymous);
-      return "consumed";
-    }
-    const renameName = visitor.detectRename(text, renameLocale);
-    const captured = renameName ?? extractBareName(text);
-    if (captured) {
-      visitor.setName(captured);
-      appendAssistant(formatWithName(visitorStrings.greeting.firstTime, captured));
-      return "consumed";
-    }
-    return "passthrough";
-  }
-
-  /* Rename intent mid-chat (e.g. "call me Ana"). */
-  const newName = visitor.detectRename(text, renameLocale);
-  if (newName && newName !== visitor.name) {
-    visitor.setName(newName);
-    appendAssistant(formatWithName(visitorStrings.rename.confirmation, newName));
-  }
-  return "passthrough";
+  }, [greeting, setMessages]);
 }

@@ -12,16 +12,16 @@ import { publicApiBearer, publicApiUrl } from "@/lib/publicApi";
 type ChatAssistantMarkdownProps = {
   content: string;
   locale: string;
-  onClose: () => void;
+  onNavigate: () => void;
 };
 
 /** Renders an assistant chat bubble as GFM Markdown with XSS sanitization and CV-aware links. */
 export function ChatAssistantMarkdown({
   content,
   locale,
-  onClose,
+  onNavigate,
 }: ChatAssistantMarkdownProps) {
-  const components = buildMarkdownComponents({ locale, onClose });
+  const components = buildMarkdownComponents({ locale, onNavigate });
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -35,14 +35,14 @@ export function ChatAssistantMarkdown({
 
 function buildMarkdownComponents({
   locale,
-  onClose,
+  onNavigate,
 }: {
   locale: string;
-  onClose: () => void;
+  onNavigate: () => void;
 }): Components {
   return {
     a: ({ href, children }) => (
-      <AssistantLink href={href} locale={locale} onClose={onClose}>
+      <AssistantLink href={href} locale={locale} onNavigate={onNavigate}>
         {children}
       </AssistantLink>
     ),
@@ -123,12 +123,12 @@ function AssistantLink({
   href,
   children,
   locale,
-  onClose,
+  onNavigate,
 }: {
   href?: string;
   children?: ReactNode;
   locale: string;
-  onClose: () => void;
+  onNavigate: () => void;
 }) {
   const router = useRouter();
 
@@ -152,7 +152,7 @@ function AssistantLink({
       className="font-medium text-primary underline underline-offset-2 hover:opacity-90"
       onClick={(e) => {
         e.preventDefault();
-        onClose();
+        onNavigate();
         router.push(sectionHref);
       }}
     >

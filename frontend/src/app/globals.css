@@ -196,6 +196,8 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
 .cv-chat-send { border: 1px solid var(--line); border-radius: 10px; background: var(--surface-raised); color: var(--subtle-hex); transition: transform .18s ease, background .18s ease, border-color .18s ease, color .18s ease; }
 .cv-chat-send:not(:disabled) { border-color: var(--accent-hex); background: var(--accent-hex); color: var(--button-text); }
 .cv-chat-send:not(:disabled):hover { transform: translateY(-2px); border-color: var(--accent-soft); background: var(--accent-soft); }
+.cv-chat-close { border: 1px solid var(--accent-hex); border-radius: 50%; background: var(--accent-hex); color: var(--button-text); transition: transform .18s ease, border-color .18s ease, background .18s ease; }
+.cv-chat-close:hover { transform: translateY(-2px); border-color: var(--accent-soft); background: var(--accent-soft); }
 @keyframes cv-chat-backdrop-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes cv-chat-panel-in { from { opacity: .78; transform: translateX(48px); } to { opacity: 1; transform: translateX(0); } }
 

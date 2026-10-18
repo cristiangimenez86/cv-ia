@@ -9,6 +9,7 @@ type Locale = "es" | "en";
 
 type ChatPanelStrings = {
   chips: ChatChip[];
+  greeting: string;
   placeholder: string;
   headerTitle: string;
   closeAria: string;
@@ -16,22 +17,20 @@ type ChatPanelStrings = {
 
 const STRINGS: Record<Locale, ChatPanelStrings> = {
   es: {
+    greeting: "¡Hola! ¿Querés conocer mejor mi trabajo? Preguntame sobre mi experiencia, mis proyectos o las tecnologías que uso. Podés empezar con una de estas preguntas:",
     chips: [
-      { label: "Experiencia en Azure", value: "Contame sobre tu experiencia en Azure" },
-      { label: "Proyectos principales", value: "¿Cuáles son tus proyectos principales?" },
-      { label: "Stack .NET", value: "¿Qué tecnologías .NET manejás?" },
-      { label: "Disponibilidad", value: "¿Cuál es tu disponibilidad?" },
+      { label: "¿Cuál es tu experiencia?", value: "¿Cuál es tu experiencia?" },
+      { label: "¿En qué proyectos trabajaste?", value: "¿En qué proyectos trabajaste?" },
     ],
     placeholder: "Escribí tu pregunta…",
     headerTitle: "Pregúntale a Cristian",
     closeAria: "Cerrar chat",
   },
   en: {
+    greeting: "Hi! Want to learn more about my work? Ask me about my experience, projects, or the technologies I use. You can start with one of these questions:",
     chips: [
-      { label: "Azure experience", value: "Tell me about your Azure experience" },
-      { label: "Main projects", value: "What are your main projects?" },
-      { label: ".NET stack", value: "What .NET technologies do you use?" },
-      { label: "Availability", value: "What is your availability?" },
+      { label: "What's your experience?", value: "What's your experience?" },
+      { label: "Which projects have you worked on?", value: "Which projects have you worked on?" },
     ],
     placeholder: "Type your question…",
     headerTitle: "Ask Cristian",

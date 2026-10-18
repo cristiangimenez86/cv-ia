@@ -11,12 +11,12 @@ type ChatMessageListProps = {
   isLoading?: boolean;
   mobileViewportHeight?: number;
   locale: string;
-  onClose: () => void;
+  onNavigate: () => void;
 };
 
 /**
  * Scrollable message list with user/assistant bubbles.
- * Shows suggestion chips when no messages yet.
+ * Shows suggestion chips below the initial greeting.
  */
 export function ChatMessageList({
   messages,
@@ -25,7 +25,7 @@ export function ChatMessageList({
   isLoading,
   mobileViewportHeight,
   locale,
-  onClose,
+  onNavigate,
 }: ChatMessageListProps) {
   const endRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
@@ -46,21 +46,6 @@ export function ChatMessageList({
 
   return (
     <div ref={listRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-3">
-      {/* Suggestion chips — visible only before first message */}
-      {messages.length === 0 && chips && chips.length > 0 && (
-        <div className="flex flex-wrap gap-2 pt-2">
-          {chips.map((chip) => (
-            <button
-              key={chip.value}
-              onClick={() => onChipClick?.(chip.value)}
-              className="profile-card-btn inline-flex items-center rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-xs font-medium text-muted hover:border-primary/50"
-            >
-              {chip.label}
-            </button>
-          ))}
-        </div>
-      )}
-
       {/* Message bubbles */}
       {messages.map((msg) => (
         <div
@@ -80,12 +65,29 @@ export function ChatMessageList({
               <ChatAssistantMarkdown
                 content={msg.content}
                 locale={locale}
-                onClose={onClose}
+                onNavigate={onNavigate}
               />
             )}
           </div>
         </div>
       ))}
+
+      {/* Suggestion chips — visible until the visitor sends a message */}
+      {messages.length <= 1 && chips && chips.length > 0 && (
+        <div className="flex flex-wrap gap-2 pt-1">
+          {chips.map((chip) => (
+            <button
+              key={chip.value}
+              type="button"
+              disabled={isLoading}
+              onClick={() => onChipClick?.(chip.value)}
+              className="profile-card-btn inline-flex min-h-9 items-center rounded-lg border border-border bg-surface-2 px-3 py-1.5 text-xs font-medium text-foreground hover:border-primary/50 disabled:opacity-50"
+            >
+              {chip.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Typing indicator */}
       {isLoading && (
