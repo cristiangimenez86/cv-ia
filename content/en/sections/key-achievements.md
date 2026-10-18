@@ -1,5 +1,5 @@
 - Migrated multiple services from Azure Functions to a Service Bus worker architecture, enabling Kubernetes-native deployments.
-- Delivered a payment integration end to end as the sole developer, applying PayRetailers' internal OpenSpec-based AI SDLC.
+- Delivered a payment integration end to end as the sole developer, guiding AI-generated code with approved specifications and staged review.
 - Led an end-to-end virtual credit card system (AMEX/Mastercard) from inception to deployment with high security and scalability.
 - Integrated Azure Key Vault and Auth0 to strengthen authentication and secrets management.
 - Integrated 300 Burger King stores into an existing ecosystem via a .NET hosted service with business validations.

@@ -2,15 +2,15 @@
 kpis:
   - value: "14+"
     caption: "Años de experiencia"
-  - value: "+25%"
-    caption: "Eficiencia del sistema"
-  - value: "-30%"
-    caption: "Costos de mantenimiento"
-  - value: "+20%"
-    caption: "Satisfacción de usuarios"
+  - value: "300"
+    caption: "Locales integrados en UST"
+  - value: "~30%"
+    caption: "Mejora de rendimiento en Dell"
+  - value: "~80%"
+    caption: "Cobertura de tests en Dell"
 ---
-Ingeniero de Software Senior con más de 14 años de experiencia diseñando e implementando aplicaciones escalables y de alto rendimiento. Entregué proyectos que mejoraron la eficiencia del sistema (+25%), redujeron costos de mantenimiento (-30%) y aumentaron la satisfacción de usuarios (+20%).
+Ingeniero de Software Senior con más de 14 años de experiencia en .NET, Azure y React. Diseño y desarrollo integraciones de pagos, servicios cloud y aplicaciones escalables desde la arquitectura hasta el despliegue. En UST integré 300 locales de Burger King y mejoré el rendimiento de una aplicación de Dell en aproximadamente un 30%, con una cobertura de pruebas cercana al 80%.
 
-Fuerte en .NET, Azure, React y arquitecturas cloud-native, resolviendo desafíos complejos de producto e integraciones. También integré IA generativa en entornos productivos mediante servicios backend que consumen modelos de lenguaje y APIs de proveedores.
+En PayRetailers implementé de punta a punta una integración de pagos como único desarrollador mediante un proceso interno de desarrollo con IA (AI SDLC) basado en OpenSpec. Primero valido requisitos funcionales y técnicos con Producto, Finanzas y los equipos de Desarrollo, arquitectura e Infraestructura; después desarrollo por etapas a partir de esa documentación y reviso el código generado en cada fase.
 
-Actualmente desarrollo software con IA mediante un AI SDLC interno de PayRetailers, basado en OpenSpec: primero se validan los requisitos funcionales y técnicos, y luego la implementación avanza por etapas guiadas por esa documentación. Reviso el código de cada etapa y participo en las pruebas y correcciones antes del despliegue, con foco en calidad, observabilidad y seguridad.
+También integré IA generativa en sistemas productivos mediante servicios backend que consumen modelos de lenguaje y APIs de proveedores. Participo en las pruebas, correcciones y despliegues, con foco en calidad, observabilidad y seguridad.

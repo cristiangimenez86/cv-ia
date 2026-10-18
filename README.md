@@ -34,6 +34,10 @@ All website text lives in **Markdown** (plus a small `site.json` for profile/nav
 - 🌐 **Bilingual-friendly** (EN/ES)
 - 🔎 **Machine-readable** so the chat/AI can answer using the CV text as its grounding source
 
+The PDF files in `output/pdf/` have two versions per language: the designed two-page CV (`cv-cristian-gimenez-{es|en}.pdf`) and a two-page, single-column version for application systems (`cv-cristian-gimenez-{es|en}-ats.pdf`). The website download serves the designed version from `backend/src/CvIa.Api/Assets/Cv/`.
+
+Regenerate them with `scripts/generate-two-page-cv.py` and `scripts/generate-ats-cv.py`. Both scripts share the same authored PDF content in the first script; after regenerating the designed PDFs, copy them to the backend assets so the website download stays current.
+
 ## Repository map 🧭
 
 - 🗂️ **`content/`**: CV content (EN/ES) as markdown + `site.json` (profile, navigation, links)

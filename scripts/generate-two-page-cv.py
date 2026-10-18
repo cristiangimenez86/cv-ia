@@ -116,9 +116,9 @@ def header(c: canvas.Canvas, data: dict, second: bool = False) -> float:
 
     top = PAGE_H - MARGIN - 50
     left = f'{data["location"]}    |    +34 685 890 502    |    cristiangimenez86@gmail.com'
-    text_block(c, left, MARGIN, top, WIDTH, 8.25, 11.2, MUTED)
+    text_block(c, left, MARGIN, top, WIDTH, 8.65, 11.5, MUTED)
     links = "linkedin.com/in/cristiangimenez86    |    github.com/cristiangimenez86    |    cv.cristiangimenez.com"
-    text_block(c, links, MARGIN, top - 15, WIDTH, 8.0, 11.0, COPPER)
+    text_block(c, links, MARGIN, top - 15, WIDTH, 8.4, 11.2, COPPER)
     c.linkURL("mailto:cristiangimenez86@gmail.com", (MARGIN + 255, top - 12, MARGIN + 440, top + 1), relative=0)
     c.linkURL("https://www.linkedin.com/in/cristiangimenez86", (MARGIN, top - 28, MARGIN + 160, top - 14), relative=0)
     c.linkURL("https://github.com/cristiangimenez86", (MARGIN + 166, top - 28, MARGIN + 340, top - 14), relative=0)
@@ -144,7 +144,7 @@ def achievements(c: canvas.Canvas, items: list[str], y: float) -> float:
         bottoms = []
         for col in range(2):
             index = row * 2 + col
-            bottoms.append(bullet(c, items[index], MARGIN + col * (col_w + col_gap), row_top, col_w, 8.2, 11.2))
+            bottoms.append(bullet(c, items[index], MARGIN + col * (col_w + col_gap), row_top, col_w, 8.6, 11.7))
         row_top = min(bottoms) - 7
     return row_top - 2
 
@@ -159,7 +159,7 @@ def skills(c: canvas.Canvas, data: dict, y: float) -> float:
     for column in columns:
         height = pad
         for label, body in column:
-            block = para(body, 7.85, 10.45, MUTED)
+            block = para(body, 8.3, 10.9, MUTED)
             _, h = block.wrap(col_w - 2 * pad, PAGE_H)
             height += 10 + h + 8
         measured.append(height + pad - 7)
@@ -175,7 +175,7 @@ def skills(c: canvas.Canvas, data: dict, y: float) -> float:
             c.setFont("SegoeBold", 7.25)
             c.drawString(x + pad, top - 7, label.upper())
             top -= 11
-            top = text_block(c, body, x + pad, top, col_w - 2 * pad, 7.85, 10.45, MUTED) - 8
+            top = text_block(c, body, x + pad, top, col_w - 2 * pad, 8.3, 10.9, MUTED) - 8
     return y - box_h - 11
 
 
@@ -185,14 +185,14 @@ def tag_row(c: canvas.Canvas, tags: list[str], y: float, x: float = MARGIN,
     bottom = y
     for tag in tags:
         tag = clean(tag)
-        tag_w = pdfmetrics.stringWidth(tag, "Segoe", 7.1) + 13
+        tag_w = pdfmetrics.stringWidth(tag, "Segoe", 7.7) + 13
         if cursor + tag_w > x + width:
             cursor = x
             bottom -= 15
         c.setFillColor(TINT)
         c.roundRect(cursor, bottom - 12, tag_w, 13, 3, stroke=0, fill=1)
         c.setFillColor(COPPER)
-        c.setFont("Segoe", 7.1)
+        c.setFont("Segoe", 7.7)
         c.drawString(cursor + 6.5, bottom - 8.7, tag)
         cursor += tag_w + 5
     return bottom - 18
@@ -213,10 +213,10 @@ def job(c: canvas.Canvas, item: dict, y: float, compact: bool = False) -> float:
     if item.get("context"):
         y = text_block(c, item["context"], MARGIN, y, WIDTH, 8.0, 11.0, MUTED, italic=True) - 3
     for point in item["bullets"]:
-        y = bullet(c, point, MARGIN, y, WIDTH, 8.25, 11.35) - 4
+        y = bullet(c, point, MARGIN, y, WIDTH, 8.7, 11.8) - 4
     if item.get("tags"):
         y = tag_row(c, item["tags"], y - 1)
-    return y - (7 if compact else 10)
+    return y - (4 if compact else 10)
 
 
 def ust_job(c: canvas.Canvas, item: dict, y: float) -> float:
@@ -238,12 +238,12 @@ def ust_job(c: canvas.Canvas, item: dict, y: float) -> float:
         y -= 11
         y = text_block(c, project["context"], MARGIN, y, WIDTH, 8.0, 10.8, MUTED, italic=True) - 3
         for point in project["bullets"]:
-            y = bullet(c, point, MARGIN, y, WIDTH, 8.15, 11.1) - 3
+            y = bullet(c, point, MARGIN, y, WIDTH, 8.6, 11.7) - 3
         if project.get("tags"):
             y = tag_row(c, project["tags"], y)
         else:
             y -= 4
-    return y - 7
+    return y - 4
 
 
 def earlier_roles(c: canvas.Canvas, items: list[dict], y: float) -> float:
@@ -258,7 +258,7 @@ def earlier_roles(c: canvas.Canvas, items: list[dict], y: float) -> float:
         date_x = MARGIN + 16 + pdfmetrics.stringWidth(item["company"], "SegoeBold", 8.5)
         c.drawString(date_x, y - 8, clean(item["meta"]))
         y -= 13
-        y = text_block(c, item["description"], MARGIN + 11, y, WIDTH - 11, 8.1, 10.8, MUTED) - 5
+        y = text_block(c, item["description"], MARGIN + 11, y, WIDTH - 11, 8.5, 11.3, MUTED) - 2
     return y
 
 
@@ -297,10 +297,10 @@ def languages(c: canvas.Canvas, values: list[tuple[str, str]], y: float) -> floa
 
 CV = {
     "en": {
-        "role": "Senior Full Stack .NET Developer",
+        "role": "Senior Software Engineer",
         "location": "Barcelona, Spain",
         "labels": ["Profile", "Key Achievements", "Skills", "Experience", "Experience / Continued", "Earlier Roles", "Education & Certifications", "Languages"],
-        "profile": "Senior Full Stack .NET Developer with 14+ years of experience building scalable, high-performance applications. Improved system efficiency (+25%), reduced maintenance costs (-30%), and enhanced user satisfaction (+20%). Strong in .NET, Azure, React, and cloud-native architectures. Integrate generative AI into products and develop software through PayRetailers' internal OpenSpec-based AI SDLC, guiding AI-generated code with documented requirements and staged review.",
+        "profile": "Senior Software Engineer with 14+ years of experience in .NET, Azure, and React. At PayRetailers, I delivered a payment integration end to end as the sole developer, using documented requirements and staged review to guide AI-assisted development through an internal OpenSpec-based AI SDLC. At UST, I improved a Dell application's performance by ~30% and brought test coverage to ~80%.",
         "achievements": [
             "Migrated multiple services from Azure Functions to Service Bus worker architecture, enabling Kubernetes-native deployments.",
             "Led an end-to-end virtual credit card system (AMEX/Mastercard) from inception to deployment.",
@@ -357,7 +357,7 @@ CV = {
         "role": "Ingeniero de Software Senior",
         "location": "Barcelona, España",
         "labels": ["Perfil", "Logros Clave", "Habilidades", "Experiencia", "Experiencia / Continuación", "Roles Anteriores", "Educación & Certificaciones", "Idiomas"],
-        "profile": "Desarrollador Full Stack .NET senior con más de 14 años de experiencia construyendo aplicaciones escalables y de alto rendimiento. Mejoré eficiencia del sistema (+25%), reduje costos de mantenimiento (-30%) y aumenté satisfacción de usuarios (+20%). Fuerte en .NET, Azure, React y arquitecturas cloud-native. Integro IA generativa en productos y desarrollo software con el AI SDLC interno de PayRetailers, basado en OpenSpec: requisitos documentados guían el código generado con IA y su revisión por etapas.",
+        "profile": "Ingeniero de Software Senior con más de 14 años de experiencia en .NET, Azure y React. En PayRetailers implementé una integración de pagos de punta a punta como único desarrollador, usando requisitos documentados y revisión por etapas para guiar el desarrollo con IA mediante un AI SDLC interno basado en OpenSpec. En UST mejoré ~30% el rendimiento de una aplicación de Dell y llevé la cobertura de pruebas a ~80%.",
         "achievements": [
             "Migré múltiples servicios de Azure Functions a arquitectura de workers con Service Bus, habilitando despliegues nativos en Kubernetes.",
             "Lideré un sistema de tarjetas virtuales (AMEX/Mastercard) de punta a punta con foco en seguridad.",
@@ -423,7 +423,7 @@ def generate(locale: str, target: Path) -> None:
 
     y = header(c, data)
     y = section(c, '01', data['labels'][0], y)
-    y = text_block(c, data['profile'], MARGIN, y, WIDTH, 8.95, 12.45, MUTED) - 14
+    y = text_block(c, data['profile'], MARGIN, y, WIDTH, 9.3, 12.8, MUTED) - 14
     y = section(c, '02', data['labels'][1], y)
     y = achievements(c, data['achievements'], y) - 3
     y = section(c, '03', data['labels'][2], y)

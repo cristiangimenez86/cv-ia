@@ -2,15 +2,15 @@
 kpis:
   - value: "14+"
     caption: "Years of experience"
-  - value: "+25%"
-    caption: "System efficiency"
-  - value: "-30%"
-    caption: "Maintenance costs"
-  - value: "+20%"
-    caption: "User satisfaction"
+  - value: "300"
+    caption: "Stores integrated at UST"
+  - value: "~30%"
+    caption: "Performance gain on Dell project"
+  - value: "~80%"
+    caption: "Test coverage on Dell project"
 ---
-Senior Software Engineer with 14+ years of experience designing and implementing scalable, high-performance applications. Delivered projects that improved system efficiency (+25%), reduced maintenance costs (-30%), and enhanced user satisfaction (+20%).
+Senior Software Engineer with 14+ years of experience in .NET, Azure, and React. I design and build payment integrations, cloud services, and scalable applications from architecture through deployment. At UST, I integrated 300 Burger King stores and improved performance of a Dell application by approximately 30%, reaching nearly 80% test coverage.
 
-Strong in .NET, Azure, React, and cloud-native architectures, solving complex product and integration challenges. I have also integrated generative AI into production systems through backend services that consume language models and vendor APIs.
+At PayRetailers, I delivered a payment integration end to end as the sole developer using an internal AI-assisted development process (AI SDLC) based on OpenSpec. I first validate functional and technical requirements with Product, Finance, Development, architecture, and Infrastructure; I then implement in stages from that documentation and review the generated code in each phase.
 
-At PayRetailers, I develop software with AI through an internal AI SDLC based on OpenSpec: functional and technical requirements are validated first, then implementation proceeds in stages guided by that documentation. I review the code at each stage and take part in testing and fixes before deployment, focusing on quality, observability, and security.
+I have also integrated generative AI into production systems through backend services that consume language models and vendor APIs. I participate in testing, fixes, and deployments, focusing on quality, observability, and security.

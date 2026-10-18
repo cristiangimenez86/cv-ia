@@ -9,8 +9,7 @@
 
 **Achievements:**
 - Successfully migrated multiple services from Azure Functions to Service Bus–based worker architecture, enabling Kubernetes-native deployments.
-- Applied the internal OpenSpec-based AI SDLC to document requirements and design before implementing with AI in stages, reviewing the generated code at each stage.
-- Delivered a payment integration end to end as the sole developer within this process.
+- Delivered a payment integration end to end as the sole developer, using requirements and design documented in the internal OpenSpec-based AI SDLC to guide AI-assisted implementation and review code at each stage.
 - Took part in provisioning infrastructure with Terraform and deploying to DEV and STG; I tested the solution in DEV and fixed issues. The QA team ran AI-generated automated tests based on the initial documents before production deployment.
 
 **Technologies:** .NET 8, Azure Service Bus, Azure Cosmos DB, Docker, Kubernetes, Terraform
@@ -32,7 +31,7 @@
 **Technologies:** .NET 8, Azure Functions, Entity Framework Core, React, Cosmos DB, Azure Key Vault, Docker, Azure Pipelines, Auth0
 
 
-## Career Transition — Professional Transition
+## Career Transition
 **Barcelona, Spain | June 2023 – December 2023**
 
 Career break dedicated to upskilling in frontend technologies, including Angular and React (Udemy, 2023).
