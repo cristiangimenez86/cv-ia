@@ -15,9 +15,16 @@
 - Dark mode and Copper remain the defaults. Moon/sun controls change the mode directly; a discreet chevron in the same control opens the accent palette popover.
 - Palettes: Copper, Forest, Ocean, Plum, and Graphite. Each provides coordinated light/dark accents, backgrounds, surfaces, borders, and text colors.
 - The palette is independent of light/dark mode and locale. `<html data-palette>` selects the CSS overrides for both the hexadecimal and semantic HSL tokens.
-- `PaletteProvider` shares the selection between desktop and mobile controls. `cv.palette` persists it in browser storage, alongside the existing `cv.theme` preference. A bootstrap script applies the saved palette before paint; invalid or unavailable storage falls back to Copper.
+- `PaletteProvider` shares the selection between desktop and mobile controls. `cv.palette` persists it in browser storage, alongside the existing `cv.theme` preference. A bootstrap script applies the saved palette before paint; invalid or unavailable storage falls back to Copper. Keep it as the first body child so scripts inserted into the head by browser extensions do not get mistaken for this inline script during hydration.
 - The popover uses native radio inputs, moves focus to the current palette, and closes on Escape, outside click, or focus leaving the control. Reset appearance restores Copper and dark mode.
 - Printed CVs retain the existing light Copper palette.
+
+## Favicon
+
+- The favicon uses the same rounded gradient tile and Code2 symbol as the header.
+- `DynamicFavicon` renders a single React-managed icon link. It reads the current CSS palette tokens after palette/theme changes and updates an SVG data URL without reloading the document.
+- `frontend/public/favicon.ico` provides the default Copper icon before hydration and for direct favicon requests. Keep it outside `src/app` so Next.js does not add a second competing icon link.
+- The fallback includes 16, 32, 48, 64, 128, and 256 px sizes. Generate it from `createFaviconSvg` in `frontend/src/lib/favicon.ts` so its geometry matches the live icon.
 
 ## Core Tokens
 ### Background & surfaces

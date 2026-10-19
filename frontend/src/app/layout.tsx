@@ -34,13 +34,12 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: PALETTE_BOOTSTRAP_SCRIPT }} />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         suppressHydrationWarning
       >
+        {/* Run before content paints, outside the head where extensions can insert scripts. */}
+        <script id="cv-palette-bootstrap" dangerouslySetInnerHTML={{ __html: PALETTE_BOOTSTRAP_SCRIPT }} />
         <BackendHealthIndicator />
         <Providers>{children}</Providers>
         <ChatWidget />
