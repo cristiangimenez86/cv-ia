@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./palettes.css";
 
 :root, .dark {
   color-scheme: dark;
@@ -118,6 +119,24 @@ html.theme-transition, html.theme-transition *, html.theme-transition *::before,
 .cv-theme-switch, .cv-locale-switch { display: flex; align-items: center; gap: 3px; flex: 0 0 auto; padding: 3px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-hex); letter-spacing: 0; text-transform: none; }
 .cv-theme-switch button, .cv-locale-switch a { display: grid; place-items: center; min-width: 54px; min-height: 32px; padding: 7px 10px; border: 0; border-radius: 6px; background: transparent; color: var(--muted-hex); font-size: 12px; font-weight: 620; text-decoration: none; }
 .cv-theme-switch button:hover, .cv-theme-switch button.is-active, .cv-locale-switch a:hover, .cv-locale-switch a.is-active { background: var(--surface-raised); color: var(--text-hex); }
+.cv-appearance { position: relative; flex: 0 0 auto; }
+.cv-theme-switch .cv-palette-trigger { min-width: 30px; padding-inline: 6px; border-left: 1px solid var(--line); border-radius: 0 6px 6px 0; color: var(--subtle-hex); }
+.cv-palette-trigger svg { transition: transform .18s; }
+.cv-palette-trigger svg.is-open { transform: rotate(180deg); }
+.cv-palette-popover { position: absolute; top: calc(100% + 8px); right: 0; z-index: 30; width: 252px; max-width: calc(100vw - 24px); padding: 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-hex); color: var(--text-hex); box-shadow: 0 12px 32px #0003; letter-spacing: 0; text-align: left; text-transform: none; }
+.cv-palette-options { min-width: 0; margin: 0; padding: 0; border: 0; }
+.cv-palette-options legend { width: 100%; padding: 4px 8px 10px; color: var(--subtle-hex); font-size: 11px; font-weight: 600; }
+.cv-palette-option { position: relative; display: flex; align-items: center; gap: 10px; min-height: 40px; padding: 8px; border-radius: 7px; cursor: pointer; }
+.cv-palette-option:hover, .cv-palette-option.is-selected { background: var(--surface-raised); }
+.cv-palette-option:has(input:focus-visible) { outline: 2px solid var(--accent-hex); outline-offset: -2px; }
+.cv-palette-radio { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.cv-palette-swatch { width: 14px; height: 14px; flex: 0 0 14px; border-radius: 50%; background: var(--palette-dark); }
+.light .cv-palette-swatch { background: var(--palette-light); }
+.cv-palette-name { color: var(--text-hex); font-size: 13px; font-weight: 500; }
+.cv-palette-default { color: var(--subtle-hex); font-size: 10px; }
+.cv-palette-check { margin-left: auto; color: var(--accent-hex); }
+.cv-palette-reset { display: flex; align-items: center; gap: 9px; width: 100%; min-height: 38px; margin-top: 8px; padding: 10px 8px 3px; border: 0; border-top: 1px solid var(--line-soft); border-radius: 0; background: transparent; color: var(--muted-hex); font-family: inherit; font-size: 12px; text-align: left; }
+.cv-palette-reset:hover { color: var(--accent-hex); }
 
 .cv-hero { padding: 73px 0 74px; }
 .cv-hero .cv-eyebrow { display: block; margin-bottom: 22px; }
@@ -245,6 +264,9 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
   .cv-mobile-controls { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
   .cv-mobile-controls .cv-theme-switch, .cv-mobile-controls .cv-locale-switch { gap: 2px; padding: 2px; border-radius: 8px; }
   .cv-mobile-controls .cv-theme-switch button, .cv-mobile-controls .cv-locale-switch a { width: 38px; min-width: 38px; height: 32px; padding: 0; font-size: 11px; }
+  .cv-mobile-controls .cv-theme-switch .cv-palette-trigger { width: 28px; min-width: 28px; }
+  .cv-mobile-controls .cv-appearance { position: static; }
+  .cv-mobile-controls .cv-palette-popover { right: 12px; }
   .cv-topline-controls { display: none; }
   .cv-content { padding: 0 23px 90px; }
   .cv-topline { flex-wrap: wrap; padding-top: 21px; }
@@ -339,7 +361,7 @@ html.cv-chat-resizing, html.cv-chat-resizing * { cursor: ew-resize !important; u
 }
 
 @media print {
-  html, html.dark, html.light {
+  html, html.dark, html.light, :root[data-palette] {
     color-scheme: light;
     --page: #fffdf9;
     --rail: #f7f5f0;

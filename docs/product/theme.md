@@ -6,9 +6,18 @@
 - Theme is defined via CSS variables (tokens) and consumed through Tailwind semantic colors.
 
 ## Token Strategy
-- Define tokens in `apps/web/src/app/globals.css` using CSS variables.
+- Define the default Copper tokens in `frontend/src/app/globals.css` and alternate palettes in `frontend/src/app/palettes.css` using CSS variables.
 - Use `.dark` class on `<html>` to switch theme.
 - Tailwind maps semantic colors to tokens (no hardcoded blues in components).
+
+## Appearance selector
+
+- Dark mode and Copper remain the defaults. Moon/sun controls change the mode directly; a discreet chevron in the same control opens the accent palette popover.
+- Palettes: Copper, Forest, Ocean, Plum, and Graphite. Each provides coordinated light/dark accents, backgrounds, surfaces, borders, and text colors.
+- The palette is independent of light/dark mode and locale. `<html data-palette>` selects the CSS overrides for both the hexadecimal and semantic HSL tokens.
+- `PaletteProvider` shares the selection between desktop and mobile controls. `cv.palette` persists it in browser storage, alongside the existing `cv.theme` preference. A bootstrap script applies the saved palette before paint; invalid or unavailable storage falls back to Copper.
+- The popover uses native radio inputs, moves focus to the current palette, and closes on Escape, outside click, or focus leaving the control. Reset appearance restores Copper and dark mode.
+- Printed CVs retain the existing light Copper palette.
 
 ## Core Tokens
 ### Background & surfaces

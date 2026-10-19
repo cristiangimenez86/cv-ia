@@ -1,0 +1,216 @@
+/* Copper stays in globals.css as the default. Each palette overrides both token sets. */
+:root[data-palette="bosque"] {
+  --page: #101714;
+  --rail: #151f1a;
+  --surface-hex: #1b2821;
+  --surface-raised: #25362c;
+  --line: #364b3e;
+  --line-soft: #293a30;
+  --text-hex: #e7f0e9;
+  --muted-hex: #b5c8bc;
+  --subtle-hex: #8fa897;
+  --accent-hex: #88c7a2;
+  --accent-dark: #1f4a33;
+  --accent-soft: #b5dfc6;
+  --button-text: #101714;
+  --bg: 154.29 17.95% 7.65%;
+  --surface: 147.69 19.4% 13.14%;
+  --surface-2: 144.71 18.68% 17.84%;
+  --border: 142.86 16.28% 25.29%;
+  --divider: 142.86 16.28% 25.29%;
+  --text: 133.33 23.08% 92.35%;
+  --muted: 142.11 14.73% 74.71%;
+  --subtle: 139.2 12.56% 60.98%;
+  --primary: 144.76 36% 65.69%;
+  --primary-contrast: 154.29 17.95% 7.65%;
+  --ring: 144.76 36% 65.69%;
+}
+
+.light[data-palette="bosque"] {
+  --page: #f3f7f4;
+  --rail: #e8efea;
+  --surface-hex: #fbfffc;
+  --surface-raised: #e5eee7;
+  --line: #cddbd1;
+  --line-soft: #dce6df;
+  --text-hex: #20372c;
+  --muted-hex: #4c6256;
+  --subtle-hex: #5b7264;
+  --accent-hex: #276749;
+  --accent-dark: #d5e8dc;
+  --accent-soft: #1e5138;
+  --button-text: #fbfffc;
+  --bg: 135 20% 96.08%;
+  --surface: 135 100% 99.22%;
+  --surface-2: 133.33 20.93% 91.57%;
+  --border: 137.14 16.28% 83.14%;
+  --divider: 137.14 16.28% 83.14%;
+  --text: 151.3 26.44% 17.06%;
+  --muted: 147.27 12.64% 34.12%;
+  --subtle: 143.48 11.22% 40.2%;
+  --primary: 151.88 45.07% 27.84%;
+  --primary-contrast: 135 100% 99.22%;
+  --ring: 151.88 45.07% 27.84%;
+}
+
+:root[data-palette="oceano"] {
+  --page: #111720;
+  --rail: #171f2a;
+  --surface-hex: #1d2937;
+  --surface-raised: #28374a;
+  --line: #394c63;
+  --line-soft: #2c3b4e;
+  --text-hex: #e9eff6;
+  --muted-hex: #b7c6d9;
+  --subtle-hex: #91a7c0;
+  --accent-hex: #8ab9ed;
+  --accent-dark: #244360;
+  --accent-soft: #bad6f6;
+  --button-text: #111720;
+  --bg: 216 30.61% 9.61%;
+  --surface: 212.31 30.95% 16.47%;
+  --surface-2: 213.53 29.82% 22.35%;
+  --border: 212.86 26.92% 30.59%;
+  --divider: 212.86 26.92% 30.59%;
+  --text: 212.31 41.94% 93.92%;
+  --muted: 213.53 30.91% 78.43%;
+  --subtle: 211.91 27.17% 66.08%;
+  --primary: 211.52 73.33% 73.53%;
+  --primary-contrast: 216 30.61% 9.61%;
+  --ring: 211.52 73.33% 73.53%;
+}
+
+.light[data-palette="oceano"] {
+  --page: #f3f6fa;
+  --rail: #e8eef5;
+  --surface-hex: #fcfdff;
+  --surface-raised: #e5edf7;
+  --line: #cdd8e5;
+  --line-soft: #dde5ef;
+  --text-hex: #203047;
+  --muted-hex: #4f6178;
+  --subtle-hex: #607187;
+  --accent-hex: #2b5f93;
+  --accent-dark: #d8e6f4;
+  --accent-soft: #214b76;
+  --button-text: #fcfdff;
+  --bg: 214.29 41.18% 96.67%;
+  --surface: 220 100% 99.41%;
+  --surface-2: 213.33 52.94% 93.33%;
+  --border: 212.5 31.58% 85.1%;
+  --divider: 212.5 31.58% 85.1%;
+  --text: 215.38 37.86% 20.2%;
+  --muted: 213.66 20.6% 39.02%;
+  --subtle: 213.85 16.88% 45.29%;
+  --primary: 210 54.74% 37.25%;
+  --primary-contrast: 220 100% 99.41%;
+  --ring: 210 54.74% 37.25%;
+}
+
+:root[data-palette="ciruela"] {
+  --page: #19131b;
+  --rail: #211a24;
+  --surface-hex: #2a202e;
+  --surface-raised: #382b3e;
+  --line: #503d55;
+  --line-soft: #3d2f42;
+  --text-hex: #f1eaf3;
+  --muted-hex: #cbbbcf;
+  --subtle-hex: #ab94b2;
+  --accent-hex: #c6a1d4;
+  --accent-dark: #4c3056;
+  --accent-soft: #e2c9eb;
+  --button-text: #19131b;
+  --bg: 285 17.39% 9.02%;
+  --surface: 282.86 17.95% 15.29%;
+  --surface-2: 281.05 18.1% 20.59%;
+  --border: 287.5 16.44% 28.63%;
+  --divider: 287.5 16.44% 28.63%;
+  --text: 286.67 27.27% 93.53%;
+  --muted: 288 17.24% 77.25%;
+  --subtle: 286 16.3% 63.92%;
+  --primary: 283.53 37.23% 73.14%;
+  --primary-contrast: 285 17.39% 9.02%;
+  --ring: 283.53 37.23% 73.14%;
+}
+
+.light[data-palette="ciruela"] {
+  --page: #f8f4f8;
+  --rail: #f0e9f0;
+  --surface-hex: #fffbff;
+  --surface-raised: #f1e7f1;
+  --line: #ddcedd;
+  --line-soft: #e9dfe9;
+  --text-hex: #352738;
+  --muted-hex: #68536a;
+  --subtle-hex: #7b657d;
+  --accent-hex: #7b4d83;
+  --accent-dark: #e9d9ed;
+  --accent-soft: #5d3565;
+  --button-text: #fffbff;
+  --bg: 300 22.22% 96.47%;
+  --surface: 300 100% 99.22%;
+  --surface-2: 300 26.32% 92.55%;
+  --border: 300 18.07% 83.73%;
+  --divider: 300 18.07% 83.73%;
+  --text: 289.41 17.89% 18.63%;
+  --muted: 294.78 12.17% 37.06%;
+  --subtle: 295 10.62% 44.31%;
+  --primary: 291.11 25.96% 40.78%;
+  --primary-contrast: 300 100% 99.22%;
+  --ring: 291.11 25.96% 40.78%;
+}
+
+:root[data-palette="grafito"] {
+  --page: #151516;
+  --rail: #1c1c1e;
+  --surface-hex: #242427;
+  --surface-raised: #303034;
+  --line: #414147;
+  --line-soft: #323237;
+  --text-hex: #f0f0f2;
+  --muted-hex: #c3c3c8;
+  --subtle-hex: #9d9da7;
+  --accent-hex: #b8b8c4;
+  --accent-dark: #3b3b44;
+  --accent-soft: #dddde5;
+  --button-text: #151516;
+  --bg: 240 2.33% 8.43%;
+  --surface: 240 4% 14.71%;
+  --surface-2: 240 4% 19.61%;
+  --border: 240 4.41% 26.67%;
+  --divider: 240 4.41% 26.67%;
+  --text: 240 7.14% 94.51%;
+  --muted: 240 4.35% 77.45%;
+  --subtle: 240 5.38% 63.53%;
+  --primary: 240 9.23% 74.51%;
+  --primary-contrast: 240 2.33% 8.43%;
+  --ring: 240 9.23% 74.51%;
+}
+
+.light[data-palette="grafito"] {
+  --page: #f5f5f5;
+  --rail: #ebebeb;
+  --surface-hex: #ffffff;
+  --surface-raised: #eeeeee;
+  --line: #d4d4d4;
+  --line-soft: #e2e2e2;
+  --text-hex: #262626;
+  --muted-hex: #555555;
+  --subtle-hex: #6a6a6a;
+  --accent-hex: #52525b;
+  --accent-dark: #e0e0e5;
+  --accent-soft: #3f3f46;
+  --button-text: #ffffff;
+  --bg: 0 0% 96.08%;
+  --surface: 0 0% 100%;
+  --surface-2: 0 0% 93.33%;
+  --border: 0 0% 83.14%;
+  --divider: 0 0% 83.14%;
+  --text: 0 0% 14.9%;
+  --muted: 0 0% 33.33%;
+  --subtle: 0 0% 41.57%;
+  --primary: 240 5.2% 33.92%;
+  --primary-contrast: 0 0% 100%;
+  --ring: 240 5.2% 33.92%;
+}
